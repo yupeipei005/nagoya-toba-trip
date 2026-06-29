@@ -407,11 +407,11 @@ var FOODGROUPS = [
 /* ============ storage (persists per device) ============ */
 var KEY="nagoyatoba_v2";
 var mem={activities:{}, budget:[], rate:0.215, seeded:false};
-var hasStore = (typeof window.storage!=="undefined" && window.storage);
+var hasStore = true;
 
 async function loadStore(){
   if(hasStore){
-    try{ var r=await window.storage.get(KEY,false); if(r&&r.value){mem=JSON.parse(r.value);} }
+    try{ var r=localStorage.getItem(KEY); if(r){mem=JSON.parse(r);} }
     catch(e){ /* first run / not found */ }
   }
   if(!mem.activities) mem.activities={};
@@ -460,7 +460,7 @@ var saveTimer;
 function save(){
   clearTimeout(saveTimer);
   saveTimer=setTimeout(async function(){
-    if(hasStore){ try{ await window.storage.set(KEY, JSON.stringify(mem), false); }catch(e){} }
+    if(hasStore){ try{ localStorage.setItem(KEY, JSON.stringify(mem)); }catch(e){} }
     var d=document.getElementById("savedot"); d.classList.add("show");
     setTimeout(function(){d.classList.remove("show");},700);
   },300);
