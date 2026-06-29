@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>名古屋・鳥羽 ｜ 2026.11</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@600;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#6a3d2b;
+  --ink-soft:#855440;
+  --gold:#c2904a;
+  --gold-soft:#ecdcbb;
+  --persimmon:#d2622f;
+  --sea:#3f7d6e;
+  --sea-soft:#d2e4df;
+  --paper:#f8f3e9;
+  --card:#ffffff;
+  --line:#e9e0cf;
+  --text:#33291f;
+  --muted:#978a78;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{
+  font-family:"Noto Sans TC",system-ui,sans-serif;
+  background:var(--paper);color:var(--text);
+  line-height:1.55;-webkit-font-smoothing:antialiased;
+}
+.mono{font-family:"Space Mono",monospace}
+
+/* ---------- shell ---------- */
+.app{max-width:520px;margin:0 auto;min-height:100%;background:var(--paper);
+  display:flex;flex-direction:column;position:relative}
+
+/* ---------- masthead ---------- */
+header.top{
+  background:var(--paper);color:var(--text);padding:24px 20px 18px;
+  padding-top:calc(22px + env(safe-area-inset-top));
+  position:relative;overflow:hidden;text-align:center;
+}
+.leaf{position:absolute;font-size:34px;opacity:.16;filter:saturate(.7)}
+.leaf-l{left:14px;top:14px;transform:rotate(-18deg)}
+.leaf-r{right:14px;top:18px;transform:rotate(20deg)}
+.eyebrow{font-size:12px;letter-spacing:.42em;color:var(--persimmon);font-weight:700;
+  text-transform:uppercase;font-family:"Noto Serif TC",serif}
+h1.title{font-family:"Noto Serif TC",serif;font-size:40px;font-weight:900;letter-spacing:.04em;
+  margin:8px 0 0;line-height:1.12;color:#3a2a20}
+.title2{font-family:"Noto Serif TC",serif;font-size:36px;font-weight:900;letter-spacing:.06em;
+  margin:0 0 12px;line-height:1.12;color:#3a2a20}
+.title2 .r7{color:#c0392b}
+.subline{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 16px;
+  font-size:12.5px;color:var(--ink-soft);font-weight:500}
+.subline .mono{color:var(--text);font-weight:700}
+
+/* ---------- tabs ---------- */
+nav.tabs{display:flex;justify-content:center;gap:6px;background:var(--paper);
+  padding:6px 12px 14px;position:sticky;top:0;z-index:500}
+nav.tabs button{display:inline-flex;align-items:center;gap:7px;border:none;background:none;
+  padding:8px 14px;border-radius:999px;font-family:inherit;font-size:14px;font-weight:700;
+  color:var(--muted);cursor:pointer}
+nav.tabs .tb{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;
+  border-radius:50%;background:var(--gold-soft);color:var(--ink-soft);font-size:13px;
+  font-family:"Noto Serif TC",serif;font-weight:700}
+nav.tabs button.on{background:var(--ink);color:#fff}
+nav.tabs button.on .tb{background:rgba(255,255,255,.9);color:var(--ink)}
+
+main{flex:1;padding:18px 16px 90px}
+.view{display:none}.view.on{display:block}
+
+/* ---------- day header ---------- */
+.day{padding-bottom:6px}
+.dhead{display:flex;gap:12px;align-items:flex-start;margin-bottom:10px}
+.daybadge{flex-shrink:0;width:52px;height:52px;border-radius:13px;color:#fff;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  box-shadow:0 2px 6px rgba(20,30,50,.12)}
+.daybadge b{font-family:"Noto Serif TC",serif;font-size:23px;font-weight:900;line-height:1}
+.daybadge span{font-size:8.5px;letter-spacing:.18em;margin-top:2px;opacity:.92;font-weight:700}
+.dmain{flex:1;min-width:0;padding-top:3px}
+.drow{display:flex;align-items:center;gap:8px;margin-bottom:3px}
+.drow .ddate{font-family:"Space Mono",monospace;font-weight:700;font-size:15px;color:var(--ink-soft)}
+.drow .ddow{font-size:11px;color:var(--ink-soft);border:1px solid var(--line);background:#fff;
+  padding:1px 7px;border-radius:6px;font-weight:700}
+.dtitle{font-family:"Noto Serif TC",serif;font-weight:900;font-size:20px;color:#3a2a20;line-height:1.25}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;
+  padding:6px 4px;margin-bottom:18px;box-shadow:0 1px 2px rgba(20,30,50,.03)}
+
+/* fixed events */
+.fixed{display:flex;gap:10px;align-items:flex-start;padding:9px 12px;border-bottom:1px dashed var(--line)}
+.fixed:last-child{border-bottom:none}
+.fixed .ft{font-family:"Space Mono",monospace;font-size:12px;font-weight:700;color:var(--ink-soft);
+  min-width:54px;padding-top:1px}
+.fixed .fi{width:22px;text-align:center;font-size:14px;flex-shrink:0}
+.fixed .fx{font-size:13.5px;line-height:1.45}
+.fixed.lock .fx::after{content:" 🔒";font-size:9px;opacity:.35}
+.tag{display:inline-block;font-size:10px;font-weight:700;padding:1px 6px;border-radius:4px;margin-left:5px;vertical-align:1px}
+.tag.fly{background:#fdeee6;color:var(--persimmon)}
+.tag.bed{background:#eef4f1;color:var(--sea)}
+.tag.move{background:#f1eef7;color:#6b5aa0}
+
+.booking{display:flex;align-items:center;gap:6px;margin:8px 10px 2px;padding:9px 12px;
+  background:#fff4ee;border:1px solid #ffd6c2;border-radius:10px;color:#e8540a;
+  font-weight:700;font-size:12.5px;text-decoration:none;line-height:1.4}
+.booking:active{background:#ffe7da}
+.bookinfo{font-size:11.5px;color:var(--ink-soft);margin:5px 12px 8px;line-height:1.55;
+  padding-left:10px;border-left:2px solid #ffd6c2}
+
+.grp{border-left:3px solid var(--line);padding-left:11px;margin:4px 8px}
+.grp.g1{border-color:#6b5aa0}
+.grp.g2{border-color:#c2557e}
+.grphead{font-weight:700;font-size:14px;color:var(--ink);margin:10px 0 2px;display:flex;gap:7px;align-items:baseline;flex-wrap:wrap}
+.grphead .gs{font-size:11px;color:var(--muted);font-weight:500}
+.grpdiv{height:1px;background:var(--line);margin:12px 10px 4px}
+.meet{display:flex;gap:8px;align-items:center;padding:11px 12px;margin:10px 8px 4px;
+  background:#faf5ea;border:1px solid var(--line);border-radius:10px;font-size:13px;color:var(--ink-soft);font-weight:500}
+
+/* editable activities */
+.acts{padding:4px 8px 8px}
+.act{display:flex;gap:9px;align-items:flex-start;padding:7px 4px;border-bottom:1px solid #f3eee3}
+.act:last-child{border-bottom:none}
+.act .at{font-family:"Space Mono",monospace;font-size:12px;color:var(--muted);min-width:46px;
+  border:none;background:none;padding:2px 0;width:46px}
+.act .an{flex:1;border:none;background:none;font-family:inherit;font-size:14px;color:var(--text);padding:2px 0}
+.act .at:focus,.act .an:focus{outline:none;border-bottom:1.5px solid var(--gold)}
+.act .del{border:none;background:none;color:#c7ccd4;font-size:16px;cursor:pointer;padding:0 4px;line-height:1}
+.act .del:hover{color:var(--persimmon)}
+.act.empty{color:var(--muted);font-style:italic;font-size:13px;padding-left:6px}
+
+.gmap{flex-shrink:0;text-decoration:none;font-size:13px;width:26px;height:26px;border-radius:7px;
+  display:inline-flex;align-items:center;justify-content:center;background:#eef1f6;line-height:1}
+.gmap:active{background:var(--gold-soft)}
+.pop-g{display:inline-block;margin-top:7px;font-size:12px;font-weight:700;color:#1a73e8;text-decoration:none}
+
+.addrow{display:flex;flex-wrap:wrap;gap:6px;padding:6px 8px 10px;align-items:center}
+.addbtn{border:1px dashed var(--gold);background:#fff;color:var(--ink-soft);font-family:inherit;
+  font-weight:700;font-size:12.5px;padding:6px 12px;border-radius:8px;cursor:pointer}
+.addbtn:active{background:#faf5ea}
+.chip{border:1px solid var(--line);background:#faf7f0;color:var(--ink-soft);font-size:11.5px;
+  padding:5px 10px;border-radius:999px;cursor:pointer;font-family:inherit}
+.chip:active{background:var(--gold-soft)}
+.chiphint{font-size:11px;color:var(--muted);width:100%;margin-bottom:1px}
+
+/* ---------- map ---------- */
+#map{height:62vh;min-height:340px;border-radius:14px;border:1px solid var(--line);overflow:hidden}
+.legend{display:flex;gap:16px;margin:12px 2px 4px;font-size:12px;color:var(--ink-soft);flex-wrap:wrap}
+.legend i{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:5px;vertical-align:0px}
+.maphint{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.5}
+.daypills{display:flex;gap:7px;overflow-x:auto;padding:2px 2px 10px;-webkit-overflow-scrolling:touch}
+.daypills::-webkit-scrollbar{display:none}
+.pill{flex:0 0 auto;display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);
+  background:#fff;color:var(--ink-soft);font-family:inherit;font-size:12.5px;font-weight:700;
+  padding:6px 12px;border-radius:999px;cursor:pointer;white-space:nowrap}
+.pill i{width:9px;height:9px;border-radius:50%;display:inline-block}
+.pill.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.leaflet-popup-content{font-family:"Noto Sans TC",sans-serif;margin:11px 13px}
+.pop-t{font-weight:700;font-size:14px;color:var(--ink)}
+.pop-s{font-size:12px;color:var(--muted);margin-top:2px}
+
+/* ---------- budget ---------- */
+.conv{background:#fbf4e4;color:var(--text);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:16px}
+.conv .lbl{font-size:11px;color:var(--ink-soft);letter-spacing:.14em;font-weight:700}
+.conv .row{display:flex;align-items:center;gap:8px;margin-top:8px;flex-wrap:wrap}
+.conv input{font-family:"Space Mono",monospace;font-size:16px;font-weight:700;border:1px solid var(--line);
+  border-radius:8px;padding:8px 10px;width:96px;text-align:right;background:#fff;color:var(--text)}
+.conv .yen{background:#fff;color:var(--text)}
+.conv .eq{font-size:14px;color:var(--muted)}
+.conv .ntd{background:#fff;color:var(--ink)}
+.conv .rate{font-size:11px;color:var(--muted);margin-top:8px;display:flex;align-items:center;gap:6px}
+.conv .rate input{width:62px;padding:3px 6px;font-size:12px;text-align:center}
+
+.budtotal{display:flex;justify-content:space-between;align-items:baseline;
+  padding:0 4px 10px;border-bottom:2px solid var(--ink);margin-bottom:6px}
+.budtotal .bl{font-size:13px;font-weight:700;color:var(--ink)}
+.budtotal .bv{font-family:"Space Mono",monospace;font-size:24px;font-weight:700;color:var(--ink)}
+.budtotal .bv small{font-size:13px;color:var(--muted)}
+
+.bars{margin:12px 4px 18px;display:flex;flex-direction:column;gap:7px}
+.bar{display:flex;align-items:center;gap:8px;font-size:12px}
+.bar .bn{width:64px;color:var(--ink-soft);font-weight:500}
+.bar .bt{flex:1;height:8px;background:#efe9dc;border-radius:6px;overflow:hidden}
+.bar .bf{height:100%;border-radius:6px}
+.bar .bm{font-family:"Space Mono",monospace;color:var(--muted);min-width:52px;text-align:right}
+
+.exp{padding:10px 6px;border-bottom:1px solid #f1ece0}
+.exp .r1{display:flex;align-items:center;gap:8px}
+.exp .r2{display:flex;align-items:center;gap:8px;margin-top:8px;padding-left:1px}
+.exp select{border:none;border-radius:7px;font-family:inherit;font-size:11.5px;font-weight:700;
+  padding:5px 6px;color:#fff;width:64px;-webkit-appearance:none;appearance:none;text-align:center}
+.exp select.who{width:58px}
+.exp .en{flex:1;border:none;background:none;font-family:inherit;font-size:14px;padding:3px 0}
+.exp .ea{font-family:"Space Mono",monospace;font-size:15px;border:none;background:none;width:90px;
+  text-align:right;padding:3px 0}
+.exp input:focus,.exp select:focus{outline:none}
+.exp .ea:focus{border-bottom:1.5px solid var(--gold)}
+.exp .paylbl{font-size:11px;color:var(--muted);margin-left:auto}
+.exp .del{border:none;background:none;color:#c7ccd4;font-size:18px;cursor:pointer;padding:0 2px}
+.exp .del:hover{color:var(--persimmon)}
+
+.payers{margin:8px 4px 16px;background:#fbf7ee;border:1px solid var(--line);border-radius:12px;padding:11px 12px}
+.payers .psumhead{font-size:11.5px;color:var(--muted);font-weight:700;margin-bottom:9px}
+.payers .pchips{display:flex;flex-wrap:wrap;gap:7px}
+.payers .pchip{display:inline-flex;align-items:baseline;gap:5px;border-radius:8px;padding:5px 11px;
+  font-size:12px;font-weight:700;color:#fff}
+.payers .pchip .pv{font-family:"Space Mono",monospace;font-size:12px}
+.expadd{margin:12px 4px;width:calc(100% - 8px);border:1px dashed var(--gold);background:#fff;
+  color:var(--ink-soft);font-family:inherit;font-weight:700;font-size:13px;padding:10px;border-radius:10px;cursor:pointer}
+
+/* ---------- food ---------- */
+.foodhead{display:flex;justify-content:space-between;align-items:baseline;
+  padding:0 4px 10px;border-bottom:2px solid var(--ink);margin-bottom:14px}
+.foodhead span:first-child{font-size:13px;font-weight:700;color:var(--ink)}
+.foodprog{font-size:13px;color:var(--persimmon);font-weight:700}
+.fgroup{margin-bottom:20px}
+.fgroup .fgt{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:700;
+  letter-spacing:.06em;color:#fff;padding:4px 11px;border-radius:7px;margin-bottom:10px;width:fit-content}
+.fgroup.nagoya .fgt{background:var(--gold)}
+.fgroup.toba .fgt{background:var(--sea)}
+.fitem{display:flex;align-items:center;gap:10px;padding:8px 6px;border-bottom:1px solid #f1ece0}
+.fitem:last-of-type{border-bottom:none}
+.fcheck{width:21px;height:21px;border-radius:50%;border:2px solid var(--line);flex-shrink:0;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;
+  transition:background .15s,border-color .15s}
+.fitem.done .fcheck{background:var(--sea);border-color:var(--sea)}
+.fgroup.nagoya .fitem.done .fcheck{background:var(--gold);border-color:var(--gold)}
+.fname{flex:1;border:none;background:none;font-family:inherit;font-size:14.5px;color:var(--text);padding:3px 0}
+.fname:focus{outline:none;border-bottom:1.5px solid var(--gold)}
+.fitem.done .fname{color:var(--muted);text-decoration:line-through}
+.fitem .del{border:none;background:none;color:#c7ccd4;font-size:16px;cursor:pointer;padding:0 2px}
+.fitem .del:hover{color:var(--persimmon)}
+.faddrow{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px;align-items:center}
+.faddbtn{border:1px dashed currentColor;background:#fff;font-family:inherit;font-weight:700;
+  font-size:12.5px;padding:6px 12px;border-radius:8px;cursor:pointer}
+.fgroup.nagoya .faddbtn{color:var(--gold)}
+.fgroup.toba .faddbtn{color:var(--sea)}
+
+footer{padding:14px 16px 30px;text-align:center;color:var(--muted);font-size:11px}
+.savedot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--sea);margin-right:5px;
+  opacity:0;transition:opacity .2s}
+.savedot.show{opacity:1}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="top">
+    <span class="leaf leaf-l">🍁</span><span class="leaf leaf-r">🍁</span>
+    <div class="eyebrow">NAGOYA · MIE</div>
+    <h1 class="title">名古屋 ・ 三重</h1>
+    <h2 class="title2"><span class="r7">7</span>日家族旅行</h2>
+    <div class="subline">
+      <span>🗓️ <b class="mono">2026/11/15</b> 日 — <b class="mono">11/21</b> 六</span>
+      <span>👨‍👩‍👧‍👧 四人家庭</span>
+      <span>🎴 住宿換一次（名古屋 → 三重）</span>
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <button class="on" data-tab="trip"><span class="tb">行</span>行程</button>
+    <button data-tab="map"><span class="tb">地</span>地圖</button>
+    <button data-tab="budget"><span class="tb">費</span>預算</button>
+    <button data-tab="food"><span class="tb">食</span>美食</button>
+  </nav>
+
+  <main>
+    <section class="view on" id="view-trip"></section>
+
+    <section class="view" id="view-map">
+      <div class="daypills" id="daypills"></div>
+      <div id="map"></div>
+      <p class="maphint">上方依天數篩選。點任一景點看詳情,再點「在 Google 地圖開啟」即可導航。</p>
+    </section>
+
+    <section class="view" id="view-budget">
+      <div class="conv">
+        <div class="lbl">日幣換算</div>
+        <div class="row">
+          <input class="yen mono" id="yen" type="number" inputmode="numeric" placeholder="10000">
+          <span class="eq">日圓 ＝</span>
+          <input class="ntd mono" id="ntd" type="number" readonly>
+          <span class="eq">台幣</span>
+        </div>
+        <div class="rate">匯率 1 日圓 ＝ <input class="mono" id="rate" type="number" step="0.001" value="0.215"> 台幣（可改）</div>
+      </div>
+
+      <div class="budtotal">
+        <span class="bl">預算合計</span>
+        <span class="bv">NT$ <span id="budtotal">0</span></span>
+      </div>
+      <div class="bars" id="bars"></div>
+      <div class="payers" id="payers"></div>
+
+      <div id="explist"></div>
+      <button class="expadd" id="expadd">＋ 新增一筆花費</button>
+    </section>
+
+    <section class="view" id="view-food">
+      <div class="foodhead">
+        <span>想吃清單</span>
+        <span class="foodprog mono" id="foodprog">0 / 0</span>
+      </div>
+      <div id="foodlist"></div>
+    </section>
+  </main>
+
+  <footer>
+    <span class="savedot" id="savedot"></span><span id="savetxt">編輯會自動保存於這個裝置</span>
+  </footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+<script>
+/* ============ data ============ */
+var DAYS = [
+  { date:"11/15", dow:"日", dnum:"DAY 1", area:"nagoya", theme:"✈️ 抵達名古屋",
+    fixed:[
+      {t:"14:55", i:"✈️", x:'JX838 桃園 → 名古屋（18:30 抵達）<span class="tag fly">航班</span>', lock:true},
+      {t:"18:30", i:"🛬", x:"中部國際機場,搭名鐵 μ-SKY 進市區（約 30 分）"},
+      {t:"入住", i:"🏨", x:'名古屋飯店（ibis Styles Nagoya）<span class="tag bed">住宿</span>', lock:true}
+    ]},
+  { date:"11/16", dow:"一", dnum:"DAY 2", area:"nagoya", theme:"🏔️ 高山・白川鄉",
+    links:[{label:"🎫 Klook｜高山＆白川鄉一日遊（含飛驒牛午餐）", url:"https://www.klook.com/zh-TW/activity/14117-takayama-shirakawa-go-day-trip-nagoya/", info:"🚌 名古屋出發 · 行程約 10 小時 · 自行與導遊會合｜上車點與時間於付款頁選擇,傍晚返回名古屋站"}],
+    fixed:[{t:"全日", i:"🚌", x:'高山＆白川鄉一日遊<span class="tag move">Klook</span>'}] },
+  { date:"11/17", dow:"二", dnum:"DAY 3", area:"nagoya", theme:"👨‍👩‍👧‍👧 兵分兩路",
+    meet:"🍴 晚上全家回名古屋會合",
+    groups:[
+      {key:"11/17#爸媽", label:"👨‍👩 爸媽組", sub:"犬山城・馬籠宿 文化之旅", area:"nagoya",
+       links:[{label:"🎫 Klook｜犬山城・馬籠宿一日遊", url:"https://www.klook.com/zh-TW/activity/175724-day-trip-to-magomejuku-tsumagojuku-and-enakyo-from-nagoya/", info:"🚌 上車 08:30 · Ministop（名古屋,付款頁選出發點）｜下車 18:20 · 名古屋車站"}]},
+      {key:"11/17#姊妹", label:"👭 姊妹組", sub:"名古屋市區自由行", area:"nagoya", links:[]}
+    ]},
+  { date:"11/18", dow:"三", dnum:"DAY 4", area:"nagoya", theme:"🍁 香嵐溪 賞楓",
+    links:[{label:"🎫 Klook｜香嵐溪・永保寺・四季櫻一日遊", url:"https://www.klook.com/zh-TW/activity/209953-korankei-eihouji-autumn-leaves-day-tour-with-cherry-blossoms/", info:"🚌 上車 09:50（名古屋,付款頁選出發點）｜下車 20:00 · 名古屋"}],
+    fixed:[{t:"全日", i:"🚌", x:'香嵐溪＆永保寺＆四季櫻一日遊<span class="tag move">Klook</span>'}] },
+  { date:"11/19", dow:"四", dnum:"DAY 5", area:"toba", theme:"⛩️ 伊勢志摩（上）", transition:true,
+    fixed:[
+      {t:"~11:00", i:"🧳", x:'退房 名古屋（11:00 前）<span class="tag bed">住宿</span>', lock:true},
+      {t:"移動", i:"🚆", x:'名古屋 → 三重　近鐵特急<span class="tag move">交通</span>'},
+      {t:"入住", i:"🏨", x:'三重 伊勢／鳥羽（お宿 行燈 鳥羽）<span class="tag bed">住宿</span>', lock:true}
+    ]},
+  { date:"11/20", dow:"五", dnum:"DAY 6", area:"toba", theme:"🐬 伊勢志摩（下）", fixed:[] },
+  { date:"11/21", dow:"六", dnum:"DAY 7", area:"toba", theme:"✈️ 返回台灣", transition:true,
+    fixed:[
+      {t:"~10:00", i:"🧳", x:'退房,三重 → 中部國際機場<span class="tag move">交通</span>', lock:true},
+      {t:"16:40", i:"🛂", x:'機場辦理報到'},
+      {t:"19:40", i:"✈️", x:'JX839 名古屋 → 桃園（22:15 抵達）<span class="tag fly">航班</span>', lock:true}
+    ]}
+];
+
+/* pre-filled activities from the final plan (editable; seeds once) */
+var SEED = {
+  "11/15":[{t:"晚上",n:"飯店附近晚餐"},{t:"",n:"自由活動"}],
+  "11/16":[{t:"",n:"白川鄉合掌村"},{t:"",n:"高山老街・飛驒高山古街"},{t:"",n:"飛驒高山陣屋"}],
+  "11/18":[{t:"",n:"香嵐溪"},{t:"",n:"永保寺"},{t:"",n:"小原 四季櫻"}],
+  "11/19":[{t:"",n:"伊勢神宮（內宮）"},{t:"",n:"托福橫丁"},{t:"",n:"二見興玉神社"},{t:"",n:"夫婦岩"}],
+  "11/20":[{t:"",n:"海女小屋"},{t:"",n:"鳥羽水族館"},{t:"",n:"鳥羽港散策"}],
+  "11/21":[{t:"10:00",n:"三重 → 中部國際機場"},{t:"13:00",n:"機場逛街、購物、吃飯"},{t:"17:40",n:"出境"}]
+};
+
+var SUGGEST = {
+  nagoya:["名古屋城","名古屋港水族館","磁浮鐵道館","榮・綠洲21","名古屋電視塔"],
+  toba:["御木本真珠島","橫山展望台","鳥羽展望台","赤福本店","海鮮丼"]
+};
+
+var DAYCOLORS = {1:"#1a9aa0", 2:"#d64545", 3:"#e08a1e", 4:"#7e9438", 5:"#c2602f", 6:"#2f7fd6", 7:"#7a5ea8"};
+
+var PLACES = [
+  {n:"中部國際機場 NGO", s:"去/回程航班", lat:34.8584, lng:136.8150, day:1},
+  {n:"名古屋飯店 ibis Styles", s:"11/15–11/19 入住", lat:35.1690, lng:136.8893, day:1},
+  {n:"白川鄉 合掌村", s:"世界遺產", lat:36.2561, lng:136.9061, day:2},
+  {n:"飛驒高山 三町老街", s:"古街・宮川朝市", lat:36.1418, lng:137.2595, day:2},
+  {n:"犬山城", s:"爸媽組・國寶天守", lat:35.3884, lng:136.9392, day:3},
+  {n:"馬籠宿", s:"爸媽組・中山道", lat:35.5315, lng:137.5718, day:3},
+  {n:"熱田神宮", s:"姊妹組・名古屋市區", lat:35.1281, lng:136.9079, day:3},
+  {n:"名城公園", s:"姊妹組・名古屋城旁", lat:35.1887, lng:136.9030, day:3},
+  {n:"大須商店街", s:"姊妹組・逛街美食", lat:35.1591, lng:136.9026, day:3},
+  {n:"Sky Promenade 夜景", s:"姊妹組・Midland Square", lat:35.1705, lng:136.8851, day:3},
+  {n:"香嵐溪", s:"賞楓", lat:35.1315, lng:137.3131, day:4},
+  {n:"永保寺", s:"賞楓・多治見", lat:35.3468, lng:137.1307, day:4},
+  {n:"伊勢神宮 內宮", s:"日本第一神宮", lat:34.4550, lng:136.7252, day:5},
+  {n:"おかげ橫丁", s:"內宮前老街・赤福", lat:34.4624, lng:136.7229, day:5},
+  {n:"夫婦岩・二見興玉神社", s:"海景聖地", lat:34.5089, lng:136.7878, day:5},
+  {n:"三重 行燈鳥羽 住宿", s:"11/19–11/21 入住", lat:34.4920, lng:136.8343, day:5},
+  {n:"鳥羽水族館", s:"頂級水族館・儒艮", lat:34.4816, lng:136.8457, day:6},
+  {n:"相差 海女小屋", s:"炭烤海鮮(需預約)", lat:34.3876, lng:136.9124, day:6}
+];
+
+var CATS = ["機票","住宿","行程","門票","餐飲","交通","購物","其他"];
+var CATCOLOR = {"機票":"#a9763f","住宿":"#2f9c8f","行程":"#5a9e4f","門票":"#8a6fc4",
+  "餐飲":"#d2627f","交通":"#2f7fd6","購物":"#9a5fbf","其他":"#9a7b4f"};
+var WHO = ["","爸","媽","霈","錡"];
+var WHOCOLOR = {"爸":"#2f7fd6","媽":"#d2627f","霈":"#5a9e4f","錡":"#e08a1e"};
+
+/* food wishlist — Nagoya meshi + Mie / Ise specialties */
+var FOODGROUPS = [
+  {key:"nagoya", label:"🍢 名古屋名物",
+   seed:["味噌豬排（味噌カツ）","鰻魚飯三吃（ひつまぶし）","世界の山ちゃん 手羽先","台灣拉麵","味噌煮込烏龍麵","天むす 天婦羅飯糰","小倉紅豆吐司","あんかけスパ 義大利麵","きしめん 扁烏龍麵","Komeda's 早餐"],
+   chips:["矢場とん","風來坊 手羽先","炸蝦飯糰","鬼まんじゅう"]},
+  {key:"toba", label:"🦞 三重・伊勢",
+   seed:["伊勢烏龍麵","赤福（內宮托福橫丁）","松阪牛","海女小屋 炭烤海鮮","海鮮丼","伊勢龍蝦","てこね寿司","牡蠣"],
+   chips:["伊勢角屋啤酒","豚捨 牛肉可樂餅","真珠霜淇淋","昆布茶"]}
+];
+
+/* ============ storage (persists per device) ============ */
+var KEY="nagoyatoba_v2";
+var mem={activities:{}, budget:[], rate:0.215, seeded:false};
+var hasStore = (typeof window.storage!=="undefined" && window.storage);
+
+async function loadStore(){
+  if(hasStore){
+    try{ var r=await window.storage.get(KEY,false); if(r&&r.value){mem=JSON.parse(r.value);} }
+    catch(e){ /* first run / not found */ }
+  }
+  if(!mem.activities) mem.activities={};
+  if(!mem.budget) mem.budget=[];
+  if(typeof mem.rate!=="number") mem.rate=0.215;
+  if(!mem.seeded){
+    Object.keys(SEED).forEach(function(date){
+      if(!mem.activities[date] || mem.activities[date].length===0){
+        mem.activities[date]=SEED[date].map(function(a){return {t:a.t,n:a.n};});
+      }
+    });
+    mem.seeded=true; save();
+  }
+  if(!mem.day3split){
+    if(!mem.activities["11/17#爸媽"] || mem.activities["11/17#爸媽"].length===0)
+      mem.activities["11/17#爸媽"]=[{t:"",n:"犬山城"},{t:"",n:"犬山城下町"},{t:"",n:"馬籠宿"},{t:"",n:"妻籠宿"}];
+    if(!mem.activities["11/17#姊妹"] || mem.activities["11/17#姊妹"].length===0)
+      mem.activities["11/17#姊妹"]=[{t:"",n:"名城公園"},{t:"",n:"熱田神宮"},{t:"",n:"三輪神社"},{t:"",n:"大須觀音・大須商店街"},{t:"",n:"Sky Promenade 夜景"}];
+    if(mem.activities["11/17"]) delete mem.activities["11/17"];
+    mem.day3split=true; save();
+  }
+  if(!mem.budgetSeeded2){
+    mem.budget=[
+      {cat:"機票", name:"星宇 JX838/839 來回 ×4", amt:0, who:"爸"},
+      {cat:"住宿", name:"名古屋 4 晚", amt:0, who:"爸"},
+      {cat:"住宿", name:"三重（伊勢／鳥羽）2 晚", amt:0, who:"爸"},
+      {cat:"行程", name:"Klook：高山・白川鄉一日遊", amt:0, who:"爸"},
+      {cat:"行程", name:"Klook：犬山城・馬籠宿文化之旅", amt:0, who:"爸"},
+      {cat:"行程", name:"Klook：香嵐溪・永保寺・四季櫻", amt:0, who:"爸"},
+      {cat:"門票", name:"鳥羽水族館", amt:0, who:"爸"},
+      {cat:"餐飲", name:"海女小屋海鮮體驗", amt:0, who:"爸"},
+      {cat:"餐飲", name:"餐費（每日）", amt:0, who:"爸"},
+      {cat:"交通", name:"JR／近鐵／巴士・IC 卡", amt:0, who:"爸"},
+      {cat:"購物", name:"伴手禮・購物", amt:0, who:"—"},
+      {cat:"其他", name:"保險・雜支", amt:0, who:"爸"}
+    ];
+    mem.budgetSeeded=true; mem.budgetSeeded2=true; save();
+  }
+  if(!mem.foods){
+    mem.foods=[];
+    FOODGROUPS.forEach(function(g){ g.seed.forEach(function(n){ mem.foods.push({g:g.key,n:n,done:false}); }); });
+    save();
+  }
+}
+var saveTimer;
+function save(){
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(async function(){
+    if(hasStore){ try{ await window.storage.set(KEY, JSON.stringify(mem), false); }catch(e){} }
+    var d=document.getElementById("savedot"); d.classList.add("show");
+    setTimeout(function(){d.classList.remove("show");},700);
+  },300);
+}
+
+/* ============ itinerary render ============ */
+function actsFor(date){ if(!mem.activities[date]) mem.activities[date]=[]; return mem.activities[date]; }
+
+function linksBlock(links){
+  return (links||[]).map(function(l){
+    var s='<a class="booking" href="'+l.url+'" target="_blank" rel="noopener">'+l.label+' →</a>';
+    if(l.info) s+='<div class="bookinfo">'+l.info+'</div>';
+    return s;
+  }).join("");
+}
+function actsBlock(key, area, showChips){
+  var inner='<div class="acts" data-acts="'+key+'"></div>'+
+    '<div class="addrow"><button class="addbtn" data-newact="'+key+'">＋ 加入景點 / 行程</button>';
+  if(showChips){
+    var chips=SUGGEST[area]||[];
+    inner+='<div class="chiphint">附近推薦,點一下加到這天 ↓</div>'+
+      chips.map(function(c){return '<button class="chip" data-add="'+key+'" data-name="'+c+'">'+c+'</button>';}).join("");
+  }
+  return inner+'</div>';
+}
+
+function renderTrip(){
+  var host=document.getElementById("view-trip"); host.innerHTML="";
+  var CN=["","一","二","三","四","五","六","七"];
+  DAYS.forEach(function(d,di){
+    var dayNum=di+1, badgeColor=DAYCOLORS[dayNum]||"#888";
+    var day=document.createElement("div");
+    day.className="day"+(d.transition?" transition":"");
+    day.setAttribute("data-area",d.area);
+
+    var fixedHTML="";
+    d.fixed && d.fixed.forEach(function(f){
+      fixedHTML+='<div class="fixed'+(f.lock?' lock':'')+'">'+
+        '<span class="fi">'+f.i+'</span>'+
+        '<span class="ft">'+f.t+'</span>'+
+        '<span class="fx">'+f.x+'</span></div>';
+    });
+
+    var cardInner;
+    if(d.groups){
+      cardInner=fixedHTML;
+      d.groups.forEach(function(g,gi){
+        cardInner+='<div class="grp g'+(gi+1)+'">'+
+          '<div class="grphead">'+g.label+' <span class="gs">'+g.sub+'</span></div>'+
+          linksBlock(g.links)+
+          actsBlock(g.key, g.area||d.area, true)+
+        '</div>';
+        if(gi<d.groups.length-1) cardInner+='<div class="grpdiv"></div>';
+      });
+      if(d.meet) cardInner+='<div class="meet">'+d.meet+'</div>';
+    } else {
+      var showChips=(!d.transition || d.dnum==="DAY 5");
+      cardInner=fixedHTML+linksBlock(d.links)+actsBlock(d.date, d.area, showChips);
+    }
+
+    day.innerHTML=
+      '<div class="dhead">'+
+        '<div class="daybadge" style="background:'+badgeColor+'"><b>'+CN[dayNum]+'</b><span>DAY</span></div>'+
+        '<div class="dmain">'+
+          '<div class="drow"><span class="ddate">'+d.date+'</span><span class="ddow">'+d.dow+'</span></div>'+
+          '<div class="dtitle">'+d.theme+'</div>'+
+        '</div>'+
+      '</div>'+
+      '<div class="card">'+cardInner+'</div>';
+    host.appendChild(day);
+
+    if(d.groups){ d.groups.forEach(function(g){ renderActs(g.key); }); }
+    else renderActs(d.date);
+  });
+  bindTrip();
+}
+
+function renderActs(date){
+  var box=document.querySelector('[data-acts="'+date+'"]'); if(!box) return;
+  var list=actsFor(date); box.innerHTML="";
+  if(list.length===0){ box.innerHTML='<div class="act empty">尚未安排,點下方按鈕或推薦標籤加入</div>'; return; }
+  list.forEach(function(a){
+    var row=document.createElement("div"); row.className="act";
+    row.innerHTML=
+      '<input class="at" value="'+escAttr(a.t)+'" placeholder="時間" maxlength="7">'+
+      '<input class="an" value="'+escAttr(a.n)+'" placeholder="要去哪 / 做什麼">'+
+      '<a class="gmap" target="_blank" rel="noopener" title="Google 地圖">📍</a>'+
+      '<button class="del" title="刪除">×</button>';
+    var at=row.querySelector(".at"), an=row.querySelector(".an"), gm=row.querySelector(".gmap");
+    function syncGm(){ var q=(a.n||"").trim(); if(q){gm.style.display="";gm.href=gmap(q+" 日本");} else {gm.style.display="none";} }
+    at.addEventListener("input",function(e){a.t=e.target.value;save();});
+    at.addEventListener("change",function(){ sortByTime(date); });   // re-sort when you leave the time box
+    an.addEventListener("input",function(e){a.n=e.target.value;syncGm();save();});
+    row.querySelector(".del").addEventListener("click",function(){
+      var i=list.indexOf(a); if(i>-1) list.splice(i,1); save(); renderActs(date);
+    });
+    syncGm();
+    box.appendChild(row);
+  });
+}
+
+function parseTime(t){
+  if(!t) return null;
+  var m=String(t).match(/(\d{1,2})\s*[:：.]?\s*(\d{2})/);
+  if(!m) return null;
+  var h=parseInt(m[1],10), mi=parseInt(m[2],10);
+  if(h>23||mi>59) return null;
+  return h*60+mi;
+}
+function sortByTime(date){
+  var list=actsFor(date);
+  list.forEach(function(a,i){a._i=i;});
+  list.sort(function(a,b){
+    var ta=parseTime(a.t), tb=parseTime(b.t);
+    if(ta==null && tb==null) return a._i-b._i;
+    if(ta==null) return 1;
+    if(tb==null) return -1;
+    if(ta!==tb) return ta-tb;
+    return a._i-b._i;
+  });
+  list.forEach(function(a){ delete a._i; });
+  save(); renderActs(date);
+}
+function escAttr(s){return (s||"").replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;");}
+function gmap(q){return "https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(q);}
+
+function bindTrip(){
+  document.querySelectorAll("[data-newact]").forEach(function(b){
+    b.addEventListener("click",function(){
+      var date=b.getAttribute("data-newact");
+      actsFor(date).push({t:"",n:""}); save(); renderActs(date);
+      var box=document.querySelector('[data-acts="'+date+'"]');
+      var ins=box.querySelectorAll(".an"); if(ins.length) ins[ins.length-1].focus();
+    });
+  });
+  document.querySelectorAll("[data-add]").forEach(function(b){
+    b.addEventListener("click",function(){
+      var date=b.getAttribute("data-add"); var name=b.getAttribute("data-name");
+      actsFor(date).push({t:"",n:name}); save(); renderActs(date);
+    });
+  });
+}
+
+/* ============ map ============ */
+var map=null, mapMarkers=[], currentDay=null;
+
+function dayPin(p){
+  var c=DAYCOLORS[p.day]||"#888";
+  var html='<div style="background:'+c+';width:26px;height:26px;border-radius:50% 50% 50% 0;'+
+    'transform:rotate(-45deg);border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.45);'+
+    'display:flex;align-items:center;justify-content:center;">'+
+    '<span style="transform:rotate(45deg);color:#fff;font-weight:700;font-size:12px;font-family:monospace;">'+p.day+'</span></div>';
+  return L.divIcon({html:html, className:"", iconSize:[26,26], iconAnchor:[13,25], popupAnchor:[0,-23]});
+}
+
+function buildPills(){
+  var host=document.getElementById("daypills"); if(!host) return;
+  host.innerHTML="";
+  var defs=[{k:null,label:"全部"}];
+  for(var i=1;i<=7;i++) defs.push({k:i,label:"Day "+i});
+  defs.forEach(function(d){
+    var b=document.createElement("button");
+    b.className="pill"+(d.k===currentDay?" on":"");
+    b.innerHTML=(d.k!=null?'<i style="background:'+DAYCOLORS[d.k]+'"></i>':"")+d.label;
+    b.addEventListener("click",function(){ currentDay=d.k; buildPills(); filterDay(); });
+    host.appendChild(b);
+  });
+}
+function filterDay(){
+  var shown=[];
+  mapMarkers.forEach(function(o){
+    var on=(currentDay==null || o.day===currentDay);
+    if(on){ o.marker.addTo(map); shown.push([o.lat,o.lng]); }
+    else map.removeLayer(o.marker);
+  });
+  if(shown.length){ map.fitBounds(shown,{padding:[40,40], maxZoom:13}); }
+}
+
+function initMap(){
+  if(map){ map.invalidateSize(); return; }
+  map=L.map("map",{scrollWheelZoom:false}).setView([35.2,136.9],8);
+  L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",{
+    attribution:"&copy; OpenStreetMap &copy; CARTO", subdomains:"abcd", maxZoom:20}).addTo(map);
+  mapMarkers=[];
+  PLACES.forEach(function(p){
+    var m=L.marker([p.lat,p.lng],{icon:dayPin(p)});
+    m.bindPopup('<div class="pop-t">'+p.n+'</div><div class="pop-s">Day '+p.day+' ・ '+p.s+'</div>'+
+      '<a class="pop-g" target="_blank" rel="noopener" href="'+gmap(p.n+" 日本")+'">在 Google 地圖開啟 →</a>');
+    mapMarkers.push({marker:m, day:p.day, lat:p.lat, lng:p.lng});
+  });
+  buildPills();
+  filterDay();
+  setTimeout(function(){map.invalidateSize(); filterDay();},200);
+}
+
+/* ============ budget ============ */
+function renderBudget(){
+  document.getElementById("rate").value=mem.rate;
+  var list=document.getElementById("explist"); list.innerHTML="";
+  mem.budget.forEach(function(e,idx){
+    if(!e.who || WHO.indexOf(e.who)<0) e.who=WHO[0];
+    var row=document.createElement("div"); row.className="exp";
+    var opts=CATS.map(function(c){return '<option'+(c===e.cat?' selected':'')+'>'+c+'</option>';}).join("");
+    var wopts=WHO.map(function(w){return '<option'+(w===e.who?' selected':'')+'>'+w+'</option>';}).join("");
+    row.innerHTML=
+      '<div class="r1">'+
+        '<select class="cat">'+opts+'</select>'+
+        '<input class="en" value="'+escAttr(e.name)+'" placeholder="項目">'+
+        '<button class="del">×</button>'+
+      '</div>'+
+      '<div class="r2">'+
+        '<span class="mono" style="color:#978a78;font-size:12px">NT$</span>'+
+        '<input class="ea mono" type="number" inputmode="numeric" value="'+(e.amt||"")+'" placeholder="0">'+
+        '<span class="paylbl">誰付</span>'+
+        '<select class="who">'+wopts+'</select>'+
+      '</div>';
+    var selC=row.querySelector(".cat"), selW=row.querySelector(".who");
+    function colorC(){ selC.style.background=CATCOLOR[e.cat]||"#9a7b4f"; }
+    function colorW(){ selW.style.background=WHOCOLOR[e.who]||"#c2b8a6"; }
+    colorC(); colorW();
+    selC.addEventListener("change",function(ev){e.cat=ev.target.value;colorC();save();renderBars();});
+    selW.addEventListener("change",function(ev){e.who=ev.target.value;colorW();save();renderPayers();});
+    row.querySelector(".en").addEventListener("input",function(ev){e.name=ev.target.value;save();});
+    row.querySelector(".ea").addEventListener("input",function(ev){e.amt=parseFloat(ev.target.value)||0;save();renderTotal();renderBars();renderPayers();});
+    row.querySelector(".del").addEventListener("click",function(){mem.budget.splice(idx,1);save();renderBudget();});
+    list.appendChild(row);
+  });
+  renderTotal(); renderBars(); renderPayers();
+}
+function renderPayers(){
+  var host=document.getElementById("payers"); if(!host) return;
+  var ppl={"爸":0,"媽":0,"霈":0,"錡":0};
+  mem.budget.forEach(function(e){
+    var a=e.amt||0; if(!a) return;
+    if(ppl[e.who]!=null) ppl[e.who]+=a;
+  });
+  host.innerHTML='<div class="psumhead">每人花費小計</div>'+
+    '<div class="pchips">'+Object.keys(ppl).map(function(p){
+      return '<span class="pchip" style="background:'+WHOCOLOR[p]+'">'+p+
+        ' <span class="pv">'+Math.round(ppl[p]).toLocaleString()+'</span></span>';
+    }).join("")+'</div>';
+}
+function renderTotal(){
+  var t=mem.budget.reduce(function(s,e){return s+(e.amt||0);},0);
+  document.getElementById("budtotal").textContent=t.toLocaleString();
+}
+function renderBars(){
+  var byCat={}; mem.budget.forEach(function(e){byCat[e.cat]=(byCat[e.cat]||0)+(e.amt||0);});
+  var total=mem.budget.reduce(function(s,e){return s+(e.amt||0);},0)||1;
+  var host=document.getElementById("bars"); host.innerHTML="";
+  CATS.forEach(function(c){
+    var v=byCat[c]||0; if(v===0) return;
+    var pct=Math.round(v/total*100);
+    var row=document.createElement("div"); row.className="bar";
+    row.innerHTML='<span class="bn">'+c+'</span>'+
+      '<span class="bt"><span class="bf" style="width:'+pct+'%;background:'+CATCOLOR[c]+'"></span></span>'+
+      '<span class="bm">'+v.toLocaleString()+'</span>';
+    host.appendChild(row);
+  });
+}
+/* ============ food ============ */
+function renderFood(){
+  var host=document.getElementById("foodlist"); host.innerHTML="";
+  FOODGROUPS.forEach(function(g){
+    var items=mem.foods.filter(function(f){return f.g===g.key;});
+    var grp=document.createElement("div"); grp.className="fgroup "+g.key;
+    grp.innerHTML='<div class="fgt">'+g.label+'</div>';
+    items.forEach(function(f){
+      var realIdx=mem.foods.indexOf(f);
+      var row=document.createElement("div"); row.className="fitem"+(f.done?" done":"");
+      row.innerHTML='<div class="fcheck">'+(f.done?"✓":"")+'</div>'+
+        '<input class="fname" value="'+escAttr(f.n)+'" placeholder="想吃的店 / 菜">'+
+        '<a class="gmap" target="_blank" rel="noopener" title="Google 地圖">📍</a>'+
+        '<button class="del">×</button>';
+      var region = g.key==="nagoya" ? "名古屋" : "伊勢 三重";
+      var fn=row.querySelector(".fname"), gm=row.querySelector(".gmap");
+      function syncGm(){ var q=(f.n||"").trim(); if(q){gm.style.display="";gm.href=gmap(q+" "+region);} else {gm.style.display="none";} }
+      row.querySelector(".fcheck").addEventListener("click",function(){ f.done=!f.done; save(); renderFood(); });
+      fn.addEventListener("input",function(e){f.n=e.target.value;syncGm();save();});
+      row.querySelector(".del").addEventListener("click",function(){ mem.foods.splice(realIdx,1); save(); renderFood(); });
+      syncGm();
+      grp.appendChild(row);
+    });
+    var add=document.createElement("div"); add.className="faddrow";
+    add.innerHTML='<button class="faddbtn">＋ 自己加</button>'+
+      g.chips.map(function(c){return '<button class="chip" data-fc="'+escAttr(c)+'" data-fg="'+g.key+'">'+c+'</button>';}).join("");
+    add.querySelector(".faddbtn").addEventListener("click",function(){
+      mem.foods.push({g:g.key,n:"",done:false}); save(); renderFood();
+      var ins=document.querySelectorAll(".fgroup."+g.key+" .fname");
+      if(ins.length) ins[ins.length-1].focus();
+    });
+    add.querySelectorAll("[data-fc]").forEach(function(b){
+      b.addEventListener("click",function(){
+        mem.foods.push({g:b.getAttribute("data-fg"),n:b.getAttribute("data-fc"),done:false});
+        save(); renderFood();
+      });
+    });
+    grp.appendChild(add);
+    host.appendChild(grp);
+  });
+  var total=mem.foods.length, done=mem.foods.filter(function(f){return f.done;}).length;
+  document.getElementById("foodprog").textContent="已吃 "+done+" / "+total;
+}
+
+function setupBudget(){
+  document.getElementById("expadd").addEventListener("click",function(){
+    mem.budget.push({cat:"餐飲",name:"",amt:0,who:"爸"}); save(); renderBudget();
+    var ins=document.querySelectorAll("#explist .en"); if(ins.length) ins[ins.length-1].focus();
+  });
+  var yen=document.getElementById("yen"), ntd=document.getElementById("ntd"), rate=document.getElementById("rate");
+  function conv(){ var v=parseFloat(yen.value)||0; ntd.value=Math.round(v*mem.rate); }
+  yen.addEventListener("input",conv);
+  rate.addEventListener("input",function(){ mem.rate=parseFloat(rate.value)||0; save(); conv(); });
+}
+
+/* ============ tabs ============ */
+function setupTabs(){
+  document.querySelectorAll("nav.tabs button").forEach(function(b){
+    b.addEventListener("click",function(){
+      document.querySelectorAll("nav.tabs button").forEach(function(x){x.classList.remove("on");});
+      document.querySelectorAll(".view").forEach(function(x){x.classList.remove("on");});
+      b.classList.add("on");
+      var t=b.getAttribute("data-tab");
+      document.getElementById("view-"+t).classList.add("on");
+      if(t==="map") initMap();
+      if(t==="food") renderFood();
+      window.scrollTo(0,0);
+    });
+  });
+}
+
+/* ============ countdown ============ */
+function countdown(){
+  var el=document.getElementById("cd"); if(!el) return;
+  var dep=new Date(2026,10,15,14,55,0);
+  var now=new Date();
+  var d=Math.ceil((dep-now)/86400000);
+  el.textContent = d>0? d : (d===0?"0":"已出發");
+}
+
+/* ============ boot ============ */
+(async function(){
+  await loadStore();
+  if(!hasStore){
+    document.getElementById("savetxt").textContent="提示:此環境無法保存,編輯重整後會消失";
+  }
+  countdown();
+  renderTrip();
+  setupTabs();
+  setupBudget();
+  renderBudget();
+  renderFood();
+})();
+</script>
+</body>
+</html>
