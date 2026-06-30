@@ -438,9 +438,12 @@ var FOODGROUPS = [
 var KEY="nagoyatoba_v2";
 var mem={activities:{}, budget:[], rate:0.215, seeded:false};
 var hasStore = (typeof window.storage!=="undefined" && window.storage);
+var hasLS = (function(){ try{ localStorage.setItem("__t","1"); localStorage.removeItem("__t"); return true; }catch(e){ return false; } })();
 
 async function loadStore(){
-  if(hasStore){
+  if(hasLS){
+    try{ var raw=localStorage.getItem(KEY); if(raw){ mem=JSON.parse(raw); } }catch(e){}
+  } else if(hasStore){
     try{ var r=await window.storage.get(KEY,false); if(r&&r.value){mem=JSON.parse(r.value);} }
     catch(e){ /* first run / not found */ }
   }
@@ -538,9 +541,11 @@ var saveTimer;
 function save(){
   clearTimeout(saveTimer);
   saveTimer=setTimeout(async function(){
-    if(hasStore){ try{ await window.storage.set(KEY, JSON.stringify(mem), false); }catch(e){} }
-    var d=document.getElementById("savedot"); d.classList.add("show");
-    setTimeout(function(){d.classList.remove("show");},700);
+    try{
+      if(hasLS){ localStorage.setItem(KEY, JSON.stringify(mem)); }
+      else if(hasStore){ await window.storage.set(KEY, JSON.stringify(mem), false); }
+    }catch(e){}
+    var d=document.getElementById("savedot"); if(d){ d.classList.add("show"); setTimeout(function(){d.classList.remove("show");},700); }
   },300);
 }
 
@@ -926,9 +931,9 @@ function setupBackup(){
 /* ============ boot ============ */
 (async function(){
   await loadStore();
-  if(!hasStore){
-    document.getElementById("savetxt").textContent="提示:此環境無法保存,編輯重整後會消失";
-  }
+  var st=document.getElementById("savetxt");
+  if(hasLS){ st.textContent="編輯會自動保存在這個瀏覽器(重整、關掉再開都還在)"; }
+  else if(!hasStore){ st.textContent="提示:此環境無法保存,編輯重整後會消失"; }
   countdown();
   renderTrip();
   setupTabs();
