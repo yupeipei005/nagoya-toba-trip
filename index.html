@@ -58,23 +58,25 @@ h1.title{font-family:"Noto Serif TC",serif;font-size:40px;font-weight:900;letter
 .subline .mono{color:var(--text);font-weight:700}
 
 /* ---------- tabs ---------- */
-nav.tabs{display:flex;justify-content:center;gap:6px;background:var(--paper);
-  padding:6px 12px 14px;position:sticky;top:0;z-index:500}
-nav.tabs button{display:inline-flex;align-items:center;gap:7px;border:none;background:none;
-  padding:8px 14px;border-radius:999px;font-family:inherit;font-size:14px;font-weight:700;
-  color:var(--muted);cursor:pointer}
-nav.tabs .tb{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;
-  border-radius:50%;background:var(--gold-soft);color:var(--ink-soft);font-size:13px;
-  font-family:"Noto Serif TC",serif;font-weight:700}
+nav.tabs{display:flex;justify-content:center;gap:4px;background:var(--paper);
+  padding:6px 10px 14px;position:sticky;top:0;z-index:500}
+nav.tabs button{border:none;background:none;padding:8px 18px;border-radius:999px;
+  font-family:inherit;font-size:15px;font-weight:700;color:var(--muted);cursor:pointer}
 nav.tabs button.on{background:var(--ink);color:#fff}
-nav.tabs button.on .tb{background:rgba(255,255,255,.9);color:var(--ink)}
 
 main{flex:1;padding:18px 16px 90px}
 .view{display:none}.view.on{display:block}
 
 /* ---------- day header ---------- */
 .day{padding-bottom:6px}
-.dhead{display:flex;gap:12px;align-items:flex-start;margin-bottom:10px}
+.trip-toolbar{display:flex;justify-content:flex-end;margin:0 2px 10px}
+.collapseall{border:1px solid var(--line);background:#fff;color:var(--ink-soft);font-family:inherit;
+  font-weight:700;font-size:12px;padding:6px 12px;border-radius:8px;cursor:pointer}
+.dhead{display:flex;gap:12px;align-items:flex-start;margin-bottom:10px;cursor:pointer}
+.daychev{align-self:center;margin-left:4px;color:var(--muted);font-size:14px;flex-shrink:0;transition:transform .15s}
+.day.collapsed .daychev{transform:rotate(-90deg)}
+.day.collapsed .card{display:none}
+.day.collapsed .dhead{margin-bottom:2px}
 .daybadge{flex-shrink:0;width:52px;height:52px;border-radius:13px;color:#fff;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   box-shadow:0 2px 6px rgba(20,30,50,.12)}
@@ -121,7 +123,13 @@ main{flex:1;padding:18px 16px 90px}
 
 /* editable activities */
 .acts{padding:4px 8px 8px}
-.act{display:flex;gap:9px;align-items:flex-start;padding:7px 4px;border-bottom:1px solid #f3eee3}
+.act{display:block;padding:7px 4px;border-bottom:1px solid #f3eee3}
+.actmain{display:flex;gap:9px;align-items:flex-start}
+.acthours{display:flex;align-items:center;gap:5px;margin-top:3px;padding-left:55px;font-size:12px}
+.acthours .ah{flex:1;min-width:0;border:none;background:none;font-family:inherit;font-size:12px;
+  color:var(--ink-soft);padding:1px 0}
+.acthours .ah::placeholder{color:#c3bba9}
+.acthours .ah:focus{outline:none;border-bottom:1px solid var(--gold)}
 .act:last-child{border-bottom:none}
 .act .at{font-family:"Space Mono",monospace;font-size:12px;color:var(--muted);min-width:46px;
   border:none;background:none;padding:2px 0;width:46px}
@@ -280,10 +288,10 @@ footer{padding:14px 16px 30px;text-align:center;color:var(--muted);font-size:11p
   </header>
 
   <nav class="tabs">
-    <button class="on" data-tab="trip"><span class="tb">行</span>行程</button>
-    <button data-tab="map"><span class="tb">地</span>地圖</button>
-    <button data-tab="budget"><span class="tb">費</span>預算</button>
-    <button data-tab="food"><span class="tb">食</span>美食</button>
+    <button class="on" data-tab="trip">行程</button>
+    <button data-tab="map">地圖</button>
+    <button data-tab="budget">預算</button>
+    <button data-tab="food">美食</button>
   </nav>
 
   <main>
@@ -436,17 +444,20 @@ var FOODGROUPS = [
 
 /* ============ storage (persists per device) ============ */
 var KEY="nagoyatoba_v2";
+var DEFAULT_DATA = {"activities":{"11/15":[{"t":"20:00","n":"飯店附近晚餐"}],"11/16":[{"t":"07:50","n":"名古屋站 VIP LINER 公車站"},{"t":"10:30","n":"高山老街・飛驒高山古街","h":"街道自由參觀（店家約9:00–17:00）"},{"t":"12:45","n":"白川鄉合掌村","h":"聚落自由參觀（展示館約9:00–17:00）"},{"t":"18:00","n":"名古屋站 VIP LINER 公車站"},{"t":"19:00","n":"晚餐"},{"t":"","n":"榮・綠洲21","h":"商店約10:00–21:00"},{"t":"","n":"名古屋電視塔","h":"日 10:00–21:00（最終入場20:40）"}],"11/18":[{"t":"","n":"香嵐溪","h":"自由參觀;紅葉點燈 日落–21:00（11月）"},{"t":"","n":"永保寺","h":"入山 7:00–17:00（免費）"},{"t":"","n":"小原 四季櫻","h":"自由參觀（四季櫻11月見頃）"}],"11/19":[{"t":"","n":"伊勢神宮（內宮）","h":"11月 5:00–17:00"},{"t":"","n":"托福橫丁","h":"11月 9:30–17:00（各店略異）"},{"t":"","n":"二見興玉神社","h":"境內自由參拜"},{"t":"","n":"夫婦岩","h":"自由參觀"}],"11/20":[{"t":"","n":"海女小屋","h":"需事前預約"},{"t":"","n":"鳥羽水族館","h":"9:30–17:00（最終入館16:00,年中無休）"},{"t":"","n":"鳥羽港散策","h":"自由散策"}],"11/21":[{"t":"10:00","n":"三重 → 中部國際機場"},{"t":"13:00","n":"機場逛街、購物、吃飯"},{"t":"17:40","n":"出境"}],"11/17#爸媽":[{"t":"","n":"犬山城","h":"9:00–17:00（最終入場16:30,12/29–31休）"},{"t":"","n":"犬山城下町","h":"街道自由參觀（店家各異）"},{"t":"","n":"馬籠宿","h":"宿場自由參觀（店家約9:00–17:00）"},{"t":"","n":"妻籠宿","h":"宿場自由參觀（店家約9:00–17:00）"}],"11/17#姊妹":[{"t":"","n":"名城公園","h":"公園自由進出"},{"t":"","n":"熱田神宮","h":"境內終日參拜（授與所約7:00–日沒）"},{"t":"","n":"三輪神社","h":"境內自由參拜（社務所約9:00–17:00）"},{"t":"","n":"大須觀音・大須商店街","h":"商店街各店約10:00–20:00"},{"t":"","n":"Sky Promenade 夜景","h":"11:00–22:00（最終入場21:30）"}]},"budget":[{"cat":"機票","name":"星宇 JX838/839 來回 ×4（NT$15,153×4）","amt":60612,"who":"錡"},{"cat":"住宿","name":"名古屋 4 晚","amt":16815,"who":"霈"},{"cat":"住宿","name":"三重 2 晚（¥109,464）","amt":23535,"who":"霈"},{"cat":"行程","name":"Klook：高山・白川鄉一日遊（1,536×4）","amt":6144,"who":"爸"},{"cat":"行程","name":"Klook：犬山城・馬籠宿文化之旅（1,477×2）","amt":2954,"who":"爸"},{"cat":"行程","name":"Klook：香嵐溪・永保寺・四季櫻（1,753×4）","amt":7012,"who":"爸"},{"cat":"門票","name":"鳥羽水族館","amt":0,"who":""},{"cat":"餐飲","name":"海女小屋海鮮體驗","amt":0,"who":""},{"cat":"餐飲","name":"餐費（每日）","amt":0,"who":""},{"cat":"交通","name":"JR／近鐵／巴士・IC 卡","amt":0,"who":""},{"cat":"購物","name":"伴手禮・購物","amt":0,"who":""},{"cat":"其他","name":"保險・雜支","amt":0,"who":""}],"rate":0.215,"seeded":true,"day3split":true,"budgetSeeded":true,"budgetSeeded2":true,"foods":[{"g":"nagoya","t":"味噌豬排","n":"Katuretu MATUMURA カツレツMATUMURA","done":false},{"g":"nagoya","n":"Tsukachan Gyoza 餃子 とんちゃん 専門店 塚ちゃん餃子","done":false,"t":"烤豬舌"}],"costfix_nagoyahotel":true,"costfix_mie":true,"costfix_flights":true,"costfix_klook":true,"foodcleared":true,"added_2places":true};
 var mem={activities:{}, budget:[], rate:0.215, seeded:false};
 var hasStore = (typeof window.storage!=="undefined" && window.storage);
 var hasLS = (function(){ try{ localStorage.setItem("__t","1"); localStorage.removeItem("__t"); return true; }catch(e){ return false; } })();
 
 async function loadStore(){
+  var loaded=false;
   if(hasLS){
-    try{ var raw=localStorage.getItem(KEY); if(raw){ mem=JSON.parse(raw); } }catch(e){}
+    try{ var raw=localStorage.getItem(KEY); if(raw){ mem=JSON.parse(raw); loaded=true; } }catch(e){}
   } else if(hasStore){
-    try{ var r=await window.storage.get(KEY,false); if(r&&r.value){mem=JSON.parse(r.value);} }
+    try{ var r=await window.storage.get(KEY,false); if(r&&r.value){mem=JSON.parse(r.value); loaded=true;} }
     catch(e){ /* first run / not found */ }
   }
+  if(!loaded){ try{ mem=JSON.parse(JSON.stringify(DEFAULT_DATA)); }catch(e){} }
   if(!mem.activities) mem.activities={};
   if(!mem.budget) mem.budget=[];
   if(typeof mem.rate!=="number") mem.rate=0.215;
@@ -573,11 +584,16 @@ function actsBlock(key, area, showChips){
 
 function renderTrip(){
   var host=document.getElementById("view-trip"); host.innerHTML="";
+  if(!mem.collapsed) mem.collapsed={};
+  var allCol = DAYS.every(function(d,i){ return mem.collapsed["d"+i]; });
+  var bar=document.createElement("div"); bar.className="trip-toolbar";
+  bar.innerHTML='<button class="collapseall" id="collapseAll">'+(allCol?"▾ 全部展開":"▸ 全部收合")+'</button>';
+  host.appendChild(bar);
   var CN=["","一","二","三","四","五","六","七"];
   DAYS.forEach(function(d,di){
     var dayNum=di+1, badgeColor=DAYCOLORS[dayNum]||"#888";
     var day=document.createElement("div");
-    day.className="day"+(d.transition?" transition":"");
+    day.className="day"+(d.transition?" transition":"")+(mem.collapsed["d"+di]?" collapsed":"");
     day.setAttribute("data-area",d.area);
 
     var fixedHTML="";
@@ -612,12 +628,30 @@ function renderTrip(){
           '<div class="drow"><span class="ddate">'+d.date+'</span><span class="ddow">'+d.dow+'</span></div>'+
           '<div class="dtitle">'+d.theme+'</div>'+
         '</div>'+
+        '<span class="daychev">▾</span>'+
       '</div>'+
       '<div class="card">'+cardInner+'</div>';
     host.appendChild(day);
 
+    (function(dayEl,idx){
+      dayEl.querySelector(".dhead").addEventListener("click",function(){
+        var c=!dayEl.classList.contains("collapsed");
+        dayEl.classList.toggle("collapsed",c);
+        mem.collapsed["d"+idx]=c; save();
+        var all=DAYS.every(function(x,i){return mem.collapsed["d"+i];});
+        var ca=document.getElementById("collapseAll"); if(ca) ca.textContent=all?"▾ 全部展開":"▸ 全部收合";
+      });
+    })(day,di);
+
     if(d.groups){ d.groups.forEach(function(g){ renderActs(g.key); }); }
     else renderActs(d.date);
+  });
+  var ca=document.getElementById("collapseAll");
+  if(ca) ca.addEventListener("click",function(){
+    var all=DAYS.every(function(x,i){return mem.collapsed["d"+i];});
+    var target=!all;
+    DAYS.forEach(function(x,i){ mem.collapsed["d"+i]=target; });
+    save(); renderTrip();
   });
   bindTrip();
 }
@@ -629,15 +663,19 @@ function renderActs(date){
   list.forEach(function(a){
     var row=document.createElement("div"); row.className="act";
     row.innerHTML=
-      '<input class="at" value="'+escAttr(a.t)+'" placeholder="時間" maxlength="7">'+
-      '<input class="an" value="'+escAttr(a.n)+'" placeholder="要去哪 / 做什麼">'+
-      '<a class="gmap" target="_blank" rel="noopener" title="Google 地圖">📍</a>'+
-      '<button class="del" title="刪除">×</button>';
-    var at=row.querySelector(".at"), an=row.querySelector(".an"), gm=row.querySelector(".gmap");
+      '<div class="actmain">'+
+        '<input class="at" value="'+escAttr(a.t)+'" placeholder="時間" maxlength="7">'+
+        '<input class="an" value="'+escAttr(a.n)+'" placeholder="要去哪 / 做什麼">'+
+        '<a class="gmap" target="_blank" rel="noopener" title="Google 地圖">📍</a>'+
+        '<button class="del" title="刪除">×</button>'+
+      '</div>'+
+      '<div class="acthours">🕐<input class="ah" value="'+escAttr(a.h||"")+'" placeholder="營業時間（選填,例 09:00–17:00）"></div>';
+    var at=row.querySelector(".at"), an=row.querySelector(".an"), gm=row.querySelector(".gmap"), ah=row.querySelector(".ah");
     function syncGm(){ var q=(a.n||"").trim(); if(q){gm.style.display="";gm.href=gmap(q+" 日本");} else {gm.style.display="none";} }
     at.addEventListener("input",function(e){a.t=e.target.value;save();});
     at.addEventListener("change",function(){ sortByTime(date); });   // re-sort when you leave the time box
     an.addEventListener("input",function(e){a.n=e.target.value;syncGm();save();});
+    ah.addEventListener("input",function(e){a.h=e.target.value;save();});
     row.querySelector(".del").addEventListener("click",function(){
       var i=list.indexOf(a); if(i>-1) list.splice(i,1); save(); renderActs(date);
     });
