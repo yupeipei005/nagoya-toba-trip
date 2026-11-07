@@ -1,369 +1,397 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-Hant">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>名古屋・鳥羽 ｜ 2026.11</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>名古屋・三重 7日家族旅行</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@600;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <style>
 :root{
-  --ink:#6a3d2b;
-  --ink-soft:#855440;
-  --gold:#c2904a;
-  --gold-soft:#ecdcbb;
-  --persimmon:#d2622f;
-  --sea:#3f7d6e;
-  --sea-soft:#d2e4df;
-  --paper:#f8f3e9;
-  --card:#ffffff;
-  --line:#e9e0cf;
-  --text:#33291f;
-  --muted:#978a78;
+  --ink:#6a3d2b; --ink-soft:#8a6a52; --gold:#c2904a; --gold-soft:#ecdcbb;
+  --persimmon:#d2622f; --sea:#3f7d6e; --paper:#f8f3e9; --card:#fffdf8;
+  --text:#4a3526; --muted:#a8977f; --line:#ebe0cd; --red:#c0392b;
 }
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+*{box-sizing:border-box}
 html,body{height:100%}
 body{overflow-x:hidden}
-body{
-  font-family:"Noto Sans TC",system-ui,sans-serif;
-  background:var(--paper);color:var(--text);
-  line-height:1.55;-webkit-font-smoothing:antialiased;
-}
-.mono{font-family:"Space Mono",monospace}
+body{margin:0;background:var(--paper);color:var(--text);
+  font-family:"Noto Sans TC",system-ui,sans-serif;-webkit-font-smoothing:antialiased;
+  background-image:radial-gradient(rgba(194,144,74,.05) 1px, transparent 1px);background-size:22px 22px;}
+.app{max-width:520px;margin:0 auto;min-height:100%;background:var(--paper);overflow-x:hidden;position:relative;
+  box-shadow:0 0 50px rgba(106,61,43,.06)}
 
-/* ---------- shell ---------- */
-.app{max-width:520px;margin:0 auto;min-height:100%;background:var(--paper);overflow-x:hidden;
-  display:flex;flex-direction:column;position:relative}
-
-/* ---------- masthead ---------- */
-header.top{
-  background:var(--paper);color:var(--text);padding:24px 20px 18px;
-  padding-top:calc(22px + env(safe-area-inset-top));
-  position:relative;overflow:hidden;text-align:center;
+/* ===== animations ===== */
+@keyframes float{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-6px) rotate(-1.5deg)}}
+@keyframes floatB{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@keyframes sway{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
+@keyframes pop{0%{transform:scale(.96) translateY(8px);opacity:.3}60%{transform:scale(1.015) translateY(0);opacity:1}100%{transform:scale(1)}}
+@keyframes popIn{0%{transform:scale(.5);opacity:0}70%{transform:scale(1.12)}100%{transform:scale(1);opacity:1}}
+@keyframes drift{0%{transform:translateX(0) translateY(0)}50%{transform:translateX(10px) translateY(-8px)}100%{transform:translateX(0) translateY(0)}}
+.illo{animation:float 5.5s ease-in-out infinite;transform-origin:center bottom}
+.illo.d2{animation-duration:6.5s}
+.leaf-anim{animation:drift 7s ease-in-out infinite}
+.day.pop{animation:pop .42s cubic-bezier(.34,1.56,.64,1)}
+.daytab.on b{animation:popIn .4s cubic-bezier(.34,1.56,.64,1)}
+@media (prefers-reduced-motion: reduce){
+  *{animation:none !important;transition:none !important}
 }
-.leaf{position:absolute;font-size:34px;opacity:.16;filter:saturate(.7)}
-.leaf-l{left:14px;top:14px;transform:rotate(-18deg)}
-.leaf-r{right:14px;top:18px;transform:rotate(20deg)}
-.eyebrow{font-size:12px;letter-spacing:.42em;color:var(--persimmon);font-weight:700;
+
+/* ===== masthead / home hero ===== */
+header.top{background:linear-gradient(180deg,#fbf5ea 0%,var(--paper) 100%);padding:0 0 4px;
+  padding-top:env(safe-area-inset-top);position:relative;overflow:hidden;text-align:center}
+.hero{position:relative;height:186px;overflow:hidden}
+.hero svg{position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:430px;height:186px}
+.herotext{padding:2px 20px 2px}
+.eyebrow{font-size:11.5px;letter-spacing:.4em;color:var(--persimmon);font-weight:700;
   text-transform:uppercase;font-family:"Noto Serif TC",serif}
-h1.title{font-family:"Noto Serif TC",serif;font-size:40px;font-weight:900;letter-spacing:.04em;
-  margin:8px 0 0;line-height:1.12;color:#3a2a20}
-.title2{font-family:"Noto Serif TC",serif;font-size:36px;font-weight:900;letter-spacing:.06em;
-  margin:0 0 12px;line-height:1.12;color:#3a2a20}
-.title2 .r7{color:#c0392b}
-.subline{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 16px;
+h1.title{font-family:"Noto Serif TC",serif;font-size:34px;font-weight:900;letter-spacing:.05em;
+  margin:6px 0 0;line-height:1.1;color:#3a2a20}
+.title2{font-family:"Noto Serif TC",serif;font-size:30px;font-weight:900;letter-spacing:.07em;
+  margin:0;line-height:1.15;color:#3a2a20}
+.title2 .r7{color:var(--red)}
+.subline{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 14px;margin-top:9px;
   font-size:12.5px;color:var(--ink-soft);font-weight:500}
-.subline .mono{color:var(--text);font-weight:700}
+.subline .mono{color:var(--text);font-weight:700;font-family:"Space Mono",monospace}
 
-/* ---------- tabs ---------- */
-nav.tabs{display:flex;justify-content:center;gap:3px;background:var(--paper);
-  padding:6px 8px 14px;position:sticky;top:0;z-index:500;overflow-x:auto}
+/* countdown */
+.countdown{display:inline-flex;align-items:center;gap:9px;margin:12px auto 6px;
+  background:#fff;border:1.5px solid var(--gold-soft);border-radius:999px;padding:7px 16px 7px 12px;
+  box-shadow:0 3px 10px rgba(194,144,74,.14)}
+.countdown .cdnum{font-family:"Space Mono",monospace;font-weight:700;font-size:26px;color:var(--persimmon);line-height:1}
+.countdown .cdlbl{font-size:11px;color:var(--ink-soft);font-weight:700;text-align:left;line-height:1.25}
+.countdown .cdlbl b{color:var(--text)}
+
+/* ===== tabs ===== */
+nav.tabs{display:flex;justify-content:flex-start;gap:3px;background:rgba(248,243,233,.95);
+  backdrop-filter:blur(6px);padding:8px 10px 10px;position:sticky;top:0;z-index:500;overflow-x:auto;
+  border-bottom:1px solid var(--line)}
 nav.tabs::-webkit-scrollbar{display:none}
-nav.tabs button{flex-shrink:0;border:none;background:none;padding:8px 13px;border-radius:999px;
-  font-family:inherit;font-size:14px;font-weight:700;color:var(--muted);cursor:pointer;white-space:nowrap}
-nav.tabs button.on{background:var(--ink);color:#fff}
+nav.tabs button{flex-shrink:0;border:none;background:none;padding:7px 14px;border-radius:999px;
+  font-family:inherit;font-size:14px;font-weight:700;color:var(--muted);cursor:pointer;white-space:nowrap;
+  transition:background .2s,color .2s}
+nav.tabs button.on{background:var(--ink);color:#fff;box-shadow:0 2px 8px rgba(106,61,43,.22)}
 
-/* ---------- booked tab ---------- */
-.bksec{margin-bottom:22px}
-.bksec-h{font-family:"Noto Serif TC",serif;font-size:16px;font-weight:900;color:#3a2a20;margin:2px 2px 10px}
-.bkcard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:10px}
-.bkcard-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+main{padding:16px 15px calc(40px + env(safe-area-inset-bottom))}
+.view{display:none}
+.view.on{display:block}
+
+/* ===== card base ===== */
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 15px;
+  box-shadow:0 3px 14px rgba(106,61,43,.05)}
+
+/* ===== home / overview ===== */
+.sec-h{font-family:"Noto Serif TC",serif;font-size:13.5px;font-weight:900;color:#3a2a20;margin:13px 3px 7px;
+  display:flex;align-items:center;gap:7px}
+.sec-h:first-child{margin-top:2px}
+.sec-h .bar{width:4px;height:14px;border-radius:3px;background:var(--persimmon)}
+.daylist{display:flex;flex-direction:column;gap:7px}
+.dayrow{display:flex;align-items:flex-start;gap:11px;background:var(--card);border:1px solid var(--line);
+  border-radius:13px;padding:10px 12px;cursor:pointer;box-shadow:0 2px 8px rgba(106,61,43,.05);transition:transform .12s}
+.dayrow:active{transform:scale(.985)}
+.dayrow .dc-badge{width:34px;height:34px;border-radius:10px;color:#fff;display:flex;align-items:center;justify-content:center;
+  font-family:"Noto Serif TC",serif;font-weight:900;font-size:18px;flex-shrink:0;margin-top:1px}
+.dayrow .drmid{flex:1;min-width:0}
+.dayrow .drtop{display:flex;align-items:center;gap:7px;margin-bottom:2px}
+.dayrow .dc-date{font-family:"Space Mono",monospace;font-size:12px;font-weight:700;color:var(--ink-soft)}
+.dayrow .dc-dow{font-size:9.5px;color:var(--muted);border:1px solid var(--line);border-radius:5px;padding:0 5px}
+.dayrow .dtemp{margin-left:auto;display:inline-flex;align-items:baseline;gap:4px;font-family:"Space Mono",monospace;font-weight:700;font-size:13px}
+.dayrow .dtemp .hi{color:var(--persimmon)}
+.dayrow .dtemp .lo{color:#2f7fd6}
+.dayrow .dc-theme{font-family:"Noto Serif TC",serif;font-weight:700;font-size:14px;color:#3a2a20;line-height:1.2;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dayrow .dc-spots{font-size:10.5px;color:var(--muted);line-height:1.5;margin-top:3px;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.dayrow .drchev{color:var(--muted);font-size:17px;flex-shrink:0;align-self:center}
+.wxrow{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:13px;
+  padding:11px 13px;cursor:pointer;box-shadow:0 2px 8px rgba(106,61,43,.05);margin-top:7px}
+.wxrow .wxi{font-size:19px}.wxrow .wxt{flex:1;font-family:"Noto Serif TC",serif;font-weight:700;font-size:14px;color:#3a2a20}
+.wxrow .drchev{color:var(--muted);font-size:17px}
+/* day nav (prev/next) */
+.daynav{display:flex;gap:9px;margin-top:14px}
+.daynav button{flex:1;border:1.5px solid var(--line);background:#fff;color:var(--ink);font-family:inherit;
+  font-weight:700;font-size:14px;padding:12px;border-radius:12px;cursor:pointer}
+.daynav button:disabled{opacity:.35;cursor:default}
+.daynav button:active:not(:disabled){background:var(--gold-soft)}
+
+.infostrip{display:flex;gap:7px;flex-wrap:wrap}
+.infochip{flex:1;min-width:0;background:var(--card);border:1px solid var(--line);border-radius:11px;padding:8px 10px;
+  font-size:11px;color:var(--ink-soft);line-height:1.4;box-shadow:0 2px 6px rgba(106,61,43,.04)}
+.infochip b{display:block;color:#3a2a20;font-size:12px;margin-bottom:1px}
+.infochip .fs{font-family:"Space Mono",monospace;color:var(--muted);font-size:10px}
+
+.budgetbar{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);
+  border-radius:13px;padding:10px 13px;box-shadow:0 2px 8px rgba(106,61,43,.05)}
+.budgetbar .bt{font-family:"Space Mono",monospace;font-size:19px;font-weight:700;color:var(--ink);white-space:nowrap}
+.budgetbar .bt small{font-size:11px;color:var(--muted);font-family:"Noto Sans TC";font-weight:700}
+.psum{display:flex;flex-wrap:wrap;gap:4px 10px;flex:1;justify-content:flex-end}
+.psum .pc{display:inline-flex;align-items:baseline;gap:4px;font-size:12px;font-weight:700}
+.psum .pc .pv{font-family:"Space Mono",monospace;color:var(--text)}
+
+/* ===== itinerary ===== */
+.daytabs{display:flex;gap:7px;overflow-x:auto;padding:2px 2px 14px;-webkit-overflow-scrolling:touch}
+.daytabs::-webkit-scrollbar{display:none}
+.daytab{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;
+  border:1.5px solid var(--line);background:#fff;border-radius:13px;padding:7px 13px;cursor:pointer;
+  font-family:inherit;min-width:50px;transition:transform .12s}
+.daytab:active{transform:scale(.94)}
+.daytab b{font-family:"Noto Serif TC",serif;font-size:18px;font-weight:900;line-height:1.2;color:var(--dc)}
+.daytab span{font-family:"Space Mono",monospace;font-size:10px;color:var(--muted)}
+.daytab.on{background:var(--dc);border-color:var(--dc);box-shadow:0 3px 10px rgba(0,0,0,.15)}
+.daytab.on b,.daytab.on span{color:#fff}
+
+.dhead{display:flex;gap:12px;align-items:flex-start;margin-bottom:12px}
+.daybadge{flex-shrink:0;width:56px;height:56px;border-radius:15px;color:#fff;position:relative;overflow:hidden;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 3px 9px rgba(20,30,50,.14)}
+.daybadge b{font-family:"Noto Serif TC",serif;font-size:25px;font-weight:900;line-height:1}
+.daybadge span{font-size:8.5px;letter-spacing:.18em;margin-top:2px;opacity:.92;font-weight:700}
+.dmain{flex:1;min-width:0;padding-top:2px}
+.drow{display:flex;align-items:center;gap:8px;margin-bottom:3px}
+.drow .ddate{font-family:"Space Mono",monospace;font-weight:700;font-size:15px;color:var(--ink-soft)}
+.drow .ddow{font-size:11px;color:var(--ink-soft);border:1px solid var(--line);background:#fff;padding:1px 7px;border-radius:6px;font-weight:700}
+.dtitle{font-family:"Noto Serif TC",serif;font-weight:900;font-size:21px;color:#3a2a20;line-height:1.25}
+.dayillo{width:58px;height:58px;flex-shrink:0;margin-top:-2px}
+
+.fixed{display:flex;align-items:flex-start;gap:9px;padding:9px 10px;margin:0 0 8px;border-radius:11px;
+  background:#f6efe2;border:1px solid var(--line)}
+.fixed .fi{font-size:15px;flex-shrink:0}
+.fixed .fx{font-size:13.5px;color:var(--ink-soft);font-weight:600;line-height:1.45}
+.fixed .fx b{color:#3a2a20;font-weight:700}
+
+.acts{padding:0}
+.actcard{background:#fff;border:1px solid var(--line);border-left:4px solid var(--dc,var(--gold));
+  border-radius:12px;padding:11px 13px;margin-bottom:9px;box-shadow:0 2px 7px rgba(106,61,43,.05)}
+.actcard.food{background:#fdf6ea}
+.actcard.night{background:#f4f1f8}
+.acrow{display:flex;align-items:flex-start;gap:10px}
+.actime{font-family:"Space Mono",monospace;font-size:12.5px;font-weight:700;color:var(--persimmon);
+  min-width:46px;flex-shrink:0;padding-top:1px}
+.actime.none{color:#cfc4b2}
+.acname{flex:1;min-width:0;font-size:15px;font-weight:700;color:#3a2a20;line-height:1.4;word-break:break-word}
+.acg{font-size:16px;text-decoration:none;flex-shrink:0;opacity:.85}
+.achours{font-size:12px;color:var(--ink-soft);margin-top:6px;padding-left:56px;line-height:1.5}
+/* ===== 跟團整天大卡片 ===== */
+.tourcard{background:#fff;border:1px solid var(--line);border-left:4px solid var(--dc,var(--gold));
+  border-radius:14px;padding:3px 14px 8px;margin-bottom:9px;box-shadow:0 3px 12px rgba(106,61,43,.08)}
+.tourhead{display:flex;align-items:center;gap:8px;padding:12px 1px 11px;border-bottom:1.5px dashed var(--line)}
+.tourhead .th-ic{font-size:17px;flex-shrink:0}
+.tourhead .th-name{flex:1;min-width:0;font-family:"Noto Serif TC",serif;font-weight:900;font-size:14.5px;
+  color:var(--ink);line-height:1.35;word-break:break-word}
+.tourhead .th-badge{flex-shrink:0;background:var(--dc,var(--gold));color:#fff;font-size:10.5px;font-weight:700;
+  padding:3px 10px;border-radius:999px;letter-spacing:.5px}
+.acts.tour .tactrow{padding:11px 1px 11px 2px;border-top:1px solid var(--line)}
+.acts.tour .tactrow:first-child{border-top:none}
+.splitlabel{font-size:11.5px;color:var(--muted);font-weight:700;margin:2px 2px 7px;letter-spacing:.5px}
+.postacts{margin-top:2px}
+
+/* night-view table */
+.nighttbl{margin-top:18px;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 2px 8px rgba(106,61,43,.05)}
+.nighttbl .nt-h{background:#2a2438;color:#fff;font-family:"Noto Serif TC",serif;font-weight:900;font-size:14px;padding:10px 13px;display:flex;align-items:center;gap:7px}
+.ntrow{display:flex;gap:10px;align-items:flex-start;padding:10px 13px;border-top:1px solid #f3eee3}
+.ntrow .ntname{flex:1;min-width:0}
+.ntrow .ntn{font-weight:700;font-size:13.5px;color:#3a2a20}
+.ntrow .ntnote{font-size:11px;color:var(--muted);line-height:1.45;margin-top:2px}
+.ntrow .nttime{font-family:"Space Mono",monospace;font-size:11.5px;font-weight:700;color:var(--sea);white-space:nowrap;text-align:right;flex-shrink:0}
+.ntrow .ntg{text-decoration:none;font-size:14px;flex-shrink:0;opacity:.85}
+.grp{margin-top:4px}
+.grphead{font-family:"Noto Serif TC",serif;font-weight:900;font-size:14px;color:#3a2a20;margin:2px 0 6px;display:flex;align-items:baseline;gap:7px}
+.grphead .gs{font-size:11px;color:var(--muted);font-weight:500;font-family:"Noto Sans TC"}
+.grpdiv{height:1px;background:repeating-linear-gradient(90deg,var(--line) 0 6px,transparent 6px 12px);margin:12px 0}
+.grptabs{display:flex;gap:6px;background:var(--gold-soft);padding:4px;border-radius:999px;margin:2px 0 11px}
+.grptab{flex:1;border:none;background:none;color:var(--ink-soft);font-family:inherit;font-size:13px;font-weight:700;padding:8px 6px;border-radius:999px;cursor:pointer;transition:background .15s}
+.grptab.on{background:#fff;color:var(--ink);box-shadow:0 1px 5px rgba(106,61,43,.14)}
+.sortbtn{border:1px solid var(--line);background:#fbf4e4;color:var(--ink-soft);font-family:inherit;
+  font-weight:700;font-size:12px;padding:6px 12px;border-radius:9px;cursor:pointer;margin-top:4px}
+.sortbtn:active{background:var(--gold-soft)}
+
+/* ===== booked ===== */
+.bksec{margin-bottom:20px}
+.bkcard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:13px 15px;margin-bottom:10px;
+  box-shadow:0 2px 8px rgba(106,61,43,.05)}
+.bkcard-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px}
 .bkflight{font-family:"Space Mono",monospace;font-weight:700;font-size:15px;color:var(--persimmon)}
-.bkdate{font-size:12.5px;color:var(--ink-soft);font-weight:700}
+.bkdate{font-size:12px;color:var(--ink-soft);font-weight:700}
 .bkroute{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .bkpt{text-align:center}
 .bkpt b{display:block;font-family:"Space Mono",monospace;font-size:20px;color:var(--text);line-height:1.1}
 .bkpt span{font-size:11px;color:var(--muted)}
-.bkline{flex:1;text-align:center;font-size:11px;color:var(--gold);border-top:1px dashed var(--line);padding-top:4px;margin-top:8px}
+.bkline{flex:1;text-align:center;font-size:11px;color:var(--gold);border-top:1.5px dashed var(--line);padding-top:4px;margin-top:9px}
 .bkhotel{font-family:"Noto Serif TC",serif;font-weight:900;font-size:16px;color:#3a2a20}
-.bkhoteldates{font-size:13px;color:var(--ink-soft);font-weight:700;margin:2px 0 6px}
+.bkhoteldates{font-size:12.5px;color:var(--ink-soft);font-weight:700;margin:3px 0 7px}
 .bkmeta{font-size:12px;color:var(--muted);margin-top:8px}
 .bkmeta b{color:var(--ink);font-family:"Space Mono",monospace}
+.addr{display:flex;align-items:center;gap:8px;background:#f6efe2;border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin-top:8px}
+.addr .atxt{flex:1;min-width:0;font-size:12.5px;color:var(--text);line-height:1.45}
+.addr .atxt .ano{font-family:"Space Mono",monospace;color:var(--ink-soft);font-size:11px}
+.copybtn{flex-shrink:0;border:1.5px solid var(--gold);background:#fff;color:var(--ink);font-family:inherit;
+  font-weight:700;font-size:11.5px;padding:6px 10px;border-radius:8px;cursor:pointer;white-space:nowrap}
+.copybtn:active{background:var(--gold-soft)}
+.copybtn.done{background:var(--sea);color:#fff;border-color:var(--sea)}
+.bktix{font-size:13px;color:var(--text);line-height:1.7}
+.bktix b{color:#3a2a20}
+.bktix .k{color:var(--muted);font-size:11.5px}
 
-main{flex:1;padding:18px 16px 90px}
-.view{display:none}.view.on{display:block}
-
-/* ---------- day header ---------- */
-.day{padding-bottom:6px}
-.daytabs{display:flex;gap:6px;overflow-x:auto;padding:2px 2px 12px;-webkit-overflow-scrolling:touch}
-.daytabs::-webkit-scrollbar{display:none}
-.daytab{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:0;
-  border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:6px 13px;cursor:pointer;
-  font-family:inherit;min-width:50px}
-.daytab b{font-family:"Noto Serif TC",serif;font-size:18px;font-weight:900;line-height:1.2;color:var(--dc)}
-.daytab span{font-family:"Space Mono",monospace;font-size:10px;color:var(--muted)}
-.daytab.on{background:var(--dc);border-color:var(--dc)}
-.daytab.on b{color:#fff}
-.daytab.on span{color:rgba(255,255,255,.92)}
-.dhead{display:flex;gap:12px;align-items:flex-start;margin-bottom:10px}
-.daybadge{flex-shrink:0;width:52px;height:52px;border-radius:13px;color:#fff;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  box-shadow:0 2px 6px rgba(20,30,50,.12)}
-.daybadge b{font-family:"Noto Serif TC",serif;font-size:23px;font-weight:900;line-height:1}
-.daybadge span{font-size:8.5px;letter-spacing:.18em;margin-top:2px;opacity:.92;font-weight:700}
-.dmain{flex:1;min-width:0;padding-top:3px}
-.drow{display:flex;align-items:center;gap:8px;margin-bottom:3px}
-.drow .ddate{font-family:"Space Mono",monospace;font-weight:700;font-size:15px;color:var(--ink-soft)}
-.drow .ddow{font-size:11px;color:var(--ink-soft);border:1px solid var(--line);background:#fff;
-  padding:1px 7px;border-radius:6px;font-weight:700}
-.dtitle{font-family:"Noto Serif TC",serif;font-weight:900;font-size:20px;color:#3a2a20;line-height:1.25}
-
-.card{background:var(--card);border:1px solid var(--line);border-radius:14px;
-  padding:6px 4px;margin-bottom:18px;box-shadow:0 1px 2px rgba(20,30,50,.03)}
-
-/* fixed events */
-.fixed{display:flex;gap:10px;align-items:flex-start;padding:9px 12px;border-bottom:1px dashed var(--line)}
-.fixed:last-child{border-bottom:none}
-.fixed .ft{font-family:"Space Mono",monospace;font-size:12px;font-weight:700;color:var(--ink-soft);
-  min-width:54px;padding-top:1px}
-.fixed .fi{width:22px;text-align:center;font-size:14px;flex-shrink:0}
-.fixed .fx{font-size:13.5px;line-height:1.45}
-.fixed.lock .fx::after{content:" 🔒";font-size:9px;opacity:.35}
-.tag{display:inline-block;font-size:10px;font-weight:700;padding:1px 6px;border-radius:4px;margin-left:5px;vertical-align:1px}
-.tag.fly{background:#fdeee6;color:var(--persimmon)}
-.tag.bed{background:#eef4f1;color:var(--sea)}
-.tag.move{background:#f1eef7;color:#6b5aa0}
-
-.booking{display:flex;align-items:center;gap:6px;margin:8px 10px 2px;padding:9px 12px;
-  background:#fff4ee;border:1px solid #ffd6c2;border-radius:10px;color:#e8540a;
-  font-weight:700;font-size:12.5px;text-decoration:none;line-height:1.4}
-.booking:active{background:#ffe7da}
-.bookinfo{font-size:11.5px;color:var(--ink-soft);margin:5px 12px 8px;line-height:1.55;
-  padding-left:10px;border-left:2px solid #ffd6c2}
-
-.grp{border-left:3px solid var(--line);padding-left:11px;margin:4px 8px}
-.grp.g1{border-color:#6b5aa0}
-.grp.g2{border-color:#c2557e}
-.grphead{font-weight:700;font-size:14px;color:var(--ink);margin:10px 0 2px;display:flex;gap:7px;align-items:baseline;flex-wrap:wrap}
-.grphead .gs{font-size:11px;color:var(--muted);font-weight:500}
-.grpdiv{height:1px;background:var(--line);margin:12px 10px 4px}
-.meet{display:flex;gap:8px;align-items:center;padding:11px 12px;margin:10px 8px 4px;
-  background:#faf5ea;border:1px solid var(--line);border-radius:10px;font-size:13px;color:var(--ink-soft);font-weight:500}
-
-/* editable activities */
-.acts{padding:4px 8px 8px}
-.act{display:block;padding:7px 4px;border-bottom:1px solid #f3eee3}
-.actmain{display:flex;gap:9px;align-items:flex-start}
-.acthours{display:flex;align-items:center;gap:5px;margin-top:3px;padding-left:55px;font-size:12px}
-.acthours .ah{flex:1;min-width:0;border:none;background:none;font-family:inherit;font-size:12px;
-  color:var(--ink-soft);padding:1px 0}
-.acthours .ah::placeholder{color:#c3bba9}
-.acthours .ah:focus{outline:none;border-bottom:1px solid var(--gold)}
-.act:last-child{border-bottom:none}
-.act .at{font-family:"Space Mono",monospace;font-size:12px;color:var(--muted);min-width:46px;
-  border:none;background:none;padding:2px 0;width:46px}
-.act .an{flex:1;min-width:0;border:none;background:none;font-family:inherit;font-size:14px;color:var(--text);padding:2px 0}
-.act .at:focus,.act .an:focus{outline:none;border-bottom:1.5px solid var(--gold)}
-.act .del{border:none;background:none;color:#c7ccd4;font-size:16px;cursor:pointer;padding:0 4px;line-height:1}
-.act .del:hover{color:var(--persimmon)}
-.act.empty{color:var(--muted);font-style:italic;font-size:13px;padding-left:6px}
-
-.gmap{flex-shrink:0;text-decoration:none;font-size:13px;width:26px;height:26px;border-radius:7px;
-  display:inline-flex;align-items:center;justify-content:center;background:#eef1f6;line-height:1}
-.gmap:active{background:var(--gold-soft)}
-.pop-g{display:inline-block;margin-top:7px;font-size:12px;font-weight:700;color:#1a73e8;text-decoration:none}
-
-.addrow{display:flex;flex-wrap:wrap;gap:6px;padding:6px 8px 10px;align-items:center}
-.addbtn{border:1px dashed var(--gold);background:#fff;color:var(--ink-soft);font-family:inherit;
-  font-weight:700;font-size:12.5px;padding:6px 12px;border-radius:8px;cursor:pointer}
-.addbtn:active{background:#faf5ea}
-.sortbtn{border:1px solid var(--line);background:#fbf4e4;color:var(--ink-soft);font-family:inherit;
-  font-weight:700;font-size:12.5px;padding:6px 12px;border-radius:8px;cursor:pointer}
-.sortbtn:active{background:var(--gold-soft)}
-.chip{border:1px solid var(--line);background:#faf7f0;color:var(--ink-soft);font-size:11.5px;
-  padding:5px 10px;border-radius:999px;cursor:pointer;font-family:inherit}
-.chip:active{background:var(--gold-soft)}
-.chiphint{font-size:11px;color:var(--muted);width:100%;margin-bottom:1px}
-
-/* ---------- map ---------- */
-#map{height:62vh;min-height:340px;border-radius:14px;border:1px solid var(--line);overflow:hidden}
-.legend{display:flex;gap:16px;margin:12px 2px 4px;font-size:12px;color:var(--ink-soft);flex-wrap:wrap}
-.legend i{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:5px;vertical-align:0px}
-.maphint{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.5}
-.daypills{display:flex;gap:7px;overflow-x:auto;padding:2px 2px 10px;-webkit-overflow-scrolling:touch}
-.daypills::-webkit-scrollbar{display:none}
-.pill{flex:0 0 auto;display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);
-  background:#fff;color:var(--ink-soft);font-family:inherit;font-size:12.5px;font-weight:700;
-  padding:6px 12px;border-radius:999px;cursor:pointer;white-space:nowrap}
-.pill i{width:9px;height:9px;border-radius:50%;display:inline-block}
-.pill.on{background:var(--ink);color:#fff;border-color:var(--ink)}
-.leaflet-popup-content{font-family:"Noto Sans TC",sans-serif;margin:11px 13px}
-.pop-t{font-weight:700;font-size:14px;color:var(--ink)}
-.pop-s{font-size:12px;color:var(--muted);margin-top:2px}
-
-/* ---------- budget ---------- */
-.conv{background:#fbf4e4;color:var(--text);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:16px}
-.conv .lbl{font-size:11px;color:var(--ink-soft);letter-spacing:.14em;font-weight:700}
+/* ===== budget ===== */
+.conv{background:#fbf4e4;color:var(--text);border:1px solid var(--line);border-radius:14px;padding:13px 15px;margin-bottom:16px}
+.conv .lbl{font-size:11px;color:var(--ink-soft);letter-spacing:.12em;font-weight:700}
 .conv .row{display:flex;align-items:center;gap:8px;margin-top:8px;flex-wrap:wrap}
 .conv input{font-family:"Space Mono",monospace;font-size:16px;font-weight:700;border:1px solid var(--line);
-  border-radius:8px;padding:8px 10px;width:96px;text-align:right;background:#fff;color:var(--text)}
-.conv .yen{background:#fff;color:var(--text)}
+  border-radius:8px;padding:8px 10px;width:92px;text-align:right;background:#fff;color:var(--text)}
 .conv .eq{font-size:14px;color:var(--muted)}
 .conv .ntd{background:#fff;color:var(--ink)}
 .conv .rate{font-size:11px;color:var(--muted);margin-top:8px;display:flex;align-items:center;gap:6px}
-.conv .rate input{width:62px;padding:3px 6px;font-size:12px;text-align:center}
-
-.budtotal{display:flex;justify-content:space-between;align-items:baseline;
-  padding:0 4px 10px;border-bottom:2px solid var(--ink);margin-bottom:6px}
-.budtotal .bl{font-size:13px;font-weight:700;color:var(--ink)}
-.budtotal .bv{font-family:"Space Mono",monospace;font-size:24px;font-weight:700;color:var(--ink)}
-.budtotal .bv small{font-size:13px;color:var(--muted)}
-
-.bars{margin:12px 4px 18px;display:flex;flex-direction:column;gap:7px}
-.bar{display:flex;align-items:center;gap:8px;font-size:12px}
-.bar .bn{width:64px;color:var(--ink-soft);font-weight:500}
-.bar .bt{flex:1;height:8px;background:#efe9dc;border-radius:6px;overflow:hidden}
-.bar .bf{height:100%;border-radius:6px}
-.bar .bm{font-family:"Space Mono",monospace;color:var(--muted);min-width:52px;text-align:right}
-
-.exp{padding:10px 6px;border-bottom:1px solid #f1ece0}
-.exp .r1{display:flex;align-items:flex-start;gap:8px}
-.exp .r2{display:flex;align-items:center;gap:8px;margin-top:8px;padding-left:1px}
-.exp select{border:none;border-radius:7px;font-family:inherit;font-size:11.5px;font-weight:700;
-  padding:5px 6px;color:#fff;width:64px;-webkit-appearance:none;appearance:none;text-align:center}
-.exp select.who{width:62px;background:#fff;color:var(--ink-soft);border:1px solid var(--line)}
-.exp .en{flex:1;min-width:0;border:none;background:none;font-family:inherit;font-size:14px;
-  padding:3px 0;resize:none;overflow:hidden;line-height:1.4;color:var(--text)}
-.exp .ea{font-family:"Space Mono",monospace;font-size:15px;border:none;background:none;width:90px;
-  text-align:right;padding:3px 0}
-.exp input:focus,.exp select:focus{outline:none}
-.exp .ea:focus{border-bottom:1.5px solid var(--gold)}
-.exp .paylbl{font-size:11px;color:var(--muted);margin-left:auto}
-.exp .del{border:none;background:none;color:#c7ccd4;font-size:18px;cursor:pointer;padding:0 2px}
-.exp .del:hover{color:var(--persimmon)}
-
-.payers{margin:6px 4px 16px;padding:4px 2px 2px}
+.conv .rate input{width:60px;padding:3px 6px;font-size:12px;text-align:center}
+.total{display:flex;align-items:baseline;justify-content:space-between;margin:2px 3px 12px}
+.total .tl{font-size:12px;color:var(--muted);font-weight:700}
+.total .tv{font-family:"Space Mono",monospace;font-size:22px;font-weight:700;color:var(--ink)}
+.bars{margin:0 2px 14px}
+.bar{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:11.5px}
+.bar .bn{width:42px;color:var(--ink-soft);font-weight:700;flex-shrink:0}
+.bar .bt{flex:1;height:9px;background:#efe6d4;border-radius:5px;overflow:hidden}
+.bar .bf{height:100%;border-radius:5px}
+.bar .bv{width:56px;text-align:right;font-family:"Space Mono",monospace;color:var(--muted);flex-shrink:0}
+.payers{margin:6px 3px 16px;padding:11px 12px;background:#fbf7ee;border:1px solid var(--line);border-radius:12px}
 .payers .psumhead{font-size:11.5px;color:var(--muted);font-weight:700;margin-bottom:9px}
 .payers .pchips{display:flex;flex-wrap:wrap;gap:14px}
-.payers .pchip{display:inline-flex;align-items:baseline;gap:5px;font-size:13px;font-weight:700;color:var(--text)}
-.payers .pchip b{font-size:13px}
-.payers .pchip .pv{font-family:"Space Mono",monospace;font-size:13px;color:var(--text)}
-.expadd{margin:12px 4px;width:calc(100% - 8px);border:1px dashed var(--gold);background:#fff;
-  color:var(--ink-soft);font-family:inherit;font-weight:700;font-size:13px;padding:10px;border-radius:10px;cursor:pointer}
+.payers .pchip{display:inline-flex;align-items:baseline;gap:5px;font-size:13px;font-weight:700}
+.payers .pchip .pv{font-family:"Space Mono",monospace;color:var(--text)}
+.exp{padding:10px 4px;border-bottom:1px solid #f1ece0}
+.exp .r1{display:flex;align-items:flex-start;gap:8px}
+.exp .r2{display:flex;align-items:center;gap:8px;margin-top:8px}
+.exp select{border:none;border-radius:7px;font-family:inherit;font-size:11px;font-weight:700;padding:5px 6px;
+  color:#fff;-webkit-appearance:none;appearance:none;text-align:center;width:62px;flex-shrink:0}
+.exp .en{flex:1;min-width:0;border:none;background:none;font-family:inherit;font-size:14px;padding:3px 0;
+  resize:none;overflow:hidden;line-height:1.4;color:var(--text)}
+.exp .ea{width:88px;border:1px solid var(--line);border-radius:8px;padding:6px 8px;font-family:"Space Mono",monospace;
+  font-size:14px;text-align:right;background:#fff;color:var(--text)}
+.exp .paylbl{font-size:11px;color:var(--muted);font-weight:700;margin-left:auto}
+.exp select.who{background:#fff;color:var(--ink-soft);border:1px solid var(--line)}
+.exp .del{border:none;background:none;color:#d2c7b6;font-size:16px;cursor:pointer;padding:0 2px;flex-shrink:0}
 
-/* ---------- food ---------- */
-.foodhead{display:flex;justify-content:space-between;align-items:baseline;
-  padding:0 4px 10px;border-bottom:2px solid var(--ink);margin-bottom:14px}
-.foodhead span:first-child{font-size:13px;font-weight:700;color:var(--ink)}
-.foodprog{font-size:13px;color:var(--persimmon);font-weight:700}
-.fgroup{margin-bottom:20px}
-.fgroup .fgt{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:700;
-  letter-spacing:.06em;color:#fff;padding:4px 11px;border-radius:7px;margin-bottom:10px;width:fit-content}
-.fgroup.nagoya .fgt{background:var(--gold)}
-.fgroup.toba .fgt{background:var(--sea)}
-.fitem{display:flex;align-items:center;gap:10px;padding:8px 6px;border-bottom:1px solid #f1ece0}
-.fitem:last-of-type{border-bottom:none}
-.fcheck{width:21px;height:21px;border-radius:50%;border:2px solid var(--line);flex-shrink:0;
-  cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;
-  transition:background .15s,border-color .15s}
-.fitem.done .fcheck{background:var(--sea);border-color:var(--sea)}
-.fgroup.nagoya .fitem.done .fcheck{background:var(--gold);border-color:var(--gold)}
-.fname{flex:1;min-width:0;border:none;background:none;font-family:inherit;font-size:14.5px;color:var(--text);padding:3px 0}
+/* ===== food ===== */
+.fmappills{display:flex;gap:6px;margin-bottom:10px}
+.fmp{flex:0 0 auto;border:1.5px solid var(--line);background:#fff;color:var(--ink-soft);border-radius:999px;padding:5px 14px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit}
+.fmp.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+#foodmap{height:280px;border-radius:16px;border:1px solid var(--line);overflow:hidden;margin-bottom:18px}
+/* ===== weather ===== */
+.wnote{font-size:12px;color:var(--ink-soft);background:#fbf4e4;border:1px solid var(--line);border-radius:12px;padding:11px 13px;line-height:1.6;margin-bottom:16px}
+.todo{background:#fcefe2;border:1px solid #f0cba8;border-radius:12px;padding:11px 13px 5px;margin-bottom:16px}
+.todo-h{font-family:"Noto Serif TC",serif;font-weight:900;font-size:14px;color:#b5531f;margin-bottom:4px}
+.wcard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:10px;box-shadow:0 2px 8px rgba(106,61,43,.05)}
+.wcard .wtop{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:4px}
+.wcard .wname{font-family:"Noto Serif TC",serif;font-weight:900;font-size:15px;color:#3a2a20}
+.wcard .wtemp{font-family:"Space Mono",monospace;font-weight:700;font-size:15px}
+.wcard .wtemp .hi{color:var(--persimmon)}
+.wcard .wtemp .lo{color:#2f7fd6}
+.wcard .wdesc{font-size:12px;color:var(--ink-soft);line-height:1.5}
+.wcard .wtag{display:inline-block;font-size:10.5px;font-weight:700;color:#fff;border-radius:6px;padding:2px 8px;margin-top:6px}
+.wsec{font-family:"Noto Serif TC",serif;font-weight:900;font-size:15px;color:#3a2a20;margin:18px 3px 10px;display:flex;align-items:center;gap:7px}
+.wsec .bar{width:4px;height:15px;border-radius:3px;background:var(--sea)}
+.olist{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:6px 14px;box-shadow:0 2px 8px rgba(106,61,43,.05)}
+.orow{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid #f3eee3;font-size:13px;line-height:1.5}
+.orow:last-child{border-bottom:none}
+.orow .oi{font-size:17px;flex-shrink:0;width:24px;text-align:center}
+.orow b{color:#3a2a20}
+.wlinks{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.wlink{flex:1;min-width:90px;text-align:center;background:var(--ink);color:#fff;text-decoration:none;border-radius:10px;padding:10px;font-size:12.5px;font-weight:700}
+.fgroup{margin-bottom:18px}
+.fglabel{font-family:"Noto Serif TC",serif;font-weight:900;font-size:15px;color:#3a2a20;margin:2px 2px 8px}
+.fitem{display:block;padding:9px 3px;border-bottom:1px solid #f3eee3}
+.fitem:last-child{border-bottom:none}
+.fmain{display:flex;align-items:center;gap:8px}
+.frate{display:flex;align-items:center;gap:10px;margin-top:5px;padding-left:30px}
+.rt-tb{font-size:11px;font-weight:700;color:#fff;background:var(--sea);border-radius:6px;padding:3px 9px;text-decoration:none;display:inline-block}
+.rt-g{font-size:11.5px;color:var(--ink-soft);font-weight:700;text-decoration:none}
+.rt-g:active{color:var(--persimmon)}
+.fcheck{width:22px;height:22px;border:2px solid var(--gold);border-radius:7px;flex-shrink:0;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;color:var(--sea);font-weight:900;font-size:14px}
+.fitem.done .fcheck{background:var(--sea);border-color:var(--sea);color:#fff}
 .ftype{flex-shrink:0;width:56px;border:1px solid var(--line);border-radius:7px;background:#faf6ee;
   font-family:inherit;font-size:11.5px;color:var(--ink-soft);padding:5px 5px;text-align:center}
 .ftype:focus{outline:none;border-color:var(--gold)}
-.fname:focus{outline:none;border-bottom:1.5px solid var(--gold)}
+.fname{flex:1;min-width:0;border:none;background:none;font-family:inherit;font-size:14.5px;color:var(--text);padding:3px 0}
 .fitem.done .fname{color:var(--muted);text-decoration:line-through}
-.fitem .del{border:none;background:none;color:#c7ccd4;font-size:16px;cursor:pointer;padding:0 2px}
-.fitem .del:hover{color:var(--persimmon)}
-.faddrow{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px;align-items:center}
-.faddbtn{border:1px dashed currentColor;background:#fff;font-family:inherit;font-weight:700;
-  font-size:12.5px;padding:6px 12px;border-radius:8px;cursor:pointer}
-.fgroup.nagoya .faddbtn{color:var(--gold)}
-.fgroup.toba .faddbtn{color:var(--sea)}
+.fname:focus{outline:none}
+.gmap{text-decoration:none;font-size:15px;flex-shrink:0;opacity:.85}
+.fdel{border:none;background:none;color:#d2c7b6;font-size:16px;cursor:pointer;padding:0 2px;flex-shrink:0}
 
-footer{padding:14px 16px 30px;text-align:center;color:var(--muted);font-size:11px}
+/* map */
+#map{height:62vh;min-height:380px;border-radius:16px;border:1px solid var(--line);overflow:hidden;margin-top:4px}
+.daypills{display:flex;gap:6px;overflow-x:auto;padding:0 0 10px}
+.daypills::-webkit-scrollbar{display:none}
+.dp{flex:0 0 auto;border:1.5px solid var(--line);background:#fff;color:var(--ink-soft);border-radius:999px;
+  padding:5px 13px;font-size:12.5px;font-weight:700;cursor:pointer}
+.dp.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+
+/* footer */
+footer{padding:16px 16px 36px;text-align:center;color:var(--muted);font-size:11px}
+.savedot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--sea);margin-right:6px;opacity:0;transition:opacity .3s;vertical-align:middle}
+.savedot.show{opacity:1}
 .bkrow{margin-top:10px}
-.bklink{border:none;background:none;color:var(--ink-soft);font-family:inherit;font-size:12px;
-  font-weight:700;text-decoration:underline;cursor:pointer}
+.bklink{border:none;background:none;color:var(--ink-soft);font-family:inherit;font-size:12px;font-weight:700;text-decoration:underline;cursor:pointer}
 .bkpanel{margin-top:10px;text-align:left;background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px}
 .bkhint{font-size:11.5px;color:var(--muted);line-height:1.55;margin-bottom:8px}
-.bktext{width:100%;height:88px;border:1px solid var(--line);border-radius:8px;padding:8px;
+.bktext{width:100%;height:84px;border:1px solid var(--line);border-radius:8px;padding:8px;
   font-family:"Space Mono",monospace;font-size:11px;color:var(--text);resize:vertical;box-sizing:border-box}
 .bkbtns{display:flex;gap:8px;margin-top:8px}
-.bkb{border:1px solid var(--line);background:#faf6ee;color:var(--ink-soft);font-family:inherit;
-  font-weight:700;font-size:12.5px;padding:8px 12px;border-radius:8px;cursor:pointer}
+.bkb{border:1px solid var(--line);background:#faf6ee;color:var(--ink-soft);font-family:inherit;font-weight:700;font-size:12.5px;padding:8px 12px;border-radius:8px;cursor:pointer}
 .bkb.primary{background:var(--ink);color:#fff;border-color:var(--ink)}
 .bkmsg{font-size:12px;color:var(--sea);margin-top:8px;font-weight:700;min-height:14px}
-.savedot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--sea);margin-right:5px;
-  opacity:0;transition:opacity .2s}
-.savedot.show{opacity:1}
-@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+.empty{color:var(--muted);font-size:13px;padding:6px 4px}
 </style>
 </head>
 <body>
 <div class="app">
-
   <header class="top">
-    <span class="leaf leaf-l">🍁</span><span class="leaf leaf-r">🍁</span>
-    <div class="eyebrow">NAGOYA · MIE</div>
-    <h1 class="title">名古屋 ・ 三重</h1>
-    <h2 class="title2"><span class="r7">7</span>日家族旅行</h2>
-    <div class="subline">
-      <span>🗓️ <b class="mono">2026/11/15</b> 日 — <b class="mono">11/21</b> 六</span>
-      <span>👨‍👩‍👧‍👧 四人家庭</span>
-      <span>🎴 住宿換一次（名古屋 → 三重）</span>
+    <div class="hero" id="hero"></div>
+    <div class="herotext">
+      <div class="eyebrow">NAGOYA · MIE</div>
+      <h1 class="title">名古屋 ・ 三重</h1>
+      <h2 class="title2"><span class="r7">7</span>日家族旅行</h2>
+      <div class="subline">
+        <span>🗓️ <b class="mono">2026/11/15</b> 日 — <b class="mono">11/21</b> 六</span>
+        <span>👨‍👩‍👧‍👧 四人家庭</span>
+      </div>
+      <div class="countdown">
+        <span class="cdnum" id="cdnum">—</span>
+        <span class="cdlbl" id="cdlbl">天後<br><b>出發</b></span>
+      </div>
     </div>
   </header>
 
   <nav class="tabs">
-    <button class="on" data-tab="trip">行程</button>
+    <button class="on" data-tab="home">總覽</button>
+    <button data-tab="trip">行程</button>
     <button data-tab="booked">已訂</button>
     <button data-tab="map">地圖</button>
     <button data-tab="budget">預算</button>
     <button data-tab="food">美食</button>
+    <button data-tab="weather">天氣</button>
+    <button data-tab="tax">退稅</button>
   </nav>
 
   <main>
-    <section class="view on" id="view-trip"></section>
-
+    <section class="view on" id="view-home"></section>
+    <section class="view" id="view-trip"></section>
     <section class="view" id="view-booked"></section>
-
     <section class="view" id="view-map">
       <div class="daypills" id="daypills"></div>
       <div id="map"></div>
-      <p class="maphint">上方依天數篩選。點任一景點看詳情,再點「在 Google 地圖開啟」即可導航。</p>
     </section>
-
-    <section class="view" id="view-budget">
-      <div class="conv">
-        <div class="lbl">日幣換算</div>
-        <div class="row">
-          <input class="yen mono" id="yen" type="number" inputmode="numeric" placeholder="10000">
-          <span class="eq">日圓 ＝</span>
-          <input class="ntd mono" id="ntd" type="number" readonly>
-          <span class="eq">台幣</span>
-        </div>
-        <div class="rate">匯率 1 日圓 ＝ <input class="mono" id="rate" type="number" step="0.001" value="0.215"> 台幣（可改）</div>
-      </div>
-
-      <div class="budtotal">
-        <span class="bl">預算合計</span>
-        <span class="bv">NT$ <span id="budtotal">0</span></span>
-      </div>
-      <div class="bars" id="bars"></div>
-      <div class="payers" id="payers"></div>
-
-      <div id="explist"></div>
-      <button class="expadd" id="expadd">＋ 新增一筆花費</button>
-    </section>
-
-    <section class="view" id="view-food">
-      <div class="foodhead">
-        <span>想吃清單</span>
-        <span class="foodprog mono" id="foodprog">0 / 0</span>
-      </div>
-      <div id="foodlist"></div>
-    </section>
+    <section class="view" id="view-budget"></section>
+    <section class="view" id="view-food"></section>
+    <section class="view" id="view-weather"></section>
+    <section class="view" id="view-tax"></section>
   </main>
 
   <footer>
-    <span class="savedot" id="savedot"></span><span id="savetxt">編輯會自動保存於這個裝置</span>
+    <span class="savedot" id="savedot"></span><span id="savetxt">編輯會自動保存在這個瀏覽器</span>
     <div class="bkrow"><button id="bkbtn" class="bklink">＊ 備份 / 還原資料</button></div>
     <div class="bkpanel" id="bkpanel" style="display:none">
-      <div class="bkhint">這是你目前所有資料。換新版本時,先按「複製」存起來;打開新版後把它貼進這個框、按「還原」,資料就接回來不會掉。</div>
+      <div class="bkhint">這是你目前所有資料。換新版本時先按「複製」存起來;打開新版後貼進這個框、按「還原」,資料就接回來不會掉。</div>
       <textarea id="bktext" class="bktext" placeholder="把備份內容貼在這裡再按還原…"></textarea>
       <div class="bkbtns">
         <button id="bkcopy" class="bkb">複製目前資料</button>
@@ -374,677 +402,737 @@ footer{padding:14px 16px 30px;text-align:center;color:var(--muted);font-size:11p
   </footer>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
 <script>
 /* ============ data ============ */
-var DAYS = [
-  { date:"11/15", dow:"日", dnum:"DAY 1", area:"nagoya", theme:"✈️ 抵達名古屋",
-    fixed:[
-      {t:"14:55", i:"✈️", x:'JX838 桃園 → 名古屋（18:30 抵達）<span class="tag fly">航班</span>', lock:true},
-      {t:"18:30", i:"🛬", x:"中部國際機場,搭名鐵 μ-SKY 進市區（約 30 分）"},
-      {t:"入住", i:"🏨", x:'名古屋飯店（ibis Styles Nagoya）<span class="tag bed">住宿</span>', lock:true}
-    ]},
-  { date:"11/16", dow:"一", dnum:"DAY 2", area:"nagoya", theme:"🏔️ 高山・白川鄉",
-    links:[{label:"🎫 Klook｜高山＆白川鄉一日遊（含飛驒牛午餐）", url:"https://www.klook.com/zh-TW/activity/14117-takayama-shirakawa-go-day-trip-nagoya/", info:"🚌 名古屋出發 · 行程約 10 小時 · 自行與導遊會合｜上車點與時間於付款頁選擇,傍晚返回名古屋站"}],
-    fixed:[{t:"全日", i:"🚌", x:'高山＆白川鄉一日遊<span class="tag move">Klook</span>'}] },
-  { date:"11/17", dow:"二", dnum:"DAY 3", area:"nagoya", theme:"👨‍👩‍👧‍👧 兵分兩路",
-    meet:"🍴 晚上全家回名古屋會合",
-    groups:[
-      {key:"11/17#爸媽", label:"👨‍👩 爸媽組", sub:"犬山城・馬籠宿 文化之旅", area:"nagoya",
-       links:[{label:"🎫 Klook｜犬山城・馬籠宿一日遊", url:"https://www.klook.com/zh-TW/activity/175724-day-trip-to-magomejuku-tsumagojuku-and-enakyo-from-nagoya/", info:"🚌 上車 08:30 · Ministop（名古屋,付款頁選出發點）｜下車 18:20 · 名古屋車站"}]},
-      {key:"11/17#姊妹", label:"👭 姊妹組", sub:"名古屋市區自由行", area:"nagoya", links:[]}
-    ]},
-  { date:"11/18", dow:"三", dnum:"DAY 4", area:"nagoya", theme:"🍁 香嵐溪 賞楓",
-    links:[{label:"🎫 Klook｜香嵐溪・永保寺・四季櫻一日遊", url:"https://www.klook.com/zh-TW/activity/209953-korankei-eihouji-autumn-leaves-day-tour-with-cherry-blossoms/", info:"🚌 上車 09:50（名古屋,付款頁選出發點）｜下車 20:00 · 名古屋"}],
-    fixed:[{t:"全日", i:"🚌", x:'香嵐溪＆永保寺＆四季櫻一日遊<span class="tag move">Klook</span>'}] },
-  { date:"11/19", dow:"四", dnum:"DAY 5", area:"toba", theme:"⛩️ 伊勢志摩（上）", transition:true,
-    fixed:[
-      {t:"~11:00", i:"🧳", x:'退房 名古屋（11:00 前）<span class="tag bed">住宿</span>', lock:true},
-      {t:"移動", i:"🚆", x:'名古屋 → 三重　近鐵特急<span class="tag move">交通</span>'},
-      {t:"入住", i:"🏨", x:'三重 伊勢／鳥羽（お宿 行燈 鳥羽）<span class="tag bed">住宿</span>', lock:true}
-    ]},
-  { date:"11/20", dow:"五", dnum:"DAY 6", area:"toba", theme:"🐬 伊勢志摩（下）", fixed:[] },
-  { date:"11/21", dow:"六", dnum:"DAY 7", area:"toba", theme:"✈️ 返回台灣", transition:true,
-    fixed:[
-      {t:"~10:00", i:"🧳", x:'退房,三重 → 中部國際機場<span class="tag move">交通</span>', lock:true},
-      {t:"16:40", i:"🛂", x:'機場辦理報到'},
-      {t:"19:40", i:"✈️", x:'JX839 名古屋 → 桃園（22:15 抵達）<span class="tag fly">航班</span>', lock:true}
-    ]}
+var DEFAULT_DATA = {"activities":{"11/15":[{"t":"10:50","n":"🚗 出發前往桃園機場","h":"家 → 機場 車程約 1 小時"},{"t":"11:55","n":"🛄 抵達桃園機場（起飛前 3 小時）","h":"報到、託運行李、出境"},{"t":"14:55","n":"✈️ JX838 桃園 → 名古屋","h":"直飛 2h35m・18:30 抵達 NGO"},{"t":"18:30","n":"抵達 中部國際機場（NGO）","h":"國際線入境・提領行李約 40–60 分"},{"t":"19:37","n":"🚃 名鐵 μ-SKY → 名古屋站（20:06 到）","h":"μ-SKY 19:37→20:06 ¥1,430；一般 19:47→20:25 ¥980"},{"t":"20:15","n":"🏨 Check-in ibis Styles Nagoya（名駅）"},{"t":"","n":"🍴 晚餐：金鯱酒場（居酒屋·名駅西口）","h":"居酒屋·名駅西口·步行1分·食べログ3.28·天天開","opt":true},{"t":"","n":"🍴 つけ麺 燈 tou（栄·沾麵）","h":"Google4.4·つけ麺·約00:30打烊·東山線名駅約5分","opt":true},{"t":"","n":"🍴 一蘭 名古屋站（24h）","h":"Google4.1·24小時·名駅內·最保險","opt":true},{"t":"","n":"🍴 横浜家系 ぎん家（名駅西口）","h":"Google3.7·到凌晨1:00·離 ibis 西口最近","opt":true},{"t":"","n":"🍴 隼 本店（海老拉麵）","h":"Google4.1·名駅西步行~10分·週六到深夜","opt":true},{"t":"","n":"🍴 塚ちゃん餃子（車道·內臟燒肉）","h":"Google4.6·17:00開·要訂位·在車道(東)稍遠","opt":true}],"11/16":[{"t":"07:50","n":"名古屋站 VIP LINER 集合（08:00出發）","h":"VIP Lounge/Taikotori南口·找持藍色遊鯉導遊"},{"t":"10:30","n":"高山：朝市・老街・陣屋","h":"自由活動約1.5h·江戶老街"},{"t":"12:30","n":"🍴 午餐：飛驒牛套餐（民宿 古志山）","h":"含關東煮·飛驒牛燒肉·五箇山豆腐（方案已含）"},{"t":"14:30","n":"白川鄉 合掌村","h":"自由活動約1.5h·城跡展望台看全景"},{"t":"18:00","n":"回程 名古屋站 VIP LINER"},{"t":"19:00","n":"🍴 晚餐：みの吉 燒肉（國際中心站）","h":"食べログ3.45·A5牛¥699·今天(一)有開","post":true},{"t":"","n":"🍴 備案：鰻魚家 Shibafukuya（需訂位）","h":"食べログ3.75·週二三休","post":true},{"t":"","n":"🍴 黑豚屋 らむちぃ（栄·味噌豬排）","h":"Google4.3·味噌カツ·栄HP栄ビルB1·夜17:30–21:30·現金·栄離名駅約5分","post":true}],"11/18":[{"t":"09:50","n":"集合 MiniStop（名駅椿町店）","h":"Klook 一日遊·20:00同地點下車"},{"t":"10:45","n":"虎溪山 永保寺（可選）","h":"秋季限定·可選·約1h·入山7:00–17:00·免費（時間為估計）"},{"t":"12:30","n":"蒲郡橙園（採水果·可選）","h":"採水果·可選·約1.5h·含門票（可午餐）"},{"t":"15:00","n":"小原 四季櫻公園","h":"四季櫻11月見頃·約30分·免費"},{"t":"16:00","n":"香嵐溪","h":"停留120–210分·紅葉點燈 日落–21:00·傍晚最美"},{"t":"20:00","n":"回程 MiniStop（名駅椿町店）"}],"11/19":[{"t":"08:00","n":"🍴 早餐：KAKO 花車本店（全家）","h":"四種果醬紅豆奶油吐司·只收現金·早上會排隊·近名駅(柳橋店週四休,改同系列本店)"},{"t":"11:10","n":"🚃 近鐵名古屋→鳥羽 特急（A53928）","h":"伊勢志摩Liner Salon・11:10發 12:49到・用5日Plus周遊券乘車"},{"t":"","n":"🍴 海女小屋 Chisato（水族館旁）","h":"食べログ3.53·需預約·今天(四)有開·現烤龍蝦鮑魚"},{"t":"","n":"鳥羽水族館","h":"9:30–17:00（最終入館16:00,年中無休）"},{"t":"","n":"鳥羽港散策","h":"自由散策"},{"t":"","n":"🍴 備案：燒貝 Iroha（水族館旁）","h":"食べログ3.50·10:00–18:30"},{"t":"","n":"🍴 KITCHEN.TAKAMA（鳥羽站·洋食）","h":"食べログ3.48·8:00–15:00·大份量"}],"11/20":[{"t":"","n":"🚃 鳥羽→伊勢（近鐵·周遊券含）","h":"約20分到宇治山田·轉三重交通巴士到內宮"},{"t":"","n":"二見興玉神社","h":"境內自由參拜·順路先拜"},{"t":"","n":"夫婦岩","h":"自由參觀"},{"t":"","n":"伊勢神宮（內宮）","h":"11月 5:00–17:00·趁關門前"},{"t":"","n":"托福橫丁","h":"11月 9:30–17:00（各店略異）"},{"t":"","n":"🍴 DANDELION 巧克力（外宮）","h":"食べログ3.59·10:00–17:00·順遊外宮"},{"t":"","n":"🍴 晚餐：滿船屋（伊勢市站前·海鮮燒）","h":"食べログ3.46·炭烤海鮮·てこね寿司"}],"11/21":[{"t":"10:00","n":"三重 → 中部國際機場"},{"t":"13:00","n":"機場逛街、購物、吃飯"},{"t":"17:40","n":"出境"}],"11/17#爸媽":[{"t":"08:30","n":"集合 MiniStop（名駅椿町店）","h":"Klook 犬山城・馬籠宿一日遊·18:20回名古屋"},{"t":"09:30","n":"犬山城（含門票）","h":"9:00–17:00·日本最古天守·國寶·含門票（時間為估計）"},{"t":"10:00","n":"三光稻荷神社","h":"犬山城旁·紅色鳥居·錢洗社"},{"t":"11:30","n":"惠那峽展望臺","h":"巨岩峽谷·停留約30分·免費"},{"t":"13:00","n":"馬籠宿","h":"米其林綠色指南一星·江戶石疊老街·約1.5h（可午餐）"},{"t":"15:00","n":"妻籠宿","h":"重要傳統建築保存區·約1h·較寧靜"},{"t":"18:20","n":"回程 名古屋"}],"11/17#姊妹":[{"t":"08:30","n":"名駅 送爸媽上車（MiniStop 椿町口）","h":"爸媽 Klook 犬山城・馬籠宿一日遊集合"},{"t":"08:35","n":"🚃 名駅 → 尼ヶ坂／名古屋城","h":"地鐵約 18 分"},{"t":"08:55","n":"🍴 早餐：つばめパン & Milk 尼ヶ坂本店","h":"Google4.0·天然酵母吐司·小倉紅豆奶油·8:00開"},{"t":"09:45","n":"名古屋城（可入城·天守¥500）","h":"天守・本丸御殿 9:00–16:30·門票¥500·就在早餐旁·當天決定入不入城"},{"t":"11:15","n":"🚃 → 大須（上前津／大須観音）","h":"約 15 分"},{"t":"11:30","n":"三輪神社","h":"大須旁·小而可愛·兔子/招財"},{"t":"11:55","n":"🍴 午餐：大須商店街 邊走邊吃","h":"各店約10:00–20:00·雞排/糰子/甜點"},{"t":"13:00","n":"大須觀音","h":"境內自由參拜"},{"t":"13:15","n":"🛍️ 大創 DAISO 大須店","h":"4 層大創·9:30–20:00·就在大須商店街內"},{"t":"13:30","n":"🎰 扭蛋 ガチャ（大須 #C-pla 等）","h":"大須=扭蛋天堂·#C-pla兩層+多間專門店·10:00–21:00｜栄也有gashacoco(全名最大)/オアシス21"},{"t":"14:00","n":"🚃 大須 → 栄","h":"上前津→栄 1 站 / 步行約 10 分"},{"t":"14:15","n":"🛍️ 栄逛街：On＋Mont-bell＋香水","h":"On→Alpen名古屋1F跑鞋區/La SESSIONS(PARCO)·Mont-bell→中日ビル·香水→松坂屋/三越·都~20:00關"},{"t":"15:30","n":"🚃 栄 → 名古屋站","h":"約 7 分"},{"t":"15:45","n":"🛍️ 名駅 GATEMALL＋3COINS","h":"UNIQLO・GU(11F)·@cosme(5F)·香氛 LE LABO/SHIRO/Aesop(2・6F)·3COINS(ゲートウォーク地下街)·~20:00｜退稅在高島屋11F·抽1.55%·領95折券｜沒逛完回來補"},{"t":"16:45","n":"🚃 名古屋站 → JR 清洲站","h":"JR約10分 + 步行約10分"},{"t":"17:00","n":"🏯 清洲城・きよすイルミ 點燈","h":"點燈17:00–21:00·看到約18:00·天守外觀·光雕每時00/20/40分"},{"t":"18:00","n":"🚃 清洲 → 名古屋站","h":"JR約10分·回名駅會合"},{"t":"18:20","n":"🍴 晚餐：全家會合（名駅·當天選一間）","h":"爸媽團18:20回名駅·全家一起吃"},{"t":"","n":"🍴 選項：矢場とん（名駅·味噌豬排）","h":"名古屋名物味噌カツ·Google4.1"},{"t":"","n":"🍴 選項：うな富士（名駅太閤通口·鰻魚三吃）","h":"青鰻·Google4.4·近飯店·11:00–22:00"},{"t":"","n":"🍴 選項：世界の山ちゃん（名駅·手羽先）","h":"名物手羽先·居酒屋·適合全家"},{"t":"","n":"📌 備選：熱田神宮（時間夠再去）","h":"原排這天·已移除讓位給逛街·離名駅約15分"}]},"budget":[{"cat":"機票","name":"星宇 JX838/839 來回 ×4（NT$15,153×4）","amt":60612,"who":"錡"},{"cat":"住宿","name":"名古屋 4 晚","amt":16815,"who":"霈"},{"cat":"住宿","name":"三重 2 晚（¥109,464）","amt":23535,"who":"霈"},{"cat":"行程","name":"高山・白川鄉一日遊（VIP LINER 巴士）","amt":7248,"who":"爸"},{"cat":"行程","name":"爸媽自己行動（犬山城・馬籠宿）","amt":3672,"who":"爸"},{"cat":"行程","name":"香嵐溪・永保寺・四季櫻（賞楓一日）","amt":7888,"who":"爸"},{"cat":"門票","name":"鳥羽水族館","amt":0,"who":""},{"cat":"餐飲","name":"海女小屋海鮮體驗","amt":0,"who":""},{"cat":"餐飲","name":"餐費（每日）","amt":0,"who":""},{"cat":"交通","name":"近鐵 5日Plus 周遊券 ×4（XWW873557）","amt":3964,"who":""},{"cat":"購物","name":"伴手禮・購物","amt":0,"who":""},{"cat":"其他","name":"保險・雜支","amt":0,"who":""},{"cat":"交通","name":"近鐵特急券 來回 ×4（¥5,360×2・A53928/A37039）","amt":2304,"who":"爸"}],"rate":0.215,"seeded":true,"day3split":true,"budgetSeeded":true,"budgetSeeded2":true,"foods":[{"g":"nagoya","t":"居酒屋","n":"名古屋地雞 金鯱酒場 名古屋站西口店","rt":3.28,"done":false,"tb":"https://tabelog.com/tw/aichi/A2301/A230101/23086434/","lt":35.1692,"lg":136.8812},{"g":"nagoya","t":"燒肉","n":"炭火燒肉 Horumon Minokichi（みの吉）","rt":3.45,"done":false,"tb":"https://tabelog.com/tw/aichi/A2301/A230101/23095337/","lt":35.1715,"lg":136.8891},{"g":"nagoya","t":"炸豬排","n":"Katsuretsu MATUMURA bis CHUNICHI BUILDING","rt":3.53,"done":false,"tb":"https://tabelog.com/tw/aichi/A2301/A230103/23087936/","lt":35.1686,"lg":136.9095},{"g":"nagoya","t":"居酒屋","n":"Kaburaya 總本家","rt":3.49,"done":false,"tb":"https://tabelog.com/tw/aichi/A2301/A230101/23051657/","lt":35.1688,"lg":136.8815},{"g":"nagoya","t":"鰻魚飯","n":"鰻魚家 Shibafukuya","rt":3.75,"done":false,"tb":"https://tabelog.com/tw/aichi/A2301/A230101/23067466/","lt":35.1751,"lg":136.8915},{"g":"nagoya","t":"鰻魚飯","n":"熱田蓬萊軒 松坂屋店","rt":3.68,"done":false,"tb":"https://tabelog.com/tw/aichi/A2301/A230103/23000108/","lt":35.1645,"lg":136.9079},{"g":"nagoya","t":"喫茶","n":"KONPARU Sun Road店","rt":3.46,"done":false,"tb":"https://tabelog.com/tw/aichi/A2301/A230101/23073737/","lt":35.1697,"lg":136.8845},{"g":"nagoya","t":"咖啡","n":"KAKO 柳橋店","rt":3.69,"done":false,"tb":"https://tabelog.com/tw/aichi/A2301/A230101/23032087/","lt":35.1691,"lg":136.8901},{"g":"nagoya","t":"咖啡","n":"BUCYO COFFEE","rt":3.69,"done":false,"tb":"https://tabelog.com/tw/aichi/A2301/A230101/23007465/","lt":35.166,"lg":136.8906},{"g":"nagoya","t":"甜點","n":"Tsubameya 大名古屋Building店","rt":3.76,"done":false,"tb":"https://tabelog.com/tw/aichi/A2301/A230101/23059315/","lt":35.1719,"lg":136.8845},{"g":"nagoya","t":"麵包","n":"IEN Bake house","rt":3.54,"done":false,"tb":"https://tabelog.com/tw/aichi/A2301/A230103/23091017/","lt":35.1706,"lg":136.9071},{"g":"nagoya","t":"咖啡","n":"coffee house KAKO 花車本店","rt":3.73,"done":false,"tb":"https://tabelog.com/tw/aichi/A2301/A230101/23005509/","lt":35.1702,"lg":136.8903},{"g":"nagoya","t":"炸豬排","n":"カツレツMATUMURA 名駅本店","rt":3.69,"done":false,"tb":"https://tabelog.com/tw/aichi/A2301/A230101/23073675/","lt":35.1721,"lg":136.8845},{"g":"nagoya","t":"烤豬舌","n":"塚ちゃん餃子（とんちゃん専門店）","rt":3.47,"done":false,"lt":35.1722,"lg":136.9328},{"g":"toba","t":"海鮮","n":"船元直送居酒屋 滿船屋（伊勢）","rt":3.46,"done":false,"tb":"https://tabelog.com/tw/mie/A2403/A240301/24013643/","lt":34.4912,"lg":136.7082},{"g":"toba","t":"海女小屋","n":"海女小屋 Chisato（鳥羽）","rt":3.53,"done":false,"tb":"https://tabelog.com/tw/mie/A2403/A240302/24006770/","lt":34.4861,"lg":136.8438},{"g":"toba","t":"燒貝","n":"燒貝 Iroha（鳥羽）","rt":3.5,"done":false,"tb":"https://tabelog.com/tw/mie/A2403/A240302/24010352/","lt":34.4862,"lg":136.8436},{"g":"toba","t":"松阪牛","n":"牛清 伊勢店","rt":3.39,"done":false,"tb":"https://tabelog.com/tw/mie/A2403/A240301/24020230/","lt":34.4927,"lg":136.7133},{"g":"toba","t":"巧克力","n":"DANDELION CHOCOLATE 伊勢外宮店","rt":3.59,"done":false,"tb":"https://tabelog.com/tw/mie/A2403/A240301/24014443/","lt":34.488,"lg":136.7076},{"g":"toba","t":"甜點","n":"COQUELICOT ROUGE（伊勢）","rt":3.56,"done":false,"tb":"https://tabelog.com/tw/mie/A2403/A240301/24016786/","lt":34.5079,"lg":136.7178},{"g":"toba","t":"洋食","n":"KITCHEN.TAKAMA（鳥羽）","rt":3.48,"done":false,"tb":"https://tabelog.com/tw/mie/A2403/A240302/24006357/","lt":34.4843,"lg":136.8447},{"g":"takayama","t":"飛驒牛壽司","n":"こって牛 飛驒牛握壽司","gr":4.4,"done":false,"lt":36.142201,"lg":137.2593308},{"g":"takayama","t":"飛驒牛壽司","n":"MEAT BOX 炙燒飛驒牛壽司（宮川朝市）","gr":4.6,"done":false,"lt":36.1442484,"lg":137.2582524},{"g":"takayama","t":"飛驒牛燒肉","n":"味蔵天国 飛驒牛燒肉（建議4:30前排隊）","gr":4.4,"done":false,"lt":36.1393917,"lg":137.2518472},{"g":"takayama","t":"飯糰","n":"日々是好日 飯糰（宮川河畔）","gr":4.2,"done":false,"lt":36.1456523,"lg":137.257918},{"g":"takayama","t":"章魚燒","n":"たこ焼きさごう（也有飛驒牛包子）","gr":4.8,"done":false,"lt":36.1439703,"lg":137.2580844},{"g":"takayama","t":"五平餅","n":"さん陣 みたらし団子・五平餅（評論態度差）","gr":2.5,"done":false,"lt":36.1417198,"lg":137.2595187},{"g":"takayama","t":"清酒","n":"船坂酒造店（投幣試飲清酒）","gr":4.4,"done":false,"lt":36.140741,"lg":137.2597061},{"g":"takayama","t":"味噌醬油","n":"大のや醸造 味噌・醬油（有試飲必買）","gr":4.6,"done":false,"lt":36.1410575,"lg":137.2595826},{"g":"takayama","t":"煎餅","n":"橋本煎餅堂（梅子口味超推）","gr":4.2,"done":false,"lt":36.142009,"lg":137.259434},{"g":"takayama","t":"純素拉麵","n":"Vegan 美菜ラーメン 純素拉麵","gr":4.9,"done":false,"lt":36.1410463,"lg":137.2525566},{"g":"nagoya","t":"蝦三明治","n":"コンパル 大須本店 炸蝦三明治（大須商店街）","gr":4.2,"done":false,"lt":35.1593993,"lg":136.9047181},{"g":"nagoya","t":"拉麵","n":"麺屋 燈（栄・沾麵／拉麵）","gr":4.4,"done":false,"lt":35.1663569,"lg":136.9045833},{"g":"nagoya","t":"雞白湯拉麵","n":"麺家 獅子丸 雞白湯拉麵（名駅・名古屋必吃）","gr":4.3,"done":false,"lt":35.1744608,"lg":136.8793602},{"g":"nagoya","t":"雞白湯拉麵","n":"池音 雞白湯拉麵（網友推薦）","done":false},{"g":"nagoya","t":"雞白湯拉麵","n":"鶏そば啜る 伏見はなれ 雞白湯拉麵","gr":4.1,"done":false,"lt":35.1678538,"lg":136.8985886},{"g":"nagoya","t":"喫茶早餐","n":"喫茶七番 紅豆吐司早餐（錦）","gr":4.4,"done":false,"lt":35.1715111,"lg":136.8991046},{"g":"nagoya","t":"喫茶","n":"コメダ珈琲 矢場町店 小倉吐司","gr":3.1,"done":false,"lt":35.163826,"lg":136.9082641},{"g":"nagoya","t":"咖啡","n":"groove coffee 紅豆吐司","gr":4.5,"done":false,"lt":35.1655247,"lg":136.8955713},{"g":"nagoya","t":"喫茶早餐","n":"Royal ろーやる 玉子三明治（名駅）","gr":4.3,"done":false,"lt":35.170917,"lg":136.8902972},{"g":"nagoya","t":"燒鳥","n":"始祖鳥 伏見 燒鳥（¥5-6k高單價）","gr":4.4,"done":false,"lt":35.1695653,"lg":136.8982332},{"g":"nagoya","t":"咖啡","n":"西原珈琲店 分店 厚片吐司・布丁","gr":4,"done":false,"lt":35.1710173,"lg":136.9063454},{"g":"nagoya","t":"味噌豬排","n":"矢場とん 矢場町本店 味噌豬排","gr":4.1,"done":false,"lt":35.1616781,"lg":136.9062361},{"g":"nagoya","t":"喫茶早餐","n":"サンド50 味噌豬排三明治（金山・昭和喫茶）","gr":4.2,"done":false,"lt":35.146993,"lg":136.903888},{"g":"toba","t":"咖啡","n":"なかむら珈琲 Nakamura Coffee（伊勢・自家烘焙）","gr":4.5,"done":false,"lt":34.4994703,"lg":136.719425},{"g":"toba","t":"可樂餅牛丼","n":"豚捨 おかげ横丁（伊勢內宮前・炸牛肉可樂餅）","gr":4.1,"done":false,"lt":34.4620693,"lg":136.7229009},{"g":"nagoya","t":"鰻魚三吃","n":"うな富士 名駅太閤通口店（鰻魚三吃·近飯店）","gr":4.4,"done":false,"lt":35.1685422,"lg":136.8817188}],"dataVersion":24};
+
+var DAYCOLORS={1:"#1a9aa0",2:"#d64545",3:"#e08a1e",4:"#7e9438",5:"#c2602f",6:"#2f7fd6",7:"#7a5ea8"};
+var CN=["","一","二","三","四","五","六","七"];
+var CATCOLOR={"機票":"#2f7fd6","住宿":"#c2602f","行程":"#7e9438","門票":"#7a5ea8","餐飲":"#d64545","交通":"#1a9aa0","購物":"#e08a1e","其他":"#9a8c7a"};
+var CATS=["機票","住宿","行程","門票","餐飲","交通","購物","其他"];
+var WHO=["","爸","媽","霈","錡"];
+var WHOCOLOR={"爸":"#2f7fd6","媽":"#d2627f","霈":"#5a9e4f","錡":"#e08a1e"};
+
+var DAYS=[
+ {date:"11/15",dow:"日",area:"nagoya",theme:"✈️ 抵達名古屋",illo:"plane",temp:{hi:16,lo:8},
+  fixed:[{i:"✈️",fx:"<b>JX838</b> 14:55 桃園 → 18:30 名古屋"},{i:"🏨",fx:"入住 <b>ibis Styles Nagoya</b>（名駅）"}]},
+ {date:"11/16",dow:"一",area:"nagoya",theme:"⛰️ 高山・白川鄉",illo:"mtn",temp:{hi:11,lo:2},
+  tour:"VIP LINER 高山・白川鄉一日遊",
+  fixed:[{i:"🚌",fx:"VIP LINER 巴士一日・名古屋站集合"}]},
+ {date:"11/17",dow:"二",area:"nagoya",theme:"👨‍👩‍👧‍👧 兵分兩路",illo:"split",temp:{hi:16,lo:8},
+  groups:[{key:"11/17#爸媽",label:"👱‍♂️👩 爸媽組",sub:"犬山城・馬籠宿 文化之旅",tour:"Klook 犬山城・馬籠宿一日遊"},
+          {key:"11/17#姊妹",label:"👯 姊妹組",sub:"名古屋城・大須・熱田・清洲城點燈"}]},
+ {date:"11/18",dow:"三",area:"nagoya",theme:"🍁 香嵐溪 賞楓",illo:"maple",temp:{hi:14,lo:6},
+  tour:"Klook 香嵐溪・永保寺・四季櫻 賞楓一日遊"},
+ {date:"11/19",dow:"四",area:"toba",theme:"🐬 抵達・鳥羽",illo:"dolphin",transition:true,temp:{hi:17,lo:10},
+  fixed:[{i:"🏨",fx:"退房 ibis → 入住 <b>行燈 鳥羽</b>（全室海景）"}]},
+ {date:"11/20",dow:"五",area:"toba",theme:"⛩️ 伊勢神宮",illo:"torii",temp:{hi:17,lo:10}},
+ {date:"11/21",dow:"六",area:"toba",theme:"✈️ 返程",illo:"plane",transition:true,temp:{hi:16,lo:8},
+  fixed:[{i:"✈️",fx:"<b>JX839</b> 19:40 名古屋 → 22:15 桃園"}]}
 ];
 
-/* pre-filled activities from the final plan (editable; seeds once) */
-var SEED = {
-  "11/15":[{t:"晚上",n:"飯店附近晚餐"},{t:"",n:"自由活動"}],
-  "11/16":[{t:"",n:"白川鄉合掌村"},{t:"",n:"高山老街・飛驒高山古街"},{t:"",n:"飛驒高山陣屋"}],
-  "11/18":[{t:"",n:"香嵐溪"},{t:"",n:"永保寺"},{t:"",n:"小原 四季櫻"}],
-  "11/19":[{t:"",n:"伊勢神宮（內宮）"},{t:"",n:"托福橫丁"},{t:"",n:"二見興玉神社"},{t:"",n:"夫婦岩"}],
-  "11/20":[{t:"",n:"海女小屋"},{t:"",n:"鳥羽水族館"},{t:"",n:"鳥羽港散策"}],
-  "11/21":[{t:"10:00",n:"三重 → 中部國際機場"},{t:"13:00",n:"機場逛街、購物、吃飯"},{t:"17:40",n:"出境"}]
-};
-
-var SUGGEST = {
-  nagoya:["名古屋城","名古屋港水族館","磁浮鐵道館","榮・綠洲21","名古屋電視塔"],
-  toba:["御木本真珠島","橫山展望台","鳥羽展望台","赤福本店","海鮮丼"]
-};
-
-var DAYCOLORS = {1:"#1a9aa0", 2:"#d64545", 3:"#e08a1e", 4:"#7e9438", 5:"#c2602f", 6:"#2f7fd6", 7:"#7a5ea8"};
-
-var PLACES = [
-  {n:"中部國際機場 NGO", s:"去/回程航班", lat:34.8584, lng:136.8150, day:1},
-  {n:"名古屋飯店 ibis Styles", s:"11/15–11/19 入住", lat:35.1690, lng:136.8893, day:1},
-  {n:"白川鄉 合掌村", s:"世界遺產", lat:36.2561, lng:136.9061, day:2},
-  {n:"飛驒高山 三町老街", s:"古街・宮川朝市", lat:36.1418, lng:137.2595, day:2},
-  {n:"犬山城", s:"爸媽組・國寶天守", lat:35.3884, lng:136.9392, day:3},
-  {n:"馬籠宿", s:"爸媽組・中山道", lat:35.5315, lng:137.5718, day:3},
-  {n:"熱田神宮", s:"姊妹組・名古屋市區", lat:35.1281, lng:136.9079, day:3},
-  {n:"名城公園", s:"姊妹組・名古屋城旁", lat:35.1887, lng:136.9030, day:3},
-  {n:"大須商店街", s:"姊妹組・逛街美食", lat:35.1591, lng:136.9026, day:3},
-  {n:"Sky Promenade 夜景", s:"姊妹組・Midland Square", lat:35.1705, lng:136.8851, day:3},
-  {n:"香嵐溪", s:"賞楓", lat:35.1315, lng:137.3131, day:4},
-  {n:"永保寺", s:"賞楓・多治見", lat:35.3468, lng:137.1307, day:4},
-  {n:"伊勢神宮 內宮", s:"日本第一神宮", lat:34.4550, lng:136.7252, day:5},
-  {n:"おかげ橫丁", s:"內宮前老街・赤福", lat:34.4624, lng:136.7229, day:5},
-  {n:"夫婦岩・二見興玉神社", s:"海景聖地", lat:34.5089, lng:136.7878, day:5},
-  {n:"三重 行燈鳥羽 住宿", s:"11/19–11/21 入住", lat:34.4920, lng:136.8343, day:5},
-  {n:"鳥羽水族館", s:"頂級水族館・儒艮", lat:34.4816, lng:136.8457, day:6},
-  {n:"相差 海女小屋", s:"炭烤海鮮(需預約)", lat:34.3876, lng:136.9124, day:6}
+var NIGHTVIEWS=[
+ {n:"電視塔 × 綠洲21（栄·同一晚）",time:"日落–24:00",note:"兩個就在隔壁,同一天一起逛｜電視塔展望台~21:00｜綠洲21 日落–23:00(⚠️屋頂整修,只能地面看)",q:"中部電力MIRAI TOWER 栄"},
+ {n:"Sky Promenade（Midland）",time:"11:00–22:00",note:"名駅·最終入場21:30·日本夜景遺產",q:"ミッドランドスクエア スカイプロムナード"},
+ {n:"清洲城 きよすイルミ",time:"17:00–21:00",note:"光雕每時00/20/40分·名古屋站JR約10分·週一天守閣休",q:"清洲城"}
 ];
 
-var CATS = ["機票","住宿","行程","門票","餐飲","交通","購物","其他"];
-var CATCOLOR = {"機票":"#a9763f","住宿":"#2f9c8f","行程":"#5a9e4f","門票":"#8a6fc4",
-  "餐飲":"#d2627f","交通":"#2f7fd6","購物":"#9a5fbf","其他":"#9a7b4f"};
-var WHO = ["","爸","媽","霈","錡"];
-var WHOCOLOR = {"爸":"#2f7fd6","媽":"#d2627f","霈":"#5a9e4f","錡":"#e08a1e"};
-
-/* food wishlist — Nagoya meshi + Mie / Ise specialties */
-var FOODGROUPS = [
-  {key:"nagoya", label:"🍢 名古屋名物",
-   seed:[],
-   chips:["味噌豬排","鰻魚飯三吃","手羽先","台灣拉麵","味噌煮込烏龍","天むす","小倉吐司","矢場とん","風來坊"]},
-  {key:"toba", label:"🦞 三重・伊勢",
-   seed:[],
-   chips:["伊勢烏龍麵","赤福","松阪牛","海女小屋","海鮮丼","伊勢龍蝦","てこね寿司","牡蠣","豚捨可樂餅"]}
+var PLACES=[
+ {n:"ibis Styles Nagoya",d:1,lat:35.1724,lng:136.8846},
+ {n:"高山老街",d:2,lat:36.1408,lng:137.2552},{n:"白川鄉 合掌村",d:2,lat:36.2578,lng:136.9065},
+ {n:"犬山城",d:3,lat:35.3879,lng:136.9394},{n:"馬籠宿",d:3,lat:35.5236,lng:137.5706},
+ {n:"熱田神宮",d:3,lat:35.1278,lng:136.9089},{n:"大須觀音",d:3,lat:35.1595,lng:136.9009},
+ {n:"Sky Promenade（Midland）",d:3,lat:35.1685,lng:136.8853},
+ {n:"香嵐溪",d:4,lat:35.1539,lng:137.4139},{n:"永保寺",d:4,lat:35.3419,lng:137.1189},
+ {n:"伊勢神宮 內宮",d:5,lat:34.4551,lng:136.7256},{n:"托福橫丁",d:5,lat:34.4566,lng:136.7246},
+ {n:"二見興玉神社・夫婦岩",d:5,lat:34.5131,lng:136.7877},{n:"お宿 行燈 鳥羽",d:5,lat:34.4793,lng:136.8498},
+ {n:"鳥羽水族館",d:6,lat:34.4817,lng:136.8436},{n:"鳥羽港",d:6,lat:34.4810,lng:136.8430},
+ {n:"中部國際機場",d:7,lat:34.8584,lng:136.8052}
 ];
 
-/* ============ storage (persists per device) ============ */
-var KEY="nagoyatoba_v2";
-var DEFAULT_DATA = {"activities":{"11/15":[{"t":"20:00","n":"飯店附近晚餐"}],"11/16":[{"t":"07:50","n":"名古屋站 VIP LINER 公車站"},{"t":"10:30","n":"高山老街・飛驒高山古街","h":"街道自由參觀（店家約9:00–17:00）"},{"t":"12:45","n":"白川鄉合掌村","h":"聚落自由參觀（展示館約9:00–17:00）"},{"t":"18:00","n":"名古屋站 VIP LINER 公車站"},{"t":"19:00","n":"晚餐"},{"t":"","n":"榮・綠洲21","h":"商店約10:00–21:00"},{"t":"","n":"名古屋電視塔","h":"日 10:00–21:00（最終入場20:40）"}],"11/18":[{"t":"","n":"香嵐溪","h":"自由參觀;紅葉點燈 日落–21:00（11月）"},{"t":"","n":"永保寺","h":"入山 7:00–17:00（免費）"},{"t":"","n":"小原 四季櫻","h":"自由參觀（四季櫻11月見頃）"}],"11/19":[{"t":"","n":"🚃 名古屋→伊勢志摩（近鐵）","h":"⚠️ しまかぜ名古屋發原則週四(木)運休,當天改搭一般特急"},{"t":"","n":"伊勢神宮（內宮）","h":"11月 5:00–17:00"},{"t":"","n":"托福橫丁","h":"11月 9:30–17:00（各店略異）"},{"t":"","n":"二見興玉神社","h":"境內自由參拜"},{"t":"","n":"夫婦岩","h":"自由參觀"}],"11/20":[{"t":"","n":"海女小屋","h":"需事前預約"},{"t":"","n":"鳥羽水族館","h":"9:30–17:00（最終入館16:00,年中無休）"},{"t":"","n":"鳥羽港散策","h":"自由散策"}],"11/21":[{"t":"10:00","n":"三重 → 中部國際機場"},{"t":"13:00","n":"機場逛街、購物、吃飯"},{"t":"17:40","n":"出境"}],"11/17#爸媽":[{"t":"","n":"犬山城","h":"9:00–17:00（最終入場16:30,12/29–31休）"},{"t":"","n":"犬山城下町","h":"街道自由參觀（店家各異）"},{"t":"","n":"馬籠宿","h":"宿場自由參觀（店家約9:00–17:00）"},{"t":"","n":"妻籠宿","h":"宿場自由參觀（店家約9:00–17:00）"}],"11/17#姊妹":[{"t":"","n":"名城公園","h":"公園自由進出"},{"t":"","n":"熱田神宮","h":"境內終日參拜（授與所約7:00–日沒）"},{"t":"","n":"三輪神社","h":"境內自由參拜（社務所約9:00–17:00）"},{"t":"","n":"大須觀音・大須商店街","h":"商店街各店約10:00–20:00"},{"t":"","n":"Sky Promenade 夜景","h":"11:00–22:00（最終入場21:30）"}]},"budget":[{"cat":"機票","name":"星宇 JX838/839 來回 ×4（NT$15,153×4）","amt":60612,"who":"錡"},{"cat":"住宿","name":"名古屋 4 晚","amt":16815,"who":"霈"},{"cat":"住宿","name":"三重 2 晚（¥109,464）","amt":23535,"who":"霈"},{"cat":"行程","name":"高山・白川鄉一日遊（VIP LINER 巴士）","amt":7248,"who":"爸"},{"cat":"行程","name":"爸媽自己行動（犬山城・馬籠宿）","amt":3672,"who":"爸"},{"cat":"行程","name":"香嵐溪・永保寺・四季櫻（賞楓一日）","amt":7888,"who":"爸"},{"cat":"門票","name":"鳥羽水族館","amt":0,"who":""},{"cat":"餐飲","name":"海女小屋海鮮體驗","amt":0,"who":""},{"cat":"餐飲","name":"餐費（每日）","amt":0,"who":""},{"cat":"交通","name":"JR／近鐵／巴士・IC 卡","amt":0,"who":""},{"cat":"購物","name":"伴手禮・購物","amt":0,"who":""},{"cat":"其他","name":"保險・雜支","amt":0,"who":""}],"rate":0.215,"seeded":true,"day3split":true,"budgetSeeded":true,"budgetSeeded2":true,"foods":[{"g":"nagoya","t":"味噌豬排","n":"Katuretu MATUMURA カツレツMATUMURA","done":false},{"g":"nagoya","n":"Tsukachan Gyoza 餃子 とんちゃん 専門店 塚ちゃん餃子","done":false,"t":"烤豬舌"}],"costfix_nagoyahotel":true,"costfix_mie":true,"costfix_flights":true,"costfix_klook":true,"foodcleared":true,"added_2places":true};
-var mem={activities:{}, budget:[], rate:0.215, seeded:false};
-var hasStore = (typeof window.storage!=="undefined" && window.storage);
-var hasLS = (function(){ try{ localStorage.setItem("__t","1"); localStorage.removeItem("__t"); return true; }catch(e){ return false; } })();
+/* ============ SVG illustrations ============ */
+function svgHero(){
+  return '<svg viewBox="0 0 430 186" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">'
+  +'<defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fbf5ea"/><stop offset="1" stop-color="#f8f3e9"/></linearGradient></defs>'
+  +'<rect width="430" height="186" fill="url(#sky)"/>'
+  +'<circle cx="340" cy="46" r="20" fill="#f3d9a0"/>'
+  // distant mountains
+  +'<path d="M0 150 L70 96 L120 140 L180 92 L250 150 Z" fill="#cfe0d4"/>'
+  +'<path d="M210 150 L300 84 L390 150 Z" fill="#bcd4c2"/>'
+  // torii (left)
+  +'<g transform="translate(36,88)"><g class="illo"><rect x="-4" y="6" width="54" height="7" rx="2" fill="#c0392b"/><rect x="-2" y="18" width="50" height="6" rx="2" fill="#c0392b"/><rect x="2" y="12" width="7" height="52" fill="#c0392b"/><rect x="38" y="12" width="7" height="52" fill="#c0392b"/></g></g>'
+  // Nagoya castle with golden shachi (center)
+  +'<g transform="translate(176,66)"><g class="illo d2">'
+  +'<rect x="8" y="58" width="60" height="18" fill="#e9e2d2"/><rect x="2" y="54" width="72" height="6" fill="#8a7a63"/>'
+  +'<rect x="14" y="40" width="48" height="16" fill="#f3ede0"/><rect x="10" y="36" width="56" height="5" fill="#6b5a47"/>'
+  +'<path d="M12 36 L38 20 L64 36 Z" fill="#3f5d6e"/><rect x="20" y="30" width="36" height="8" fill="#f3ede0"/>'
+  +'<path d="M18 30 L38 16 L58 30 Z" fill="#3f5d6e"/>'
+  +'<path d="M30 18 q4 -8 8 0" stroke="#d9a441" stroke-width="3" fill="none"/>'
+  +'<circle cx="31" cy="16" r="2.4" fill="#d9a441"/><circle cx="45" cy="16" r="2.4" fill="#d9a441"/></g></g>'
+  // little train (right, lower)
+  +'<g transform="translate(300,120)"><g class="illo"><rect x="0" y="0" width="62" height="24" rx="7" fill="#2f7fd6"/><rect x="0" y="2" width="62" height="7" rx="4" fill="#5a9bdf"/><rect x="8" y="11" width="12" height="8" rx="2" fill="#eaf3ff"/><rect x="25" y="11" width="12" height="8" rx="2" fill="#eaf3ff"/><rect x="42" y="11" width="12" height="8" rx="2" fill="#eaf3ff"/><circle cx="15" cy="26" r="3.5" fill="#3a2a20"/><circle cx="47" cy="26" r="3.5" fill="#3a2a20"/></g></g>'
+  // maple leaves drifting
+  +'<g class="leaf-anim" fill="#d2622f"><path d="M372 60 l5 -9 l5 9 l9 -2 l-6 8 l6 3 l-9 2 l2 9 l-7 -6 l-7 6 l2 -9 l-9 -2 l6 -3 l-6 -8 l9 2 z" opacity=".85"/></g>'
+  +'<g class="leaf-anim" fill="#e08a1e" style="animation-delay:-3s"><path d="M96 40 l4 -7 l4 7 l7 -1 l-5 6 l5 2 l-7 2 l1 7 l-5 -4 l-5 4 l1 -7 l-7 -2 l5 -2 l-5 -6 l7 1 z" opacity=".8"/></g>'
+  +'</svg>';
+}
+function svgDay(k,sz){
+  sz=sz||58; var s='<svg viewBox="0 0 48 48" width="'+sz+'" height="'+sz+'" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">';
+  if(k==="plane"){s+='<circle cx="24" cy="24" r="21" fill="#d6ecf7"/><path d="M8 26 L40 16 L34 24 L40 32 Z" fill="#2f7fd6"/><path d="M22 23 L28 14 L30 15 L26 24 Z" fill="#1b5e9e"/>';}
+  else if(k==="mtn"){s+='<circle cx="24" cy="24" r="21" fill="#dcefe0"/><path d="M6 36 L18 16 L28 30 L34 20 L42 36 Z" fill="#7e9438"/><path d="M14 24 L18 16 L22 24 Z" fill="#fff"/><path d="M30 26 L34 20 L38 26 Z" fill="#fff"/>';}
+  else if(k==="split"){s+='<circle cx="24" cy="24" r="21" fill="#fbe8cf"/><circle cx="17" cy="20" r="6" fill="#e08a1e"/><circle cx="31" cy="20" r="6" fill="#d2627f"/><path d="M9 36 q8 -9 16 0" fill="#e08a1e"/><path d="M23 36 q8 -9 16 0" fill="#d2627f"/>';}
+  else if(k==="maple"){s+='<circle cx="24" cy="24" r="21" fill="#f6ddd0"/><path d="M24 10 l3 6 l6 -2 l-3 6 l6 2 l-6 3 l3 7 l-6 -4 l-3 7 l-3 -7 l-6 4 l3 -7 l-6 -3 l6 -2 l-3 -6 l6 2 z" fill="#d2622f"/><rect x="23" y="30" width="2" height="8" fill="#9a6a3a"/>';}
+  else if(k==="torii"){s+='<circle cx="24" cy="24" r="21" fill="#f7e0de"/><rect x="8" y="14" width="32" height="5" rx="2" fill="#c0392b"/><rect x="10" y="22" width="28" height="4" rx="2" fill="#c0392b"/><rect x="13" y="16" width="5" height="22" fill="#c0392b"/><rect x="30" y="16" width="5" height="22" fill="#c0392b"/>';}
+  else if(k==="dolphin"){s+='<circle cx="24" cy="24" r="21" fill="#d6ecf7"/><path d="M12 32 q4 -16 20 -14 q-6 4 -4 12 q-8 -6 -16 2 z" fill="#2f7fd6"/><path d="M30 20 q6 -4 8 0 q-4 0 -4 4 z" fill="#2f7fd6"/><circle cx="18" cy="24" r="1.6" fill="#fff"/><path d="M8 36 q6 -4 12 0 q6 4 12 0" stroke="#5a9bdf" stroke-width="2" fill="none"/>';}
+  else{s+='<circle cx="24" cy="24" r="21" fill="#eee"/>';}
+  return s+'</svg>';
+}
 
+/* ============ storage ============ */
+var KEY="nagoyatoba_v3";
+var mem=JSON.parse(JSON.stringify(DEFAULT_DATA));
+var hasStore=(typeof window.storage!=="undefined" && window.storage);
+var hasLS=(function(){try{localStorage.setItem("__t","1");localStorage.removeItem("__t");return true;}catch(e){return false;}})();
 async function loadStore(){
   var loaded=false;
-  if(hasLS){
-    try{ var raw=localStorage.getItem(KEY); if(raw){ mem=JSON.parse(raw); loaded=true; } }catch(e){}
-  } else if(hasStore){
-    try{ var r=await window.storage.get(KEY,false); if(r&&r.value){mem=JSON.parse(r.value); loaded=true;} }
-    catch(e){ /* first run / not found */ }
-  }
-  if(!loaded){ try{ mem=JSON.parse(JSON.stringify(DEFAULT_DATA)); }catch(e){} }
-  if(!mem.activities) mem.activities={};
-  if(!mem.budget) mem.budget=[];
-  if(typeof mem.rate!=="number") mem.rate=0.215;
-  if(!mem.seeded){
-    Object.keys(SEED).forEach(function(date){
-      if(!mem.activities[date] || mem.activities[date].length===0){
-        mem.activities[date]=SEED[date].map(function(a){return {t:a.t,n:a.n};});
-      }
-    });
-    mem.seeded=true; save();
-  }
-  if(!mem.day3split){
-    if(!mem.activities["11/17#爸媽"] || mem.activities["11/17#爸媽"].length===0)
-      mem.activities["11/17#爸媽"]=[{t:"",n:"犬山城"},{t:"",n:"犬山城下町"},{t:"",n:"馬籠宿"},{t:"",n:"妻籠宿"}];
-    if(!mem.activities["11/17#姊妹"] || mem.activities["11/17#姊妹"].length===0)
-      mem.activities["11/17#姊妹"]=[{t:"",n:"名城公園"},{t:"",n:"熱田神宮"},{t:"",n:"三輪神社"},{t:"",n:"大須觀音・大須商店街"},{t:"",n:"Sky Promenade 夜景"}];
-    if(mem.activities["11/17"]) delete mem.activities["11/17"];
-    mem.day3split=true; save();
-  }
-  if(!mem.budgetSeeded2){
-    mem.budget=[
-      {cat:"機票", name:"星宇 JX838/839 來回 ×4（NT$15,153×4）", amt:60612, who:"錡"},
-      {cat:"住宿", name:"名古屋 4 晚（NT$17,067＋現場¥16,000）", amt:20507, who:"霈"},
-      {cat:"住宿", name:"三重 2 晚（¥109,464）", amt:23535, who:"霈"},
-      {cat:"行程", name:"Klook：高山・白川鄉一日遊（1,536×4）", amt:6144, who:"爸"},
-      {cat:"行程", name:"Klook：犬山城・馬籠宿文化之旅（1,477×2）", amt:2954, who:"爸"},
-      {cat:"行程", name:"Klook：香嵐溪・永保寺・四季櫻（1,753×4）", amt:7012, who:"爸"},
-      {cat:"門票", name:"鳥羽水族館", amt:0, who:""},
-      {cat:"餐飲", name:"海女小屋海鮮體驗", amt:0, who:""},
-      {cat:"餐飲", name:"餐費（每日）", amt:0, who:""},
-      {cat:"交通", name:"JR／近鐵／巴士・IC 卡", amt:0, who:""},
-      {cat:"購物", name:"伴手禮・購物", amt:0, who:"—"},
-      {cat:"其他", name:"保險・雜支", amt:0, who:""}
-    ];
-    mem.budgetSeeded=true; mem.budgetSeeded2=true; save();
-  }
-  if(!mem.costfix_nagoyahotel){
-    mem.budget.forEach(function(e){
-      if(e.name && e.name.indexOf("名古屋 4 晚")===0 && !e.amt){
-        e.name="名古屋 4 晚（NT$17,067＋現場¥16,000）"; e.amt=20507;
-      }
-    });
-    mem.costfix_nagoyahotel=true; save();
-  }
-  if(!mem.costfix_mie){
-    mem.budget.forEach(function(e){
-      if(e.cat==="住宿") e.who="霈";
-      if(e.name && e.name.indexOf("三重")===0 && !e.amt){
-        e.name="三重 2 晚（¥109,464）"; e.amt=23535;
-      }
-    });
-    mem.costfix_mie=true; save();
-  }
-  if(!mem.costfix_flights){
-    mem.budget.forEach(function(e){
-      if(e.cat==="機票"){
-        e.who="錡";
-        if(!e.amt){ e.name="星宇 JX838/839 來回 ×4（NT$15,153×4）"; e.amt=60612; }
-      }
-    });
-    mem.costfix_flights=true; save();
-  }
-  if(!mem.costfix_klook){
-    mem.budget.forEach(function(e){
-      if(e.cat==="行程"){
-        e.who="爸";
-        if(!e.amt){
-          if(e.name.indexOf("高山")>=0){ e.amt=6144; e.name="Klook：高山・白川鄉一日遊（1,536×4）"; }
-          else if(e.name.indexOf("犬山")>=0){ e.amt=2954; e.name="Klook：犬山城・馬籠宿文化之旅（1,477×2）"; }
-          else if(e.name.indexOf("香嵐溪")>=0){ e.amt=7012; e.name="Klook：香嵐溪・永保寺・四季櫻（1,753×4）"; }
-        }
-      }
-    });
-    mem.costfix_klook=true; save();
-  }
-  if(!mem.foods){
-    mem.foods=[];
-    FOODGROUPS.forEach(function(g){ g.seed.forEach(function(n){ mem.foods.push({g:g.key,n:n,done:false}); }); });
-    save();
-  }
-  if(!mem.foodcleared){
-    mem.foods=[];
-    mem.foodcleared=true; save();
-  }
-  if(!mem.added_2places){
-    mem.foods.push({g:"nagoya",t:"",n:"",done:false,url:"https://maps.app.goo.gl/3dFqXz9JzrnQGQH2A?g_st=in"});
-    mem.foods.push({g:"nagoya",t:"",n:"",done:false,url:"https://maps.app.goo.gl/pYqgDgHPRyYEy9eW8?g_st=in"});
-    mem.added_2places=true; save();
-  }
+  if(hasLS){try{var raw=localStorage.getItem(KEY);if(raw){mem=JSON.parse(raw);loaded=true;}}catch(e){}}
+  else if(hasStore){try{var r=await window.storage.get(KEY,false);if(r&&r.value){mem=JSON.parse(r.value);loaded=true;}}catch(e){}}
+  if(!loaded){mem=JSON.parse(JSON.stringify(DEFAULT_DATA));}
+  var upgraded=false;
+  if((mem.dataVersion||0) < (DEFAULT_DATA.dataVersion||0)){ mem=JSON.parse(JSON.stringify(DEFAULT_DATA)); upgraded=true; }
+  if(!mem.activities)mem.activities={};
+  if(!mem.budget)mem.budget=[];
+  if(!mem.foods)mem.foods=[];
+  if(typeof mem.rate!=="number")mem.rate=0.215;
+  if(typeof mem.activeDay!=="number")mem.activeDay=0;
+  mem.dataVersion=DEFAULT_DATA.dataVersion||0;
+  if(upgraded && (hasLS||hasStore)){ try{ if(hasLS){localStorage.setItem(KEY,JSON.stringify(mem));} else {window.storage.set(KEY,JSON.stringify(mem),false);} }catch(e){} }
 }
 var saveTimer;
 function save(){
   clearTimeout(saveTimer);
-  saveTimer=setTimeout(async function(){
-    try{
-      if(hasLS){ localStorage.setItem(KEY, JSON.stringify(mem)); }
-      else if(hasStore){ await window.storage.set(KEY, JSON.stringify(mem), false); }
-    }catch(e){}
-    var d=document.getElementById("savedot"); if(d){ d.classList.add("show"); setTimeout(function(){d.classList.remove("show");},700); }
+  saveTimer=setTimeout(function(){
+    try{ if(hasLS){localStorage.setItem(KEY,JSON.stringify(mem));} else if(hasStore){window.storage.set(KEY,JSON.stringify(mem),false);} }catch(e){}
+    var d=document.getElementById("savedot"); if(d){d.classList.add("show");setTimeout(function(){d.classList.remove("show");},700);}
   },300);
 }
+function esc(s){return (s==null?"":String(s)).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+function gmap(q){return "https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(q);}
+function actsFor(k){if(!mem.activities[k])mem.activities[k]=[];return mem.activities[k];}
+function nf(n){return (n||0).toLocaleString();}
 
-/* ============ itinerary render ============ */
-function actsFor(date){ if(!mem.activities[date]) mem.activities[date]=[]; return mem.activities[date]; }
-
-function linksBlock(links){
-  return (links||[]).map(function(l){
-    var s='<a class="booking" href="'+l.url+'" target="_blank" rel="noopener">'+l.label+' →</a>';
-    if(l.info) s+='<div class="bookinfo">'+l.info+'</div>';
-    return s;
-  }).join("");
-}
-function actsBlock(key, area, showChips){
-  var inner='<div class="acts" data-acts="'+key+'"></div>'+
-    '<div class="addrow"><button class="addbtn" data-newact="'+key+'">＋ 加入景點 / 行程</button>'+
-    '<button class="sortbtn" data-sort="'+key+'">⇅ 時間排序</button>';
-  if(showChips){
-    var chips=SUGGEST[area]||[];
-    inner+='<div class="chiphint">附近推薦,點一下加到這天 ↓</div>'+
-      chips.map(function(c){return '<button class="chip" data-add="'+key+'" data-name="'+c+'">'+c+'</button>';}).join("");
-  }
-  return inner+'</div>';
+/* ============ countdown ============ */
+function countdown(){
+  var dep=new Date(2026,10,15,14,55,0), now=new Date();
+  var d=Math.ceil((dep-now)/86400000);
+  var el=document.getElementById("cdnum"), lb=document.getElementById("cdlbl");
+  if(!el)return;
+  if(d>0){el.textContent=d;lb.innerHTML='天後<br><b>出發</b>';}
+  else if(d===0){el.textContent="0";lb.innerHTML='<b>今天出發!</b>';}
+  else{el.textContent="旅途中";el.style.fontSize="18px";lb.innerHTML='<b>玩得開心 🍁</b>';}
 }
 
-function renderBooked(){
-  var host=document.getElementById("view-booked"); if(!host) return;
-  function bud(pred){ for(var i=0;i<mem.budget.length;i++){ if(pred(mem.budget[i])) return mem.budget[i]; } return null; }
-  function money(e){ return e ? 'NT$'+(e.amt||0).toLocaleString()+'（'+(e.who||'—')+'付）' : ''; }
-  var air=bud(function(e){return e.cat==="機票";});
-  var hNag=bud(function(e){return e.cat==="住宿" && e.name.indexOf("名古屋")>=0;});
-  var hMie=bud(function(e){return e.cat==="住宿" && (e.name.indexOf("三重")>=0||e.name.indexOf("鳥羽")>=0);});
+/* ============ HOME / overview ============ */
+function daySpots(d){
+  var keys=d.groups?d.groups.map(function(g){return g.key;}):[d.date];
+  var out=[];
+  keys.forEach(function(k){
+    (mem.activities[k]||[]).forEach(function(a){
+      var raw=(a.n||"").trim();
+      if(/^(🍴|🌃)/.test(raw))return; // skip food & night-view picks
+      var n=raw.replace(/^[^一-鿿A-Za-z0-9]+/,"").trim();
+      if(!n)return;
+      if(/集合|回程|出發|公車站|車站|機場|出境|入境|退房|入住|午餐|晚餐|早餐|備案|提領|Check|→/i.test(n))return;
+      // trim parenthetical notes for compactness
+      n=n.replace(/[（(].*$/,"").trim();
+      if(n)out.push(n);
+    });
+  });
+  if(!out.length)return '<span style="color:var(--muted)">自由活動</span>';
+  return out.join("・");
+}
+function renderHome(){
+  var host=document.getElementById("view-home");
+  var grid='<div class="daylist">';
+  DAYS.forEach(function(d,i){
+    var c=DAYCOLORS[i+1];
+    var tp=d.temp?('<span class="dtemp"><span class="hi">'+d.temp.hi+'°</span><span class="lo">'+d.temp.lo+'°</span></span>'):'';
+    grid+='<div class="dayrow" data-goday="'+i+'">'
+      +'<div class="dc-badge" style="background:'+c+'">'+CN[i+1]+'</div>'
+      +'<div class="drmid">'
+        +'<div class="drtop"><span class="dc-date">'+d.date+'</span><span class="dc-dow">'+d.dow+'</span>'+tp+'</div>'
+        +'<div class="dc-theme">'+d.theme+'</div>'
+        +'<div class="dc-spots">'+daySpots(d)+'</div>'
+      +'</div>'
+      +'<span class="drchev">›</span></div>';
+  });
+  grid+='</div><div class="wxrow" id="goweather"><span class="wxi">🌤️</span>'
+    +'<span class="wxt">天氣・穿搭</span><span class="drchev">›</span></div>';
 
-  function flight(no,date,dep,arr,dt,at,note){
-    return '<div class="bkcard">'+
-      '<div class="bkcard-top"><span class="bkflight">'+no+'</span><span class="bkdate">'+date+'</span></div>'+
-      '<div class="bkroute">'+
-        '<div class="bkpt"><b>'+dt+'</b><span>'+dep+'</span></div>'+
-        '<div class="bkline">✈ '+note+'</div>'+
-        '<div class="bkpt"><b>'+at+'</b><span>'+arr+'</span></div>'+
-      '</div></div>';
-  }
-  function hotel(name,sub,dates,nights,e){
-    return '<div class="bkcard">'+
-      '<div class="bkhotel">'+name+'</div>'+
-      '<div class="bkhoteldates">'+dates+' · '+nights+'</div>'+
-      '<div style="font-size:12.5px;color:var(--muted)">'+sub+'</div>'+
-      (e?'<div class="bkmeta"><b>'+money(e)+'</b></div>':'')+
-    '</div>';
-  }
+  // per-person
+  var ppl={"爸":0,"媽":0,"霈":0,"錡":0}, total=0;
+  mem.budget.forEach(function(e){var a=e.amt||0;total+=a;if(ppl[e.who]!=null)ppl[e.who]+=a;});
+  var psum='<div class="psum">'+["爸","媽","霈","錡"].map(function(p){
+    return '<span class="pc"><b style="color:'+WHOCOLOR[p]+'">'+p+'</b> <span class="pv">'+nf(Math.round(ppl[p]))+'</span></span>';
+  }).join("")+'</div>';
+
+  var info='<div class="infostrip">'
+   +'<div class="infochip"><b>✈️ 星宇直飛</b>去11/15·回11/21<br><span class="fs">EOUF6G</span></div>'
+   +'<div class="infochip"><b>🏨 換宿一次</b>名古屋4晚→鳥羽2晚</div>'
+   +'<div class="infochip"><b>🚃 近鐵周遊券</b>5日Plus·特急Salon<br><span class="fs">A53928/A37039</span></div>'
+   +'</div>';
 
   host.innerHTML=
-    '<div class="bksec"><div class="bksec-h">✈️ 機票</div>'+
-      flight("JX838","11/15（日）","TPE 桃園","NGO 名古屋","14:55","18:30","直飛 2h35m")+
-      flight("JX839","11/21（六）","NGO 名古屋","TPE 桃園","19:40","22:15","直飛 3h35m")+
-      '<div class="bkmeta">星宇航空 · 訂位代號 <b>EOUF6G</b> · 4 人'+(air?' · '+money(air):'')+'</div>'+
-    '</div>'+
-    '<div class="bksec"><div class="bksec-h">🏨 住宿</div>'+
-      hotel("ibis Styles Nagoya","名古屋站旁","11/15 → 11/19","4 晚",hNag)+
-      hotel("お宿 行燈 鳥羽","海景 2 間客房","11/19 → 11/21","2 晚",hMie)+
-    '</div>'+
-    '<div class="bksec"><div class="bksec-h">🎟️ 待訂 / 提醒</div>'+
-      '<div class="bkcard" style="font-size:13px;color:var(--ink-soft);line-height:1.7">'+
-        '海女小屋（需預約）· VIP LINER 高山白川鄉巴士 · しまかぜ / 近鐵特急 · 旅遊保險'+
-      '</div>'+
-    '</div>';
+    '<div class="sec-h"><span class="bar"></span>七天總覽</div>'+grid
+   +'<div class="sec-h"><span class="bar"></span>重點</div>'+info
+   +'<div class="sec-h"><span class="bar"></span>預算</div>'
+   +'<div class="budgetbar"><span class="bt">NT$'+nf(total)+' <small>合計</small></span>'+psum+'</div>'
+   +prepHTML();
+
+  host.querySelectorAll("[data-goday]").forEach(function(b){
+    b.addEventListener("click",function(){ mem.activeDay=parseInt(b.getAttribute("data-goday"),10); save(); switchTab("trip"); });
+  });
+  var gw=document.getElementById("goweather");
+  if(gw)gw.addEventListener("click",function(){ switchTab("weather"); });
 }
 
+/* ============ ITINERARY ============ */
 function renderTrip(){
   var host=document.getElementById("view-trip"); host.innerHTML="";
-  if(typeof mem.activeDay!=="number" || mem.activeDay<0 || mem.activeDay>=DAYS.length) mem.activeDay=0;
-  var CN=["","一","二","三","四","五","六","七"];
-
-  // ---- day tab strip ----
+  if(typeof mem.activeDay!=="number"||mem.activeDay<0||mem.activeDay>=DAYS.length)mem.activeDay=0;
   var tabs=document.createElement("div"); tabs.className="daytabs";
   DAYS.forEach(function(d,di){
-    var c=DAYCOLORS[di+1]||"#888";
-    var b=document.createElement("button");
-    b.className="daytab"+(di===mem.activeDay?" on":"");
-    b.style.setProperty("--dc", c);
+    var c=DAYCOLORS[di+1];
+    var b=document.createElement("button"); b.className="daytab"+(di===mem.activeDay?" on":"");
+    b.style.setProperty("--dc",c);
     b.innerHTML='<b>'+CN[di+1]+'</b><span>'+d.date+'</span>';
-    (function(idx){ b.addEventListener("click",function(){ mem.activeDay=idx; save(); renderTrip(); }); })(di);
+    (function(idx){b.addEventListener("click",function(){mem.activeDay=idx;save();renderTrip();});})(di);
     tabs.appendChild(b);
   });
   host.appendChild(tabs);
 
-  // ---- active day only ----
-  var di=mem.activeDay, d=DAYS[di], dayNum=di+1, badgeColor=DAYCOLORS[dayNum]||"#888";
-  var day=document.createElement("div");
-  day.className="day"+(d.transition?" transition":"");
-  day.setAttribute("data-area",d.area);
+  var di=mem.activeDay, d=DAYS[di], c=DAYCOLORS[di+1];
+  var day=document.createElement("div"); day.className="day pop"; day.style.setProperty("--dc",c);
 
-  var fixedHTML="";
-  d.fixed && d.fixed.forEach(function(f){
-    fixedHTML+='<div class="fixed'+(f.lock?' lock':'')+'">'+
-      '<span class="fi">'+f.i+'</span>'+
-      '<span class="ft">'+f.t+'</span>'+
-      '<span class="fx">'+f.x+'</span></div>';
-  });
+  var fixedHTML=(d.fixed||[]).map(function(f){
+    return '<div class="fixed"><span class="fi">'+f.i+'</span><span class="fx">'+f.fx+'</span></div>';
+  }).join("");
 
-  var cardInner;
+  var inner, ag=0;
   if(d.groups){
-    cardInner=fixedHTML;
-    d.groups.forEach(function(g,gi){
-      cardInner+='<div class="grp g'+(gi+1)+'">'+
-        '<div class="grphead">'+g.label+' <span class="gs">'+g.sub+'</span></div>'+
-        linksBlock(g.links)+
-        actsBlock(g.key, g.area||d.area, true)+
-      '</div>';
-      if(gi<d.groups.length-1) cardInner+='<div class="grpdiv"></div>';
-    });
-    if(d.meet) cardInner+='<div class="meet">'+d.meet+'</div>';
-  } else {
-    var showChips=(!d.transition || d.dnum==="DAY 5");
-    cardInner=fixedHTML+linksBlock(d.links)+actsBlock(d.date, d.area, showChips);
+    ag=(typeof mem.activeGroup==="number"&&mem.activeGroup>=0&&mem.activeGroup<d.groups.length)?mem.activeGroup:0;
+    inner=fixedHTML+'<div class="grptabs">'
+      +d.groups.map(function(g,gi){return '<button class="grptab'+(gi===ag?" on":"")+'" data-grp="'+gi+'">'+g.label+'</button>';}).join("")
+      +'</div>';
+    var ga=d.groups[ag];
+    inner+='<div class="grp"><div class="grphead"><span class="gs">'+ga.sub+'</span></div>'+actsBlock(ga.key,ga.tour)+'</div>';
+  }else{
+    inner=fixedHTML+actsBlock(d.date,d.tour);
   }
 
   day.innerHTML=
-    '<div class="dhead">'+
-      '<div class="daybadge" style="background:'+badgeColor+'"><b>'+CN[dayNum]+'</b><span>DAY</span></div>'+
-      '<div class="dmain">'+
-        '<div class="drow"><span class="ddate">'+d.date+'</span><span class="ddow">'+d.dow+'</span></div>'+
-        '<div class="dtitle">'+d.theme+'</div>'+
-      '</div>'+
-    '</div>'+
-    '<div class="card">'+cardInner+'</div>';
+    '<div class="dhead">'
+     +'<div class="daybadge" style="background:'+c+'"><b>'+CN[di+1]+'</b><span>DAY</span></div>'
+     +'<div class="dmain"><div class="drow"><span class="ddate">'+d.date+'</span><span class="ddow">'+d.dow+'</span></div>'
+     +'<div class="dtitle">'+d.theme+'</div></div>'
+     +'<div class="dayillo illo">'+svgDay(d.illo,58)+'</div>'
+    +'</div>'+inner;
   host.appendChild(day);
 
-  if(d.groups){ d.groups.forEach(function(g){ renderActs(g.key); }); }
+  if(d.groups){
+    renderActs(d.groups[ag].key);
+    day.querySelectorAll("[data-grp]").forEach(function(b){
+      b.addEventListener("click",function(){ mem.activeGroup=parseInt(b.getAttribute("data-grp"),10); save(); renderTrip(); });
+    });
+  }
   else renderActs(d.date);
 
-  // centre the active tab in the strip
-  setTimeout(function(){
-    var on=tabs.querySelector(".daytab.on");
-    if(on){ tabs.scrollLeft = on.offsetLeft - tabs.clientWidth/2 + on.clientWidth/2; }
-  },0);
+  // night-view reference table (Nagoya days only)
+  if(d.area==="nagoya"){
+    var nt=document.createElement("div"); nt.className="nighttbl";
+    nt.innerHTML='<div class="nt-h">🌃 名古屋夜景 · 有空再去（擇一）</div>'
+      +NIGHTVIEWS.map(function(v){
+        return '<div class="ntrow"><div class="ntname"><div class="ntn">'+v.n+'</div>'
+          +(v.note?'<div class="ntnote">'+v.note+'</div>':'')+'</div>'
+          +'<span class="nttime">'+v.time+'</span>'
+          +'<a class="ntg" href="'+gmap(v.q+" 日本")+'" target="_blank" rel="noopener">📍</a></div>';
+      }).join("");
+    host.appendChild(nt);
+  }
 
-  bindTrip();
-}
+  // prev / next day buttons
+  var navEl=document.createElement("div"); navEl.className="daynav";
+  navEl.innerHTML='<button id="prevday"'+(di<=0?' disabled':'')+'>‹ 前一天</button>'
+    +'<button id="nextday"'+(di>=DAYS.length-1?' disabled':'')+'>下一天 ›</button>';
+  host.appendChild(navEl);
+  var pb=document.getElementById("prevday"),nb=document.getElementById("nextday");
+  if(pb)pb.addEventListener("click",function(){gotoDay(-1);});
+  if(nb)nb.addEventListener("click",function(){gotoDay(1);});
 
-function renderActs(date){
-  var box=document.querySelector('[data-acts="'+date+'"]'); if(!box) return;
-  var list=actsFor(date); box.innerHTML="";
-  if(list.length===0){ box.innerHTML='<div class="act empty">尚未安排,點下方按鈕或推薦標籤加入</div>'; return; }
-  list.forEach(function(a){
-    var row=document.createElement("div"); row.className="act";
-    row.innerHTML=
-      '<div class="actmain">'+
-        '<input class="at" value="'+escAttr(a.t)+'" placeholder="時間" maxlength="7">'+
-        '<input class="an" value="'+escAttr(a.n)+'" placeholder="要去哪 / 做什麼">'+
-        '<a class="gmap" target="_blank" rel="noopener" title="Google 地圖">📍</a>'+
-        '<button class="del" title="刪除">×</button>'+
-      '</div>'+
-      '<div class="acthours">🕐<input class="ah" value="'+escAttr(a.h||"")+'" placeholder="營業時間（選填,例 09:00–17:00）"></div>';
-    var at=row.querySelector(".at"), an=row.querySelector(".an"), gm=row.querySelector(".gmap"), ah=row.querySelector(".ah");
-    function syncGm(){ var q=(a.n||"").trim(); if(q){gm.style.display="";gm.href=gmap(q+" 日本");} else {gm.style.display="none";} }
-    at.addEventListener("input",function(e){a.t=e.target.value;save();});
-    at.addEventListener("change",function(){ sortByTime(date); });   // re-sort when you leave the time box
-    an.addEventListener("input",function(e){a.n=e.target.value;syncGm();save();});
-    ah.addEventListener("input",function(e){a.h=e.target.value;save();});
-    row.querySelector(".del").addEventListener("click",function(){
-      var i=list.indexOf(a); if(i>-1) list.splice(i,1); save(); renderActs(date);
-    });
-    syncGm();
-    box.appendChild(row);
-  });
-}
+  // swipe left/right to change day
+  attachSwipe(host);
 
-function parseTime(t){
-  if(!t) return null;
-  var m=String(t).match(/(\d{1,2})\s*[:：.]?\s*(\d{2})/);
-  if(!m) return null;
-  var h=parseInt(m[1],10), mi=parseInt(m[2],10);
-  if(h>23||mi>59) return null;
-  return h*60+mi;
+  setTimeout(function(){var on=tabs.querySelector(".daytab.on");if(on){tabs.scrollLeft=on.offsetLeft-tabs.clientWidth/2+on.clientWidth/2;}},0);
 }
-function sortByTime(date){
-  var list=actsFor(date);
-  list.forEach(function(a,i){a._i=i;});
-  list.sort(function(a,b){
-    var ta=parseTime(a.t), tb=parseTime(b.t);
-    if(ta==null && tb==null) return a._i-b._i;
-    if(ta==null) return 1;
-    if(tb==null) return -1;
-    if(ta!==tb) return ta-tb;
-    return a._i-b._i;
-  });
-  list.forEach(function(a){ delete a._i; });
-  save(); renderActs(date);
+function gotoDay(delta){
+  var n=mem.activeDay+delta;
+  if(n<0||n>=DAYS.length)return;
+  mem.activeDay=n; save(); renderTrip();
 }
-function escAttr(s){return (s||"").replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;");}
-function gmap(q){return "https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(q);}
+function attachSwipe(host){
+  var x0=null,y0=null,t0=0;
+  host.addEventListener("touchstart",function(e){var t=e.changedTouches[0];x0=t.clientX;y0=t.clientY;t0=Date.now();},{passive:true});
+  host.addEventListener("touchend",function(e){
+    if(x0==null)return;var t=e.changedTouches[0];
+    var dx=t.clientX-x0,dy=t.clientY-y0;
+    if(Math.abs(dx)>55 && Math.abs(dx)>Math.abs(dy)*1.6 && Date.now()-t0<700){
+      // don't hijack swipes that start on the day-tab strip (horizontal scroll)
+      if(!(e.target.closest && e.target.closest(".daytabs"))) gotoDay(dx<0?1:-1);
+    }
+    x0=null;
+  },{passive:true});
+}
+function actsBlock(key,tour){
+  if(!tour) return '<div class="acts" data-acts="'+key+'"></div>';
+  return '<div class="acts preacts" data-acts-pre="'+key+'"></div>'
+    +'<div class="tourcard"><div class="tourhead"><span class="th-ic">🎫</span>'
+    +'<span class="th-name">'+esc(tour)+'</span><span class="th-badge">已購票</span></div>'
+    +'<div class="acts tour" data-acts="'+key+'"></div></div>'
+    +'<div class="acts postacts" data-acts-post="'+key+'"></div>';
+}
+function actCardEl(a,inTour){
+  var q=(a.n||"").trim();
+  var tHTML=a.t?'<span class="actime">'+esc(a.t)+'</span>':'<span class="actime none">·</span>';
+  var inner='<div class="acrow">'+tHTML
+    +'<span class="acname">'+esc(a.n||"")+'</span>'
+    +(q?'<a class="acg" href="'+gmap(q+" 日本")+'" target="_blank" rel="noopener">📍</a>':'')
+    +'</div>'
+    +(a.h?'<div class="achours">🕐 '+esc(a.h)+'</div>':'');
+  var row=document.createElement("div");
+  row.className=inTour?"tactrow":("actcard"+(/^🍴/.test(q)?" food":"")+(/^🌃/.test(q)?" night":""));
+  row.innerHTML=inner; return row;
+}
+function splitLabel(txt){var d=document.createElement("div");d.className="splitlabel";d.textContent=txt;return d;}
+function renderActs(key){
+  var box=document.querySelector('[data-acts="'+key+'"]'); if(!box)return;
+  var inTour=box.classList.contains("tour");
+  var list=actsFor(key);
+  if(!inTour){
+    var main=list.filter(function(a){return !a.opt;});
+    var opt=list.filter(function(a){return a.opt;});
+    box.innerHTML="";
+    if(main.length===0&&opt.length===0){box.innerHTML='<div class="empty">（這天尚未安排）</div>';return;}
+    main.forEach(function(a){box.appendChild(actCardEl(a,false));});
+    if(opt.length){box.appendChild(splitLabel("🍽️ 晚餐候補・當天看時間選"));opt.forEach(function(a){box.appendChild(actCardEl(a,false));});}
+    return;
+  }
+  var pre=list.filter(function(a){return a.pre;});
+  var post=list.filter(function(a){return a.post;});
+  var inc=list.filter(function(a){return !a.pre&&!a.post;});
+  var prebox=document.querySelector('[data-acts-pre="'+key+'"]');
+  var postbox=document.querySelector('[data-acts-post="'+key+'"]');
+  if(prebox){prebox.innerHTML=""; if(pre.length){prebox.appendChild(splitLabel("🍴 出發前・自理"));pre.forEach(function(a){prebox.appendChild(actCardEl(a,false));});}}
+  box.innerHTML="";
+  if(inc.length===0){box.innerHTML='<div class="empty">（尚未安排）</div>';}
+  else inc.forEach(function(a){box.appendChild(actCardEl(a,true));});
+  if(postbox){postbox.innerHTML=""; if(post.length){postbox.appendChild(splitLabel("🍴 跟團後晚餐・當天選一間"));post.forEach(function(a){postbox.appendChild(actCardEl(a,false));});}}
+}
+function parseTime(t){t=(t||"").trim();if(!t)return 1e9;t=t.replace(/[：．]/g,":");var m=t.match(/^(\d{1,2}):?(\d{2})?$/);if(!m)return 1e9;var h=+m[1],mi=m[2]?+m[2]:0;if(t.indexOf(":")<0&&t.length>=3){h=+t.slice(0,t.length-2);mi=+t.slice(-2);}return h*60+mi;}
+function sortByTime(key){var l=actsFor(key);l.sort(function(a,b){return parseTime(a.t)-parseTime(b.t);});save();renderActs(key);}
 
-function bindTrip(){
-  document.querySelectorAll("[data-newact]").forEach(function(b){
+/* ============ BOOKED ============ */
+function renderBooked(){
+  var host=document.getElementById("view-booked"); if(!host)return;
+  function bud(p){for(var i=0;i<mem.budget.length;i++)if(p(mem.budget[i]))return mem.budget[i];return null;}
+  function money(e){return e?'NT$'+nf(e.amt||0)+'（'+(e.who||'—')+'付）':'';}
+  var air=bud(function(e){return e.cat==="機票";});
+  var hN=bud(function(e){return e.cat==="住宿"&&e.name.indexOf("名古屋")>=0;});
+  var hM=bud(function(e){return e.cat==="住宿"&&(e.name.indexOf("三重")>=0||e.name.indexOf("鳥羽")>=0);});
+  var pass=bud(function(e){return e.name.indexOf("周遊券")>=0;});
+  var ltd=bud(function(e){return e.name.indexOf("特急券")>=0;});
+  var ETICKET="https://www.ticket.kintetsu.co.jp/vs/en/T/TZZ/TZZ10.do?op=tDisplayVisitorMenu&ps000=GTET40100P&ps001=a&ps004=GTET40100PTYTIErUyHuGXwJ9h&fr002=tNrR4flc4uDAco4O9retAA%3D%3D&fr003=OfVN6M5zNNr3iu%2Fr9zjTvsbX2qhnXoGQ3%2BbUg6v6yaw%3D&fr004=KfpSRDMwWjv2tSQe%2Fd%2FlFWojjMKewCl8NkgjrDX4WkNgH1sqgIwgYuuz9%2Fw28jgwBl%2F4yZwblNuF26eaQ5VRuQ%3D%3D";
+
+  function flight(no,date,dep,arr,dt,at,note){
+    return '<div class="bkcard"><div class="bkcard-top"><span class="bkflight">'+no+'</span><span class="bkdate">'+date+'</span></div>'
+      +'<div class="bkroute"><div class="bkpt"><b>'+dt+'</b><span>'+dep+'</span></div>'
+      +'<div class="bkline">✈ '+note+'</div><div class="bkpt"><b>'+at+'</b><span>'+arr+'</span></div></div></div>';
+  }
+  function hotel(name,dates,nights,sub,e,zip,addr,tel){
+    var full=(zip?zip+" ":"")+addr+(tel?" ☎ "+tel:"");
+    return '<div class="bkcard"><div class="bkhotel">'+name+'</div>'
+      +'<div class="bkhoteldates">'+dates+' · '+nights+'</div>'
+      +'<div style="font-size:12.5px;color:var(--muted)">'+sub+'</div>'
+      +(e?'<div class="bkmeta"><b>'+money(e)+'</b></div>':'')
+      +'<div class="addr"><div class="atxt"><span class="ano">'+(zip||"")+'</span> '+addr+(tel?'<br><span class="ano">☎ '+tel+'</span>':'')
+      +'</div><button class="copybtn" data-copy="'+esc(full)+'">複製地址</button></div></div>';
+  }
+
+  host.innerHTML=
+   '<div class="sec-h"><span class="bar"></span>✈️ 機票</div><div class="bksec">'
+     +flight("JX838","11/15（日）","TPE 桃園","NGO 名古屋","14:55","18:30","直飛 2h35m")
+     +flight("JX839","11/21（六）","NGO 名古屋","TPE 桃園","19:40","22:15","直飛 3h35m")
+     +'<div class="bkmeta" style="padding:0 2px">星宇航空 · 訂位代號 <b>EOUF6G</b> · 4 人'+(air?' · '+money(air):'')+'</div></div>'
+   +'<div class="sec-h"><span class="bar"></span>🏨 住宿</div><div class="bksec">'
+     +hotel("ibis Styles Nagoya","11/15 → 11/19","4 晚","名駅・名古屋站旁",hN,"〒450-0002","愛知県名古屋市中村区名駅4-22-24","")
+     +hotel("お宿 行燈 鳥羽","11/19 → 11/21","2 晚","全室海景・伊勢海老",hM,"〒517-0015","三重県鳥羽市小浜町272-46","0599-37-7822")
+     +'</div>'
+   +'<div class="sec-h"><span class="bar"></span>🚃 交通</div><div class="bksec">'
+     +'<div class="bkcard"><div class="bkhotel" style="font-size:15px">近鐵特急券 ①去程 🛋️Salon</div>'
+       +'<div class="bktix" style="margin-top:7px"><span class="k">乘車</span> 11/19（四）<b>11:10 發 → 12:49 到</b> · 近鐵名古屋 → 鳥羽<br>'
+       +'<span class="k">列車</span> 伊勢志摩Liner 7115 · 2號車 · <b>4A·4B·4C·4D（Salon）</b><br>'
+       +'<span class="k">人數</span> 大人 4 · <span class="k">預約</span> <b>A53928</b> · 券 3780-2476<br>'
+       +'<span class="k">金額</span> 特急料金 ¥5,360</div>'
+       +'<a class="copybtn" style="display:inline-block;margin-top:9px;text-decoration:none" href="'+ETICKET+'" target="_blank" rel="noopener">🎫 開啟電子車票</a></div>'
+     +'<div class="bkcard"><div class="bkhotel" style="font-size:15px">近鐵特急券 ②回程 🛋️Salon</div>'
+       +'<div class="bktix" style="margin-top:7px"><span class="k">乘車</span> 11/21（六）<b>12:02 發 → 13:38 到</b> · 鳥羽 → 近鐵名古屋<br>'
+       +'<span class="k">列車</span> 伊勢志摩Liner 7114 · 2號車 · <b>2A·2B·2C·2D（Salon）</b><br>'
+       +'<span class="k">人數</span> 大人 4 · <span class="k">預約</span> <b>A37039</b> · 券 3800-4457<br>'
+       +'<span class="k">金額</span> 特急料金 ¥5,360'+(ltd?' · '+money(ltd):'')+'</div>'
+       +'<a class="copybtn" style="display:inline-block;margin-top:9px;text-decoration:none" href="'+ETICKET+'" target="_blank" rel="noopener">🎫 開啟電子車票</a></div>'
+     +'<div class="bkcard"><div class="bkhotel" style="font-size:15px">近鐵 5日 Plus 周遊券</div>'
+       +'<div class="bktix" style="margin-top:7px"><span class="k">Klook 訂單</span> <b>XWW873557</b> · 成人 4<br>'
+       +'<span class="k">使用</span> QR 直接乘車 · 180 天內兌換 · 連續 5 日<br>'
+       +'<span class="k">金額</span> '+(pass?money(pass):'NT$3,964')+'</div></div>'
+     +'</div>';
+
+  host.querySelectorAll("[data-copy]").forEach(function(b){
     b.addEventListener("click",function(){
-      var date=b.getAttribute("data-newact");
-      actsFor(date).push({t:"",n:""}); save(); renderActs(date);
-      var box=document.querySelector('[data-acts="'+date+'"]');
-      var ins=box.querySelectorAll(".an"); if(ins.length) ins[ins.length-1].focus();
+      var t=b.getAttribute("data-copy");
+      function ok(){b.textContent="已複製 ✓";b.classList.add("done");setTimeout(function(){b.textContent="複製地址";b.classList.remove("done");},1600);}
+      if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(ok,function(){ok();});}
+      else{try{var ta=document.createElement("textarea");ta.value=t;document.body.appendChild(ta);ta.select();document.execCommand("copy");document.body.removeChild(ta);ok();}catch(e){}}
     });
   });
-  document.querySelectorAll("[data-add]").forEach(function(b){
-    b.addEventListener("click",function(){
-      var date=b.getAttribute("data-add"); var name=b.getAttribute("data-name");
-      actsFor(date).push({t:"",n:name}); save(); renderActs(date);
-    });
-  });
-  document.querySelectorAll("[data-sort]").forEach(function(b){
-    b.addEventListener("click",function(){ sortByTime(b.getAttribute("data-sort")); });
-  });
 }
 
-/* ============ map ============ */
-var map=null, mapMarkers=[], currentDay=null;
-
-function dayPin(p){
-  var c=DAYCOLORS[p.day]||"#888";
-  var html='<div style="background:'+c+';width:26px;height:26px;border-radius:50% 50% 50% 0;'+
-    'transform:rotate(-45deg);border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.45);'+
-    'display:flex;align-items:center;justify-content:center;">'+
-    '<span style="transform:rotate(45deg);color:#fff;font-weight:700;font-size:12px;font-family:monospace;">'+p.day+'</span></div>';
-  return L.divIcon({html:html, className:"", iconSize:[26,26], iconAnchor:[13,25], popupAnchor:[0,-23]});
-}
-
-function buildPills(){
-  var host=document.getElementById("daypills"); if(!host) return;
-  host.innerHTML="";
-  var defs=[{k:null,label:"全部"}];
-  for(var i=1;i<=7;i++) defs.push({k:i,label:"Day "+i});
-  defs.forEach(function(d){
-    var b=document.createElement("button");
-    b.className="pill"+(d.k===currentDay?" on":"");
-    b.innerHTML=(d.k!=null?'<i style="background:'+DAYCOLORS[d.k]+'"></i>':"")+d.label;
-    b.addEventListener("click",function(){ currentDay=d.k; buildPills(); filterDay(); });
-    host.appendChild(b);
-  });
-}
-function filterDay(){
-  var shown=[];
-  mapMarkers.forEach(function(o){
-    var on=(currentDay==null || o.day===currentDay);
-    if(on){ o.marker.addTo(map); shown.push([o.lat,o.lng]); }
-    else map.removeLayer(o.marker);
-  });
-  if(shown.length){ map.fitBounds(shown,{padding:[40,40], maxZoom:13}); }
-}
-
-function initMap(){
-  if(map){ map.invalidateSize(); return; }
-  map=L.map("map",{scrollWheelZoom:false}).setView([35.2,136.9],8);
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{
-    attribution:"&copy; OpenStreetMap", subdomains:"abc", maxZoom:19}).addTo(map);
-  mapMarkers=[];
-  PLACES.forEach(function(p){
-    var m=L.marker([p.lat,p.lng],{icon:dayPin(p)});
-    m.bindPopup('<div class="pop-t">'+p.n+'</div><div class="pop-s">Day '+p.day+' ・ '+p.s+'</div>'+
-      '<a class="pop-g" target="_blank" rel="noopener" href="'+gmap(p.n+" 日本")+'">在 Google 地圖開啟 →</a>');
-    mapMarkers.push({marker:m, day:p.day, lat:p.lat, lng:p.lng});
-  });
-  buildPills();
-  filterDay();
-  setTimeout(function(){map.invalidateSize(); filterDay();},200);
-}
-
-/* ============ budget ============ */
+/* ============ BUDGET ============ */
 function renderBudget(){
-  document.getElementById("rate").value=mem.rate;
-  var list=document.getElementById("explist"); list.innerHTML="";
+  var host=document.getElementById("view-budget");
+  host.innerHTML=
+   '<div class="conv"><div class="lbl">日幣 → 台幣 換算</div>'
+   +'<div class="row"><input class="yen" id="yen" type="number" inputmode="numeric" placeholder="¥"> '
+   +'<span class="eq">≈</span> <input class="ntd" id="ntd" readonly></div>'
+   +'<div class="rate">匯率 1 ¥ = NT$ <input id="rate" type="number" step="0.001" value="'+mem.rate+'"></div></div>'
+   +'<div class="total"><span class="tl">目前合計</span><span class="tv" id="total">NT$0</span></div>'
+   +'<div class="bars" id="bars"></div>'
+   +'<div class="payers" id="payers"></div>'
+   +'<div id="explist"></div>';
+
+  var yen=document.getElementById("yen"),ntd=document.getElementById("ntd"),rate=document.getElementById("rate");
+  function conv(){var v=parseFloat(yen.value)||0;ntd.value=v?("NT$"+nf(Math.round(v*mem.rate))):"";}
+  yen.addEventListener("input",conv);
+  rate.addEventListener("input",function(){mem.rate=parseFloat(rate.value)||0.215;conv();save();});
+
+  var list=document.getElementById("explist");
   mem.budget.forEach(function(e,idx){
-    if(!e.who || WHO.indexOf(e.who)<0) e.who=WHO[0];
-    var row=document.createElement("div"); row.className="exp";
+    if(!e.who||WHO.indexOf(e.who)<0)e.who="";
     var opts=CATS.map(function(c){return '<option'+(c===e.cat?' selected':'')+'>'+c+'</option>';}).join("");
-    var wopts=WHO.map(function(w){return '<option'+(w===e.who?' selected':'')+'>'+w+'</option>';}).join("");
-    row.innerHTML=
-      '<div class="r1">'+
-        '<select class="cat">'+opts+'</select>'+
-        '<textarea class="en" rows="1" placeholder="項目"></textarea>'+
-        '<button class="del">×</button>'+
-      '</div>'+
-      '<div class="r2">'+
-        '<span class="mono" style="color:#978a78;font-size:12px">NT$</span>'+
-        '<input class="ea mono" type="number" inputmode="numeric" value="'+(e.amt||"")+'" placeholder="0">'+
-        '<span class="paylbl">誰付</span>'+
-        '<select class="who">'+wopts+'</select>'+
-      '</div>';
-    var selC=row.querySelector(".cat"), selW=row.querySelector(".who"), enEl=row.querySelector(".en");
-    enEl.value=e.name||"";
-    function grow(){ enEl.style.height="auto"; enEl.style.height=(enEl.scrollHeight)+"px"; }
-    function colorC(){ selC.style.background=CATCOLOR[e.cat]||"#9a7b4f"; }
-    colorC();
-    selC.addEventListener("change",function(ev){e.cat=ev.target.value;colorC();save();renderBars();});
+    var wopts=WHO.map(function(w){return '<option value="'+w+'"'+(w===e.who?' selected':'')+'>'+(w||"—")+'</option>';}).join("");
+    var row=document.createElement("div"); row.className="exp";
+    row.innerHTML='<div class="r1"><select class="cat">'+opts+'</select>'
+      +'<textarea class="en" rows="1" placeholder="項目"></textarea></div>'
+      +'<div class="r2"><span style="color:#978a78;font-size:12px;font-family:\'Space Mono\'">NT$</span>'
+      +'<input class="ea" type="number" inputmode="numeric" value="'+(e.amt||"")+'" placeholder="0">'
+      +'<span class="paylbl">誰付</span><select class="who">'+wopts+'</select></div>';
+    var selC=row.querySelector(".cat"),selW=row.querySelector(".who"),en=row.querySelector(".en");
+    en.value=e.name||"";
+    function grow(){en.style.height="auto";en.style.height=en.scrollHeight+"px";}
+    function colC(){selC.style.background=CATCOLOR[e.cat]||"#9a7b4f";}
+    colC();
+    selC.addEventListener("change",function(ev){e.cat=ev.target.value;colC();save();renderBars();});
     selW.addEventListener("change",function(ev){e.who=ev.target.value;save();renderPayers();});
-    enEl.addEventListener("input",function(ev){e.name=ev.target.value;grow();save();});
+    en.addEventListener("input",function(ev){e.name=ev.target.value;grow();save();});
     row.querySelector(".ea").addEventListener("input",function(ev){e.amt=parseFloat(ev.target.value)||0;save();renderTotal();renderBars();renderPayers();});
-    row.querySelector(".del").addEventListener("click",function(){mem.budget.splice(idx,1);save();renderBudget();});
-    list.appendChild(row);
-    grow();
+    list.appendChild(row); grow();
   });
-  renderTotal(); renderBars(); renderPayers();
+  renderTotal();renderBars();renderPayers();
+}
+function renderTotal(){var t=0;mem.budget.forEach(function(e){t+=e.amt||0;});var el=document.getElementById("total");if(el)el.textContent="NT$"+nf(t);}
+function renderBars(){
+  var host=document.getElementById("bars");if(!host)return;
+  var by={},t=0;mem.budget.forEach(function(e){by[e.cat]=(by[e.cat]||0)+(e.amt||0);t+=e.amt||0;});
+  var max=1;CATS.forEach(function(c){if((by[c]||0)>max)max=by[c];});
+  host.innerHTML=CATS.filter(function(c){return by[c]>0;}).map(function(c){
+    return '<div class="bar"><span class="bn">'+c+'</span><div class="bt"><div class="bf" style="width:'+(100*(by[c]||0)/max)+'%;background:'+CATCOLOR[c]+'"></div></div><span class="bv">'+nf(by[c])+'</span></div>';
+  }).join("")||'<div class="empty" style="font-size:12px">尚無金額</div>';
 }
 function renderPayers(){
-  var host=document.getElementById("payers"); if(!host) return;
+  var host=document.getElementById("payers");if(!host)return;
   var ppl={"爸":0,"媽":0,"霈":0,"錡":0};
-  mem.budget.forEach(function(e){
-    var a=e.amt||0; if(!a) return;
-    if(ppl[e.who]!=null) ppl[e.who]+=a;
-  });
-  host.innerHTML='<div class="psumhead">每人花費小計</div>'+
-    '<div class="pchips">'+Object.keys(ppl).map(function(p){
-      return '<span class="pchip"><b style="color:'+WHOCOLOR[p]+'">'+p+'</b> <span class="pv">'+Math.round(ppl[p]).toLocaleString()+'</span></span>';
-    }).join("")+'</div>';
-}
-function renderTotal(){
-  var t=mem.budget.reduce(function(s,e){return s+(e.amt||0);},0);
-  document.getElementById("budtotal").textContent=t.toLocaleString();
-}
-function renderBars(){
-  var byCat={}; mem.budget.forEach(function(e){byCat[e.cat]=(byCat[e.cat]||0)+(e.amt||0);});
-  var total=mem.budget.reduce(function(s,e){return s+(e.amt||0);},0)||1;
-  var host=document.getElementById("bars"); host.innerHTML="";
-  CATS.forEach(function(c){
-    var v=byCat[c]||0; if(v===0) return;
-    var pct=Math.round(v/total*100);
-    var row=document.createElement("div"); row.className="bar";
-    row.innerHTML='<span class="bn">'+c+'</span>'+
-      '<span class="bt"><span class="bf" style="width:'+pct+'%;background:'+CATCOLOR[c]+'"></span></span>'+
-      '<span class="bm">'+v.toLocaleString()+'</span>';
-    host.appendChild(row);
-  });
-}
-/* ============ food ============ */
-function renderFood(){
-  var host=document.getElementById("foodlist"); host.innerHTML="";
-  FOODGROUPS.forEach(function(g){
-    var items=mem.foods.filter(function(f){return f.g===g.key;});
-    var grp=document.createElement("div"); grp.className="fgroup "+g.key;
-    grp.innerHTML='<div class="fgt">'+g.label+'</div>';
-    items.forEach(function(f){
-      var realIdx=mem.foods.indexOf(f);
-      if(!f.t) f.t="";
-      var row=document.createElement("div"); row.className="fitem"+(f.done?" done":"");
-      row.innerHTML='<div class="fcheck">'+(f.done?"✓":"")+'</div>'+
-        '<input class="ftype" value="'+escAttr(f.t)+'" placeholder="類型" maxlength="6">'+
-        '<input class="fname" value="'+escAttr(f.n)+'" placeholder="店名">'+
-        '<a class="gmap" target="_blank" rel="noopener" title="Google 地圖">📍</a>'+
-        '<button class="del">×</button>';
-      var region = g.key==="nagoya" ? "名古屋" : "伊勢 三重";
-      var fn=row.querySelector(".fname"), gm=row.querySelector(".gmap"), ft=row.querySelector(".ftype");
-      ft.addEventListener("input",function(e){ f.t=e.target.value; save(); });
-      function syncGm(){
-        if(f.url){ gm.style.display=""; gm.href=f.url; return; }
-        var q=(f.n||"").trim(); if(q){gm.style.display="";gm.href=gmap(q+" "+region);} else {gm.style.display="none";}
-      }
-      row.querySelector(".fcheck").addEventListener("click",function(){ f.done=!f.done; save(); renderFood(); });
-      fn.addEventListener("input",function(e){f.n=e.target.value;syncGm();save();});
-      row.querySelector(".del").addEventListener("click",function(){ mem.foods.splice(realIdx,1); save(); renderFood(); });
-      syncGm();
-      grp.appendChild(row);
-    });
-    var add=document.createElement("div"); add.className="faddrow";
-    add.innerHTML='<button class="faddbtn">＋ 自己加</button>'+
-      g.chips.map(function(c){return '<button class="chip" data-fc="'+escAttr(c)+'" data-fg="'+g.key+'">'+c+'</button>';}).join("");
-    add.querySelector(".faddbtn").addEventListener("click",function(){
-      mem.foods.push({g:g.key,n:"",done:false}); save(); renderFood();
-      var ins=document.querySelectorAll(".fgroup."+g.key+" .fname");
-      if(ins.length) ins[ins.length-1].focus();
-    });
-    add.querySelectorAll("[data-fc]").forEach(function(b){
-      b.addEventListener("click",function(){
-        var gk=b.getAttribute("data-fg");
-        mem.foods.push({g:gk,t:b.getAttribute("data-fc"),n:"",done:false});
-        save(); renderFood();
-        var ins=document.querySelectorAll(".fgroup."+gk+" .fname");
-        if(ins.length) ins[ins.length-1].focus();
-      });
-    });
-    grp.appendChild(add);
-    host.appendChild(grp);
-  });
-  var total=mem.foods.length, done=mem.foods.filter(function(f){return f.done;}).length;
-  document.getElementById("foodprog").textContent="已吃 "+done+" / "+total;
+  mem.budget.forEach(function(e){var a=e.amt||0;if(!a)return;if(ppl[e.who]!=null)ppl[e.who]+=a;});
+  host.innerHTML='<div class="psumhead">每人花費小計</div><div class="pchips">'
+    +Object.keys(ppl).map(function(p){return '<span class="pchip"><b style="color:'+WHOCOLOR[p]+'">'+p+'</b> <span class="pv">'+nf(Math.round(ppl[p]))+'</span></span>';}).join("")+'</div>';
 }
 
-function setupBudget(){
-  document.getElementById("expadd").addEventListener("click",function(){
-    mem.budget.push({cat:"餐飲",name:"",amt:0,who:""}); save(); renderBudget();
-    var ins=document.querySelectorAll("#explist .en"); if(ins.length) ins[ins.length-1].focus();
+/* ============ FOOD ============ */
+var FOODGROUPS=[{key:"nagoya",label:"🍢 名古屋名物"},{key:"takayama",label:"🏔️ 飛驒高山"},{key:"toba",label:"🦞 三重・伊勢"}];
+var foodMap=null, foodMarks=[], foodRegion="nagoya";
+function foodPin(c){return L.divIcon({className:"",iconSize:[20,28],iconAnchor:[10,28],html:'<div style="width:18px;height:18px;background:'+c+';border:2px solid #fff;border-radius:50% 50% 50% 0;transform:rotate(-45deg);box-shadow:0 2px 4px rgba(0,0,0,.3)"></div>'});}
+function initFoodMap(){
+  if(foodMap){foodMap.remove();foodMap=null;foodMarks=[];}
+  var el=document.getElementById("foodmap"); if(!el) return;
+  foodMap=L.map("foodmap",{scrollWheelZoom:false,zoomControl:true});
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{attribution:"&copy; OSM",subdomains:"abc",maxZoom:19}).addTo(foodMap);
+  var pts=[];
+  mem.foods.forEach(function(f){
+    if(foodRegion!=="all" && f.g!==foodRegion) return;
+    if(typeof f.lt!=="number"||typeof f.lg!=="number") return;
+    var c=f.g==="toba"?"#3f7d6e":(f.g==="takayama"?"#9a5b3f":"#c2904a");
+    var m=L.marker([f.lt,f.lg],{icon:foodPin(c)}).addTo(foodMap);
+    m.bindPopup('<b>'+f.n+'</b>'+(f.rt!=null?'<br>食べログ '+Number(f.rt).toFixed(2):'')+(f.done?' ✓已吃':'')+'<br><a href="'+gmap(f.n+" 日本")+'" target="_blank">在 Google 地圖開啟</a>');
+    foodMarks.push(m); pts.push([f.lt,f.lg]);
   });
-  var yen=document.getElementById("yen"), ntd=document.getElementById("ntd"), rate=document.getElementById("rate");
-  function conv(){ var v=parseFloat(yen.value)||0; ntd.value=Math.round(v*mem.rate); }
-  yen.addEventListener("input",conv);
-  rate.addEventListener("input",function(){ mem.rate=parseFloat(rate.value)||0; save(); conv(); });
+  if(pts.length) foodMap.fitBounds(pts,{padding:[34,34],maxZoom:14});
+  else foodMap.setView([35.17,136.89],11);
+  setTimeout(function(){foodMap.invalidateSize();},140);
+}
+function renderFood(){
+  var host=document.getElementById("view-food");
+  if(foodMap){foodMap.remove();foodMap=null;}
+  host.innerHTML='<div class="fmappills" id="fmappills">'
+    +'<button class="fmp'+(foodRegion==="nagoya"?" on":"")+'" data-fr="nagoya">名古屋</button>'
+    +'<button class="fmp'+(foodRegion==="takayama"?" on":"")+'" data-fr="takayama">飛驒高山</button>'
+    +'<button class="fmp'+(foodRegion==="toba"?" on":"")+'" data-fr="toba">三重・伊勢</button>'
+    +'<button class="fmp'+(foodRegion==="all"?" on":"")+'" data-fr="all">全部</button></div>'
+    +'<div id="foodmap"></div>';
+  host.querySelectorAll("[data-fr]").forEach(function(b){
+    b.addEventListener("click",function(){ foodRegion=b.getAttribute("data-fr"); renderFood(); });
+  });
+  FOODGROUPS.forEach(function(g){
+    var wrap=document.createElement("div");wrap.className="fgroup";
+    var done=mem.foods.filter(function(f){return f.g===g.key&&f.done;}).length;
+    var tot=mem.foods.filter(function(f){return f.g===g.key;}).length;
+    wrap.innerHTML='<div class="fglabel">'+g.label+' <span style="font-size:11px;color:var(--muted);font-weight:500">'+done+'/'+tot+'</span></div>';
+    var card=document.createElement("div");card.className="card";card.style.padding="4px 12px";
+    var items=mem.foods.filter(function(f){return f.g===g.key;});
+    if(items.length===0)card.innerHTML='<div class="empty" style="font-size:12.5px">（尚無,截圖給我幫你加）</div>';
+    items.forEach(function(f){
+      if(!f.t)f.t="";
+      var row=document.createElement("div");row.className="fitem"+(f.done?" done":"");
+      var rtHTML;
+      if(f.tb){rtHTML='<a class="rt-tb" href="'+esc(f.tb)+'" target="_blank" rel="noopener">食べログ '+(f.rt!=null?Number(f.rt).toFixed(2):'↗')+'</a>';}
+      else if(f.rt!=null){rtHTML='<span class="rt-tb">食べログ '+Number(f.rt).toFixed(2)+'</span>';}
+      else if(f.gr!=null){rtHTML='<span class="rt-tb">Google ⭐ '+Number(f.gr).toFixed(1)+'</span>';}
+      else{rtHTML='';}
+      row.innerHTML='<div class="fmain"><div class="fcheck">'+(f.done?"✓":"")+'</div>'
+        +'<input class="ftype" value="'+esc(f.t)+'" placeholder="類型" maxlength="6">'
+        +'<input class="fname" value="'+esc(f.n)+'" placeholder="店名">'
+        +'<a class="gmap" target="_blank" rel="noopener">📍</a><button class="fdel">×</button></div>'
+        +'<div class="frate">'+rtHTML+'<a class="rt-g" target="_blank" rel="noopener">⭐ Google 評分 →</a></div>';
+      var fn=row.querySelector(".fname"),gm=row.querySelector(".gmap"),ft=row.querySelector(".ftype"),rg=row.querySelector(".rt-g");
+      var region=g.key==="nagoya"?"名古屋":(g.key==="takayama"?"高山":"伊勢 三重");
+      function sync(){var q=(f.n||"").trim();var url=f.url||(q?gmap(q+" "+region):"");if(f.url){gm.style.display="";gm.href=f.url;}else if(q){gm.style.display="";gm.href=gmap(q+" "+region);}else{gm.style.display="none";}rg.href=url||"#";rg.style.display=(q||f.url)?"":"none";}
+      ft.addEventListener("input",function(e){f.t=e.target.value;save();});
+      fn.addEventListener("input",function(e){f.n=e.target.value;sync();save();});
+      row.querySelector(".fcheck").addEventListener("click",function(){f.done=!f.done;save();renderFood();});
+      row.querySelector(".fdel").addEventListener("click",function(){var i=mem.foods.indexOf(f);if(i>-1)mem.foods.splice(i,1);save();renderFood();});
+      sync();card.appendChild(row);
+    });
+    wrap.appendChild(card);host.appendChild(wrap);
+  });
+  if(document.getElementById("view-food").classList.contains("on")) initFoodMap();
+}
+
+/* ============ MAP ============ */
+var map=null,markers=[],curDay=null;
+function pin(p){var c=DAYCOLORS[p.d]||"#888";return L.divIcon({className:"",iconSize:[26,34],iconAnchor:[13,34],html:'<div style="width:24px;height:24px;background:'+c+';border:2.5px solid #fff;border-radius:50% 50% 50% 0;transform:rotate(-45deg);box-shadow:0 2px 5px rgba(0,0,0,.3)"></div>'});}
+function initMap(){
+  if(map){setTimeout(function(){map.invalidateSize();},60);return;}
+  var pills=document.getElementById("daypills");
+  pills.innerHTML='<button class="dp on" data-d="0">全部</button>'+[1,2,3,4,5,6,7].map(function(i){return '<button class="dp" data-d="'+i+'">Day'+i+'</button>';}).join("");
+  map=L.map("map",{scrollWheelZoom:false}).setView([35.3,136.9],8);
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{attribution:"&copy; OpenStreetMap",subdomains:"abc",maxZoom:19}).addTo(map);
+  drawMarkers(0);
+  pills.querySelectorAll(".dp").forEach(function(b){b.addEventListener("click",function(){pills.querySelectorAll(".dp").forEach(function(x){x.classList.remove("on");});b.classList.add("on");drawMarkers(parseInt(b.getAttribute("data-d"),10));});});
+  setTimeout(function(){map.invalidateSize();},120);
+}
+function drawMarkers(day){
+  markers.forEach(function(m){map.removeLayer(m);});markers=[];
+  var pts=PLACES.filter(function(p){return day===0||p.d===day;});
+  var grp=[];
+  pts.forEach(function(p){
+    var m=L.marker([p.lat,p.lng],{icon:pin(p)}).addTo(map);
+    m.bindPopup('<b>'+p.n+'</b><br><a href="'+gmap(p.n+" 日本")+'" target="_blank">在 Google 地圖開啟</a>');
+    markers.push(m);grp.push([p.lat,p.lng]);
+  });
+  if(grp.length){map.fitBounds(grp,{padding:[40,40],maxZoom:12});}
+}
+
+/* ============ backup/restore ============ */
+function setupBackup(){
+  var btn=document.getElementById("bkbtn"),panel=document.getElementById("bkpanel"),ta=document.getElementById("bktext"),msg=document.getElementById("bkmsg");
+  if(!btn)return;
+  btn.addEventListener("click",function(){if(panel.style.display==="none"){ta.value=JSON.stringify(mem);panel.style.display="block";msg.textContent="";}else panel.style.display="none";});
+  document.getElementById("bkcopy").addEventListener("click",function(){
+    ta.value=JSON.stringify(mem);ta.focus();ta.select();
+    function ok(){msg.textContent="已複製 ✓ 貼到新版本就能還原";}
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(ta.value).then(ok,function(){try{document.execCommand("copy");ok();}catch(e){msg.textContent="請長按文字手動複製";}});}
+    else{try{document.execCommand("copy");ok();}catch(e){msg.textContent="請長按文字手動複製";}}
+  });
+  document.getElementById("bkrestore").addEventListener("click",function(){
+    var v=ta.value.trim();if(!v){msg.textContent="請先貼上備份內容";return;}
+    try{var d=JSON.parse(v);if(d&&typeof d==="object"&&(d.activities||d.budget||d.foods)){
+      mem=d;if(!mem.activities)mem.activities={};if(!mem.budget)mem.budget=[];if(!mem.foods)mem.foods=[];if(typeof mem.rate!=="number")mem.rate=0.215;if(typeof mem.activeDay!=="number")mem.activeDay=0;
+      save();renderAll();msg.textContent="已還原 ✓ 資料更新完成";
+    }else msg.textContent="格式不對,請確認內容";}catch(e){msg.textContent="無法解析,請確認是完整備份內容";}
+  });
+}
+
+/* ============ WEATHER / outfit ============ */
+function renderWeather(){
+  var host=document.getElementById("view-weather"); if(!host)return;
+  var areas=[
+   {n:"名古屋市區",days:"Day1·3",hi:16,lo:8,tag:"🍁 賞楓中後期",tc:"#d2622f",desc:"多晴偶雨·早晚涼。洋蔥式即可,白天薄外套。"},
+   {n:"高山・白川鄉",days:"Day2",hi:11,lo:2,tag:"❄️ 全程最冷",tc:"#2f7fd6",desc:"高地·早晚近冰點,可能初雪或結霜。厚外套+毛帽手套+發熱衣,一定要保暖!"},
+   {n:"香嵐溪（山區）",days:"Day4",hi:14,lo:6,tag:"🍁 紅葉最盛",tc:"#7e9438",desc:"山谷較涼有風。防風保暖外套+好走的鞋(步道)。"},
+   {n:"伊勢・鳥羽（沿海）",days:"Day5·6",hi:17,lo:10,tag:"🌊 海風較涼",tc:"#3f7d6e",desc:"白天略暖,海邊風大體感偏涼。防風外套·神社石階多穿好走鞋。"}
+  ];
+  var cards=areas.map(function(a){
+    return '<div class="wcard"><div class="wtop"><span class="wname">'+a.n+'</span>'
+      +'<span class="wtemp"><span class="hi">'+a.hi+'°</span> / <span class="lo">'+a.lo+'°</span></span></div>'
+      +'<div style="font-size:11px;color:var(--muted);margin-bottom:4px">'+a.days+' · 11月下旬平均</div>'
+      +'<div class="wdesc">'+a.desc+'</div>'
+      +'<span class="wtag" style="background:'+a.tc+'">'+a.tag+'</span></div>';
+  }).join("");
+
+  var outfit='<div class="olist">'
+   +'<div class="orow"><span class="oi">🧅</span><div><b>洋蔥式穿搭</b>：發熱衣(底層)＋針織/刷毛(中層)＋防風保暖外套(可脫)。早晚溫差約10°C、室內暖氣很熱,方便穿脫最重要。</div></div>'
+   +'<div class="orow"><span class="oi">🧣</span><div><b>高山那天(Day2)加厚</b>：羽絨外套＋毛帽＋手套＋圍巾＋發熱衣。近冰點、可能飄雪。</div></div>'
+   +'<div class="orow"><span class="oi">👟</span><div><b>好走的鞋</b>：神社石階、香嵐溪步道、老街石板,防滑運動鞋最實用。</div></div>'
+   +'<div class="orow"><span class="oi">☂️</span><div><b>折疊傘＋薄圍巾</b>：秋天偶陣雨;海邊、山區風大可擋風。</div></div>'
+   +'<div class="orow"><span class="oi">🧴</span><div><b>保濕</b>：日本秋冬乾燥,護唇膏、乳液、口罩可帶。</div></div>'
+   +'</div>';
+
+  var g=function(q){return "https://www.google.com/search?q="+encodeURIComponent(q);};
+  var links='<div class="wlinks">'
+   +'<a class="wlink" target="_blank" rel="noopener" href="'+g("名古屋 天氣 週間")+'">名古屋 預報</a>'
+   +'<a class="wlink" target="_blank" rel="noopener" href="'+g("高山市 天氣 週間")+'">高山 預報</a>'
+   +'<a class="wlink" target="_blank" rel="noopener" href="'+g("伊勢市 天氣 週間")+'">伊勢 預報</a>'
+   +'</div>';
+
+  host.innerHTML=
+    '<div class="wnote">⚠️ 下面是 <b>11月下旬的平均氣候</b>(參考用)。精準預報要<b>出發前3–5天</b>才準,記得按下面的即時預報連結再確認一次。</div>'
+   +'<div class="wsec"><span class="bar"></span>各區氣候</div>'+cards
+   +'<div class="wsec"><span class="bar"></span>穿搭建議</div>'+outfit
+   +'<div class="wsec"><span class="bar"></span>即時預報</div>'+links;
+}
+
+function prepHTML(){
+  var entry='<div class="olist">'
+   +'<div class="orow"><span class="oi">🌐</span><div><b>註冊 Visit Japan Web（VJW）</b>：Google 搜「Visit Japan Web」進<b>官網</b>註冊帳號。<b>只有網頁版、沒有官方 App</b>,別下載假 App。</div></div>'
+   +'<div class="orow"><span class="oi">📷</span><div><b>填本人資料</b>：可用手機掃護照自動帶入,核對無誤即可。</div></div>'
+   +'<div class="orow"><span class="oi">👨‍👩‍👧‍👧</span><div><b>同行家人</b>：可把爸媽/小孩加為同行家人(最多10人,嬰幼兒・直系親屬適用),或四個大人<b>各自註冊各自的帳號</b>。</div></div>'
+   +'<div class="orow"><span class="oi">✈️</span><div><b>新增入境預定</b>：填航班(JX838)、在日住宿地址(名古屋 ibis Styles／鳥羽 行燈)。</div></div>'
+   +'<div class="orow"><span class="oi">📝</span><div><b>填「入境審查及海關申報」</b>：填入境目的、停留天數、職業、現居地等;欄位變「<b>已登錄</b>」才會出現 QR。</div></div>'
+   +'<div class="orow"><span class="oi">🔳</span><div><b>取得藍框「二合一 QR Code」</b>：入境審查＋海關申報合併成<b>一個 QR</b>,<b>每人各自截圖</b>存手機。</div></div>'
+   +'</div>';
+  var entryTips='<div class="olist">'
+   +'<div class="orow"><span class="oi">⏰</span><div><b>抵達前至少 6 小時</b>完成(建議出發前 1–2 天就填好)。</div></div>'
+   +'<div class="orow"><span class="oi">📸</span><div><b>QR 一定要先截圖</b>：機場網路會塞,截圖最保險。</div></div>'
+   +'<div class="orow"><span class="oi">🛂</span><div><b>NGO 中部機場</b>可用「<b>共同自助通關機</b>」掃 QR＋臉部辨識,快速通關。</div></div>'
+   +'<div class="orow"><span class="oi">🪪</span><div>VJW <b>不是簽證</b>:台灣護照觀光 90 天免簽,VJW 只是加速通關。</div></div>'
+   +'</div>';
+  var esim='<div class="olist">'
+   +'<div class="orow"><span class="oi">📶</span><div><b>建議買 eSIM</b>(免換實體卡、落地即用):Klook／KKday／Airalo 都有日本方案。</div></div>'
+   +'<div class="orow"><span class="oi">📅</span><div><b>選 7–8 天方案</b> cover 11/15–21。四人可各買一張,或買一張「<b>可分享熱點</b>」的大流量方案給全家共用。</div></div>'
+   +'<div class="orow"><span class="oi">🗾</span><div>名古屋・高山・伊勢鳥羽都在本州,<b>買日本全國方案</b>都通(高山山區訊號偶爾弱屬正常)。</div></div>'
+   +'<div class="orow"><span class="oi">📲</span><div><b>出發前先裝好</b> eSIM 並設定;落地後開「數據漫遊」即可(依購買說明設定)。</div></div>'
+   +'<div class="orow"><span class="oi">⚠️</span><div>先確認手機<b>支援 eSIM</b>(iPhone XS 以後大多可);舊機或要保號,改買實體卡或 WiFi 分享器。</div></div>'
+   +'</div>';
+  var ins='<div class="olist">'
+   +'<div class="orow"><span class="oi">🛡️</span><div><b>建議保「旅遊綜合險」</b>:旅遊不便(班機延誤・行李延誤/遺失)＋海外突發疾病醫療＋意外。</div></div>'
+   +'<div class="orow"><span class="oi">🏥</span><div><b>日本醫療貴</b>:海外醫療／實支實付額度拉高一點較安心。</div></div>'
+   +'<div class="orow"><span class="oi">👨‍👩‍👧‍👧</span><div>四人可保<b>同一張家庭/團體保單</b>,較省事。</div></div>'
+   +'<div class="orow"><span class="oi">💳</span><div><b>先查刷機票的信用卡</b>有無附旅平險/不便險,確認<b>額度與理賠範圍夠不夠</b>再決定加保。</div></div>'
+   +'<div class="orow"><span class="oi">📄</span><div>出發前投保,<b>保單號碼＋24h 緊急聯絡電話存手機</b>;就醫單據記得留著回台理賠。</div></div>'
+   +'</div>';
+  return '<div class="sec-h" style="margin-top:24px"><span class="bar"></span>🧳 行前準備</div>'
+   +'<div class="todo"><div class="todo-h">📌 出發前要預約・訂位</div>'
+     +'<div class="olist">'
+       +'<div class="orow"><span class="oi">🦞</span><div><b>海女小屋 Chisato（11/19）— 一定要先預約!</b> 現烤龍蝦鮑魚·人氣高,<b>越早訂越好</b>。</div></div>'
+       +'<div class="orow"><span class="oi">🍴</span><div>其他建議訂位:鰻魚家 Shibafukuya（需訂位）、カツレツMATUMURA（位少）、滿船屋。</div></div>'
+     +'</div></div>'
+   +'<div class="wnote">🧳 出發前三件事先搞定!<b>入境卡(Visit Japan Web)、eSIM、保險</b>。入境卡建議出發前 1–2 天填完並截圖。</div>'
+   +'<div class="wsec"><span class="bar"></span>① 入境卡 · Visit Japan Web</div>'
+   +'<div class="wdesc" style="padding:0 2px 4px">2026 新制:<b>不用再填紙本入境卡/海關申報單</b>。先在 VJW 線上填好,入境審查＋海關申報<b>二合一 QR Code</b>,到機場掃碼就過。</div>'
+   +entry
+   +'<div class="wsec"><span class="bar"></span>入境卡提醒</div>'+entryTips
+   +'<div class="wsec"><span class="bar"></span>② 買 eSIM</div>'+esim
+   +'<div class="wsec"><span class="bar"></span>③ 旅遊保險</div>'+ins
+   +'<div class="wnote" style="margin-top:16px">💡 保險相關僅為一般資訊整理,實際投保內容/理賠以保單與保險公司為準。</div>';
+}
+function renderTax(){
+  var host=document.getElementById("view-tax"); if(!host)return;
+  var steps='<div class="olist">'
+   +'<div class="orow"><span class="oi">1️⃣</span><div><b>店裡結帳</b>：出示護照買東西,<b>先付含稅全額</b>(以前當場折抵,現在不扣了)。店家會登錄你的購買資料。</div></div>'
+   +'<div class="orow"><span class="oi">2️⃣</span><div><b>出境當天·機場</b>：到海關退稅端末,<b>出示護照＋商品</b>,確認商品要帶出國。</div></div>'
+   +'<div class="orow"><span class="oi">3️⃣</span><div><b>拿退款</b>：確認後退還消費稅(一般物品 10%、食品 8%)。退款方式可能是退信用卡、現金或 App,依店家而定(退卡可能等幾天入帳)。</div></div>'
+   +'</div>';
+  var warn='<div class="olist">'
+   +'<div class="orow"><span class="oi">🚫</span><div><b>別先託運!</b> 要退稅的商品<b>先託運行李就拿不到退款</b>。一定要<b>先過海關確認、再去託運</b>。</div></div>'
+   +'<div class="orow"><span class="oi">🚫</span><div><b>東西要在手邊</b>：同一張收據的商品,只要有一件當場拿不出來,<b>整張都不能退</b>。要退稅的別先拆用、別分開收。</div></div>'
+   +'<div class="orow"><span class="oi">⏳</span><div><b>90 天內出境</b>：購買日起 90 天內離境辦理才有效(你們行程內都 OK)。</div></div>'
+   +'</div>';
+  var easy='<div class="olist">'
+   +'<div class="orow"><span class="oi">✅</span><div><b>不用再封袋</b>：一般物品與消耗品的區分取消,藥妝/化妝品不再被密封袋封住,也能跟一般商品合併算門檻。</div></div>'
+   +'<div class="orow"><span class="oi">✅</span><div><b>50 萬上限取消</b>:消耗品原本的 50 萬日圓上限廢除。</div></div>'
+   +'<div class="orow"><span class="oi">💴</span><div><b>門檻不變</b>:同一天同一間店,<b>未稅滿 5,000 日圓</b>才能退(跟以前一樣)。</div></div>'
+   +'</div>';
+  var plats='<div class="olist">'
+   +'<div class="orow"><span class="oi">📱</span><div><b>用哪個平台是「店家決定」的</b>,最常遇到這四家,手機操作不太一樣:</div></div>'
+   +'<div class="orow"><span class="oi">①</span><div><b>J-TaxRefund</b>:網頁操作,綁卡要填 <b>CVV</b> 還要收簡訊驗證碼(<b>最容易卡住</b>)。</div></div>'
+   +'<div class="orow"><span class="oi">②</span><div><b>JPrefund</b>:掃收據 QR Code,要<b>人臉辨識</b>;回台灣再補卡也可以。</div></div>'
+   +'<div class="orow"><span class="oi">③</span><div><b>PIE VAT</b>:一定要<b>下載 App</b>,拍收據/護照/入境貼紙,<b>不能退現金</b>。</div></div>'
+   +'<div class="orow"><span class="oi">④</span><div><b>Global Blue</b>:櫃台登記,<b>不用填 CVV</b>,但要人臉辨識。</div></div>'
+   +'<div class="orow"><span class="oi">🔒</span><div><b>不想填信用卡安全碼?</b> 可改選<b>機場領現金</b>,或等退款入帳後再解除綁卡、刪帳號。</div></div>'
+   +'</div>';
+  var tips='<div class="olist">'
+   +'<div class="orow"><span class="oi">✈️</span><div><b>出境機場=中部國際機場(NGO)</b>:11/21 你們 17:40 出境。先到<b>出境大廳的免稅機台掃護照,綠燈才能去託運</b>;退稅手續務必<b>在託運前</b>辦完,當天提早到。</div></div>'
+   +'<div class="orow"><span class="oi">🛂</span><div><b>各自買各自退</b>:護照隨身帶著買才登錄得到,四個人各自的購買各自登錄、各自退。</div></div>'
+   +'<div class="orow"><span class="oi">🧾</span><div><b>收據＋護照收好</b>:到機場端末要用,別弄丟。</div></div>'
+   +'</div>';
+  host.innerHTML=
+    '<div class="wnote">⚠️ <b>2026/11/1 起日本退稅大改制</b>(官方已上路),改成「<b>先付含稅、出境確認後退款</b>」的 Refund(リファンド)方式。你們 11/15–21 出發<b>適用新制</b>,跟以前不一樣,出發前看一下!</div>'
+   +'<div class="wsec"><span class="bar"></span>最大改變:現場先付含稅價</div>'
+   +'<div class="wdesc" style="padding:0 2px 4px">以前免稅店結帳直接扣掉消費稅;<b>現在要先付含稅全額</b>,出境時在機場通過海關確認,才退還消費稅相當額。</div>'
+   +'<div class="wsec"><span class="bar"></span>3 步驟流程</div>'+steps
+   +'<div class="wsec"><span class="bar"></span>退稅平台(店家決定·操作不同)</div>'+plats
+   +'<div class="wsec"><span class="bar"></span>⚠️ 會拿不到退款的雷區</div>'+warn
+   +'<div class="wsec"><span class="bar"></span>✅ 變簡單的地方</div>'+easy
+   +'<div class="wsec"><span class="bar"></span>給我們的提醒</div>'+tips;
 }
 
 /* ============ tabs ============ */
-function setupTabs(){
-  document.querySelectorAll("nav.tabs button").forEach(function(b){
-    b.addEventListener("click",function(){
-      document.querySelectorAll("nav.tabs button").forEach(function(x){x.classList.remove("on");});
-      document.querySelectorAll(".view").forEach(function(x){x.classList.remove("on");});
-      b.classList.add("on");
-      var t=b.getAttribute("data-tab");
-      document.getElementById("view-"+t).classList.add("on");
-      if(t==="map") initMap();
-      if(t==="food") renderFood();
-      if(t==="booked") renderBooked();
-      if(t==="budget") document.querySelectorAll("#explist .en").forEach(function(ta){ ta.style.height="auto"; ta.style.height=ta.scrollHeight+"px"; });
-      window.scrollTo(0,0);
-    });
-  });
+function switchTab(t){
+  document.querySelectorAll("nav.tabs button").forEach(function(x){x.classList.toggle("on",x.getAttribute("data-tab")===t);});
+  document.querySelectorAll(".view").forEach(function(x){x.classList.remove("on");});
+  document.getElementById("view-"+t).classList.add("on");
+  if(t==="home")renderHome();
+  if(t==="trip")renderTrip();
+  if(t==="booked")renderBooked();
+  if(t==="map")initMap();
+  if(t==="budget")document.querySelectorAll("#explist .en").forEach(function(ta){ta.style.height="auto";ta.style.height=ta.scrollHeight+"px";});
+  if(t==="food")renderFood();
+  if(t==="weather")renderWeather();
+  if(t==="tax")renderTax();
+  window.scrollTo(0,0);
 }
-
-/* ============ countdown ============ */
-function countdown(){
-  var el=document.getElementById("cd"); if(!el) return;
-  var dep=new Date(2026,10,15,14,55,0);
-  var now=new Date();
-  var d=Math.ceil((dep-now)/86400000);
-  el.textContent = d>0? d : (d===0?"0":"已出發");
-}
-
-function setupBackup(){
-  var btn=document.getElementById("bkbtn"), panel=document.getElementById("bkpanel"),
-      ta=document.getElementById("bktext"), msg=document.getElementById("bkmsg");
-  if(!btn) return;
-  btn.addEventListener("click",function(){
-    if(panel.style.display==="none"){ ta.value=JSON.stringify(mem); panel.style.display="block"; msg.textContent=""; }
-    else panel.style.display="none";
-  });
-  document.getElementById("bkcopy").addEventListener("click",function(){
-    ta.value=JSON.stringify(mem); ta.focus(); ta.select();
-    function ok(){ msg.textContent="已複製 ✓ 貼到新版本就能還原"; }
-    if(navigator.clipboard && navigator.clipboard.writeText){
-      navigator.clipboard.writeText(ta.value).then(ok,function(){ try{document.execCommand("copy");ok();}catch(e){msg.textContent="請長按上面文字手動複製";} });
-    } else { try{document.execCommand("copy");ok();}catch(e){msg.textContent="請長按上面文字手動複製";} }
-  });
-  document.getElementById("bkrestore").addEventListener("click",function(){
-    var v=ta.value.trim(); if(!v){ msg.textContent="請先把備份內容貼進框裡"; return; }
-    try{
-      var d=JSON.parse(v);
-      if(d && typeof d==="object" && (d.activities||d.budget||d.foods)){
-        mem=d; if(!mem.activities)mem.activities={}; if(!mem.budget)mem.budget=[]; if(!mem.foods)mem.foods=[];
-        if(typeof mem.rate!=="number")mem.rate=0.215;
-        save(); renderTrip(); renderBudget(); renderFood();
-        msg.textContent="已還原 ✓ 資料更新完成";
-      } else msg.textContent="格式不對,請確認貼的是完整備份內容";
-    }catch(e){ msg.textContent="無法解析,請確認貼上的是完整備份內容"; }
-  });
-}
+function setupTabs(){document.querySelectorAll("nav.tabs button").forEach(function(b){b.addEventListener("click",function(){switchTab(b.getAttribute("data-tab"));});});}
+function renderAll(){renderHome();renderTrip();renderBudget();renderFood();renderBooked();}
 
 /* ============ boot ============ */
 (async function(){
+  document.getElementById("hero").innerHTML=svgHero();
   await loadStore();
   var st=document.getElementById("savetxt");
-  if(hasLS){ st.textContent="編輯會自動保存在這個瀏覽器(重整、關掉再開都還在)"; }
-  else if(!hasStore){ st.textContent="提示:此環境無法保存,編輯重整後會消失"; }
+  if(hasLS)st.textContent="編輯會自動保存在這個瀏覽器（重整、關掉再開都在）";
+  else if(!hasStore)st.textContent="提示:此環境無法保存,重整會消失";
   countdown();
-  renderTrip();
-  setupTabs();
-  setupBudget();
+  renderHome();
   renderBudget();
   renderFood();
   renderBooked();
+  setupTabs();
   setupBackup();
 })();
 </script>
