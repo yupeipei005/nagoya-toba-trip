@@ -21,7 +21,7 @@ body{overflow-x:hidden}
 body{margin:0;background:var(--paper);color:var(--text);
   font-family:"Noto Sans TC",system-ui,sans-serif;-webkit-font-smoothing:antialiased;
   background-image:radial-gradient(rgba(194,144,74,.05) 1px, transparent 1px);background-size:22px 22px;}
-.app{max-width:520px;margin:0 auto;min-height:100%;background:var(--paper);overflow-x:hidden;position:relative;
+.app{max-width:520px;margin:0 auto;min-height:100%;background:var(--paper);position:relative;
   box-shadow:0 0 50px rgba(106,61,43,.06)}
 
 /* ===== animations ===== */
@@ -341,6 +341,120 @@ footer{padding:16px 16px 36px;text-align:center;color:var(--muted);font-size:11p
 .bkb.primary{background:var(--ink);color:#fff;border-color:var(--ink)}
 .bkmsg{font-size:12px;color:var(--sea);margin-top:8px;font-weight:700;min-height:14px}
 .empty{color:var(--muted);font-size:13px;padding:6px 4px}
+
+/* ============================================================
+   v32 redesign — 動畫 / 時間軸 / 小卡 / 天氣 / 已訂
+   ============================================================ */
+@keyframes leaffall{0%{transform:translateY(-24px) translateX(0) rotate(0);opacity:0}
+  12%{opacity:.95}88%{opacity:.95}100%{transform:translateY(230px) translateX(26px) rotate(340deg);opacity:0}}
+@keyframes cdGlow{0%,100%{box-shadow:0 8px 24px rgba(210,98,47,.2)}50%{box-shadow:0 13px 38px rgba(210,98,47,.44)}}
+@keyframes cdPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+@keyframes introUp{0%{transform:translateY(14px);opacity:0}100%{transform:translateY(0);opacity:1}}
+@keyframes ballPop{0%{transform:scale(.5)}60%{transform:scale(1.2)}100%{transform:scale(1)}}
+@keyframes twinkle{0%,100%{opacity:.5}50%{opacity:1}}
+.herotext{animation:introUp .75s ease both}
+.leaffall{position:absolute;top:-10px;pointer-events:none;z-index:4;will-change:transform;
+  animation:leaffall linear infinite}
+
+/* ---- countdown 大字無框 + 小動畫 ---- */
+.countdown{display:inline-flex;align-items:center;gap:14px;margin:18px auto 14px;
+  background:none;border:none;border-radius:0;padding:0;box-shadow:none;position:relative;overflow:visible;
+  animation:cdFloat 3.6s ease-in-out infinite}
+.countdown::before,.countdown::after{display:none}
+@keyframes cdFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+.countdown .cdnum{display:inline-block;font-family:"Space Mono",monospace;font-weight:700;font-size:64px;line-height:1.2;
+  padding:0 2px;color:#d2622f;letter-spacing:-2px;animation:cdPop 3.6s ease-in-out infinite}
+@keyframes cdPop{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
+.countdown .cdlbl{font-family:"Noto Serif TC",serif;font-size:15px;color:var(--ink-soft);font-weight:700;text-align:left;line-height:1.35}
+.countdown .cdlbl b{display:block;color:var(--persimmon);font-size:20px;font-weight:900;margin-top:1px}
+.countdown.live .cdnum{font-size:40px;letter-spacing:-1px}
+.countdown.done .cdnum{font-size:32px;letter-spacing:0}
+
+/* ---- overview: 今天高亮 ---- */
+.dayrow{position:relative}
+.dayrow.today{border-color:var(--persimmon);box-shadow:0 4px 16px rgba(210,98,47,.18)}
+.todaytag{display:none;position:absolute;top:-8px;right:12px;background:var(--persimmon);color:#fff;
+  font-size:9.5px;font-weight:700;padding:1px 9px;border-radius:999px;box-shadow:0 2px 6px rgba(210,98,47,.35)}
+.dayrow.today .todaytag{display:inline-block}
+
+/* ---- 行程：左側時間軸 + 跟隨球球 ---- */
+.tlwrap{position:relative;padding-left:26px;margin-top:4px}
+.tlwrap>.rail{position:absolute;left:9px;top:12px;bottom:12px;width:2px;border-radius:2px;
+  background:var(--dc,var(--gold));opacity:.28}
+.tlwrap>.ball{position:absolute;left:2px;top:12px;width:16px;height:16px;border-radius:50%;
+  background:var(--dc,var(--gold));border:3px solid #fff;box-shadow:0 2px 7px rgba(0,0,0,.22);
+  z-index:5;transition:top .25s cubic-bezier(.34,1.3,.5,1);animation:ballPop .4s ease}
+.tldot{position:absolute;left:5px;width:10px;height:10px;border-radius:50%;background:#fff;
+  border:2px solid var(--dc,var(--gold));opacity:.45;z-index:2;transition:opacity .2s}
+
+/* ---- 行程小卡：低調 + 分行好讀 ---- */
+.actcard{position:relative;background:#fffefb;border:1px solid var(--line);
+  border-left:3px solid var(--dc,var(--gold));border-radius:11px;padding:10px 12px 11px;margin-bottom:8px;
+  box-shadow:0 1px 4px rgba(106,61,43,.04);transition:transform .13s ease,box-shadow .22s ease,border-color .22s}
+.actcard:active{transform:scale(.98)}
+.actcard.food{background:#fdf7ec}
+.actcard.night{background:#f5f2fa}
+.actcard.tlon{box-shadow:0 5px 18px rgba(106,61,43,.13);border-color:var(--dc,var(--gold))}
+.ac-top{display:flex;align-items:baseline;gap:9px}
+.ac-time{font-family:"Space Mono",monospace;font-size:12px;font-weight:700;color:var(--dc,var(--persimmon));
+  flex-shrink:0;min-width:42px;letter-spacing:-.5px}
+.ac-time.none{color:#d8ccba}
+.ac-name{flex:1;min-width:0;font-size:14.5px;font-weight:700;color:#3a2a20;line-height:1.5;word-break:break-word}
+.ac-g{font-size:15px;text-decoration:none;flex-shrink:0;opacity:.8}
+.ac-note{margin-top:6px;padding-left:51px}
+.achline{font-size:12px;color:var(--ink-soft);line-height:1.55;position:relative;padding-left:12px;margin-top:3px}
+.achline::before{content:"";position:absolute;left:2px;top:8px;width:4px;height:4px;border-radius:50%;
+  background:var(--dc,var(--gold));opacity:.55}
+.acts.tour .tactrow{position:relative;padding:11px 2px 11px 2px}
+.tactrow .ac-note{padding-left:51px}
+
+/* ---- 今日地圖 ---- */
+.daymaph{font-family:"Noto Serif TC",serif;font-weight:900;font-size:14px;color:#3a2a20;margin:20px 3px 8px;
+  display:flex;align-items:center;gap:7px}
+.daymaph .bar{width:4px;height:14px;border-radius:3px;background:var(--dc,var(--sea))}
+.daymap{height:230px;border-radius:14px;border:1px solid var(--line);overflow:hidden;box-shadow:0 2px 8px rgba(106,61,43,.05)}
+
+/* ---- 天氣：每日時段溫度 ---- */
+.wday{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--wc,var(--sea));
+  border-radius:14px;padding:12px 14px;margin-bottom:10px;box-shadow:0 2px 8px rgba(106,61,43,.05)}
+.wday .wd-top{display:flex;align-items:center;gap:8px;margin-bottom:9px}
+.wday .wd-name{font-family:"Noto Serif TC",serif;font-weight:900;font-size:15px;color:#3a2a20;flex:1}
+.wday .wd-days{font-size:10.5px;color:var(--muted);font-family:"Space Mono",monospace}
+.wslots{display:flex;gap:7px}
+.wslot{flex:1;text-align:center;background:#faf5ec;border-radius:10px;padding:7px 4px}
+.wslot .ws-l{font-size:10.5px;color:var(--muted);font-weight:700}
+.wslot .ws-t{font-family:"Space Mono",monospace;font-size:18px;font-weight:700;margin-top:2px;line-height:1}
+.wslot.am .ws-t{color:#2f7fd6}.wslot.noon .ws-t{color:var(--persimmon)}.wslot.pm .ws-t{color:#7a5ea8}
+.wday .wd-desc{font-size:12px;color:var(--ink-soft);line-height:1.5;margin-top:9px}
+.wtag2{display:inline-block;font-size:10.5px;font-weight:700;color:#fff;border-radius:6px;padding:2px 9px;margin-top:8px;background:var(--wc,var(--sea))}
+.wcopy{display:flex;align-items:center;gap:8px;background:#f6efe2;border:1px solid var(--line);border-radius:11px;padding:9px 11px;margin-bottom:7px}
+.wcopy .wct{flex:1;min-width:0}
+.wcopy .wcn{font-size:12.5px;font-weight:700;color:#3a2a20}
+.wcopy .wcq{font-size:11px;color:var(--ink-soft);font-family:"Space Mono",monospace;margin-top:1px;word-break:break-all}
+.maple{display:flex;gap:9px;align-items:flex-start;padding:10px 0;border-bottom:1px solid #f3eee3;font-size:12.5px;line-height:1.55}
+.maple:last-child{border-bottom:none}
+.maple .mp-ic{font-size:16px;flex-shrink:0;width:22px;text-align:center}
+.maple b{color:#3a2a20}
+.mp-hi{color:#c0392b;font-weight:700}.mp-mid{color:#e08a1e;font-weight:700}.mp-lo{color:var(--muted);font-weight:700}
+.ofit{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid #f3eee3;font-size:12.5px;line-height:1.55;align-items:flex-start}
+.ofit:last-child{border-bottom:none}
+.ofit .of-d{flex-shrink:0;width:30px;height:30px;border-radius:9px;color:#fff;display:flex;align-items:center;justify-content:center;font-family:"Noto Serif TC",serif;font-weight:900;font-size:14px;margin-top:1px}
+.ofit b{color:#3a2a20}
+.swatch{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin:0 1px;border:1px solid rgba(0,0,0,.1)}
+
+/* ---- 已訂：大項目快速跳 ---- */
+.bkjump{display:flex;gap:7px;margin-bottom:14px}
+.bkjump button{flex:1;border:1.5px solid var(--line);background:#fff;color:var(--ink);font-family:inherit;
+  font-weight:700;font-size:12.5px;padding:9px 4px;border-radius:11px;cursor:pointer;transition:background .15s}
+.bkjump button:active{background:var(--gold-soft)}
+.bksec,.sec-h{scroll-margin-top:86px}
+
+/* ---- 行前：已完成標記 ---- */
+.donestrip{display:flex;gap:7px;margin:2px 0 6px}
+.donechip{flex:1;background:#edf7ee;border:1px solid #cfe6cf;border-radius:12px;padding:9px 6px;text-align:center;
+  font-size:11px;font-weight:700;color:#2e7d32;line-height:1.4}
+.donechip b{display:block;font-size:13px;color:#1f5e23}
+.badge-done{display:inline-block;background:#2e9e4f;color:#fff;font-size:10.5px;font-weight:700;padding:1px 9px;border-radius:999px;margin-left:7px;vertical-align:middle}
 </style>
 </head>
 <body>
@@ -366,7 +480,6 @@ footer{padding:16px 16px 36px;text-align:center;color:var(--muted);font-size:11p
     <button class="on" data-tab="home">總覽</button>
     <button data-tab="trip">行程</button>
     <button data-tab="booked">已訂</button>
-    <button data-tab="map">地圖</button>
     <button data-tab="budget">預算</button>
     <button data-tab="food">美食</button>
     <button data-tab="weather">天氣</button>
@@ -377,10 +490,6 @@ footer{padding:16px 16px 36px;text-align:center;color:var(--muted);font-size:11p
     <section class="view on" id="view-home"></section>
     <section class="view" id="view-trip"></section>
     <section class="view" id="view-booked"></section>
-    <section class="view" id="view-map">
-      <div class="daypills" id="daypills"></div>
-      <div id="map"></div>
-    </section>
     <section class="view" id="view-budget"></section>
     <section class="view" id="view-food"></section>
     <section class="view" id="view-weather"></section>
@@ -389,22 +498,12 @@ footer{padding:16px 16px 36px;text-align:center;color:var(--muted);font-size:11p
 
   <footer>
     <span class="savedot" id="savedot"></span><span id="savetxt">編輯會自動保存在這個瀏覽器</span>
-    <div class="bkrow"><button id="bkbtn" class="bklink">＊ 備份 / 還原資料</button></div>
-    <div class="bkpanel" id="bkpanel" style="display:none">
-      <div class="bkhint">這是你目前所有資料。換新版本時先按「複製」存起來;打開新版後貼進這個框、按「還原」,資料就接回來不會掉。</div>
-      <textarea id="bktext" class="bktext" placeholder="把備份內容貼在這裡再按還原…"></textarea>
-      <div class="bkbtns">
-        <button id="bkcopy" class="bkb">複製目前資料</button>
-        <button id="bkrestore" class="bkb primary">從上面內容還原</button>
-      </div>
-      <div class="bkmsg" id="bkmsg"></div>
-    </div>
   </footer>
 </div>
 
 <script>
 /* ============ data ============ */
-var DEFAULT_DATA = {"activities":{"11/15":[{"t":"11:00","n":"🚈 機捷 直達車 → 桃園機場（約36分）","h":"建議搭 11:00→11:36 或 11:15→11:51·趕上11:55報到｜直達車班次:10:45→11:21｜11:00→11:36｜11:15→11:51｜11:30→12:06"},{"t":"11:55","n":"🛄 抵達桃園機場（起飛前 3 小時）","h":"報到、託運行李、出境"},{"t":"14:55","n":"✈️ JX838 桃園 → 名古屋","h":"直飛 2h35m・18:30 抵達 NGO"},{"t":"18:30","n":"抵達 中部國際機場（NGO）","h":"國際線入境・提領行李約 40–60 分"},{"t":"19:37","n":"🚃 名鐵 μ-SKY → 名古屋站（20:06 到）","h":"μ-SKY 19:37→20:06 ¥1,430；一般 19:47→20:25 ¥980"},{"t":"20:15","n":"🏨 Check-in ibis Styles Nagoya（名駅）"},{"t":"","n":"🍴 晚餐：金鯱酒場（居酒屋·名駅西口）","h":"居酒屋·名駅西口·步行1分·食べログ3.28·天天開","opt":true},{"t":"","n":"🍴 つけ麺 燈 tou（栄·沾麵）","h":"Google4.4·つけ麺·約00:30打烊·東山線名駅約5分","opt":true},{"t":"","n":"🍴 一蘭 名古屋站（24h）","h":"Google4.1·24小時·名駅內·最保險","opt":true},{"t":"","n":"🍴 横浜家系 ぎん家（名駅西口）","h":"Google3.7·到凌晨1:00·離 ibis 西口最近","opt":true},{"t":"","n":"🍴 隼 本店（海老拉麵）","h":"Google4.1·名駅西步行~10分·週六到深夜","opt":true},{"t":"","n":"🍴 塚ちゃん餃子（車道·內臟燒肉）","h":"Google4.6·17:00開·要訂位·在車道(東)稍遠","opt":true}],"11/16":[{"t":"07:50","n":"名古屋站 VIP LINER 集合（08:00出發）","h":"VIP Lounge/Taikotori南口·找持藍色遊鯉導遊"},{"t":"10:30","n":"高山：朝市・老街・陣屋","h":"自由活動約1.5h·江戶老街"},{"t":"12:30","n":"🍴 午餐：飛驒牛套餐（民宿 古志山）","h":"含關東煮·飛驒牛燒肉·五箇山豆腐（方案已含）"},{"t":"14:30","n":"白川鄉 合掌村","h":"自由活動約1.5h·城跡展望台看全景"},{"t":"18:00","n":"回程 名古屋站 VIP LINER"},{"t":"19:00","n":"🍴 晚餐：みの吉 燒肉（國際中心站）","h":"食べログ3.45·A5牛¥699·今天(一)有開","post":true},{"t":"","n":"🍴 備案：鰻魚家 Shibafukuya（需訂位）","h":"食べログ3.75·週二三休","post":true},{"t":"","n":"🍴 黑豚屋 らむちぃ（栄·味噌豬排）","h":"Google4.3·味噌カツ·栄HP栄ビルB1·夜17:30–21:30·現金·栄離名駅約5分","post":true}],"11/18":[{"t":"09:50","n":"集合 MiniStop（名駅椿町店）","h":"Klook 一日遊·20:00同地點下車"},{"t":"10:45","n":"虎溪山 永保寺（可選）","h":"秋季限定·可選·約1h·入山7:00–17:00·免費（時間為估計）"},{"t":"12:30","n":"蒲郡橙園（採水果·可選）","h":"採水果·可選·約1.5h·含門票（可午餐）"},{"t":"15:00","n":"小原 四季櫻公園","h":"四季櫻11月見頃·約30分·免費"},{"t":"16:00","n":"香嵐溪","h":"停留120–210分·紅葉點燈 日落–21:00·傍晚最美"},{"t":"20:00","n":"回程 MiniStop（名駅椿町店）"}],"11/19":[{"t":"08:00","n":"🍴 早餐：KAKO 花車本店（全家）","h":"四種果醬紅豆奶油吐司·只收現金·早上會排隊·近名駅(柳橋店週四休,改同系列本店)"},{"t":"11:10","n":"🚃 近鐵名古屋→鳥羽 特急（A53928）","h":"伊勢志摩Liner Salon・11:10發 12:49到・用5日Plus周遊券乘車"},{"t":"","n":"🍴 海女小屋 Chisato（水族館旁）","h":"食べログ3.53·需預約·今天(四)有開·現烤龍蝦鮑魚"},{"t":"","n":"鳥羽水族館","h":"9:30–17:00（最終入館16:00,年中無休）"},{"t":"","n":"鳥羽港散策","h":"自由散策"},{"t":"","n":"🍴 備案：燒貝 Iroha（水族館旁）","h":"食べログ3.50·10:00–18:30"},{"t":"","n":"🍴 KITCHEN.TAKAMA（鳥羽站·洋食）","h":"食べログ3.48·8:00–15:00·大份量"}],"11/20":[{"t":"","n":"🚃 鳥羽→伊勢（近鐵·周遊券含）","h":"約20分到宇治山田·轉三重交通巴士到內宮"},{"t":"","n":"二見興玉神社","h":"境內自由參拜·順路先拜"},{"t":"","n":"夫婦岩","h":"自由參觀"},{"t":"","n":"伊勢神宮（內宮）","h":"11月 5:00–17:00·趁關門前"},{"t":"","n":"托福橫丁","h":"11月 9:30–17:00（各店略異）"},{"t":"","n":"🍴 DANDELION 巧克力（外宮）","h":"食べログ3.59·10:00–17:00·順遊外宮"},{"t":"","n":"🍴 晚餐：滿船屋（伊勢市站前·海鮮燒）","h":"食べログ3.46·炭烤海鮮·てこね寿司"}],"11/21":[{"t":"10:00","n":"三重 → 中部國際機場"},{"t":"13:00","n":"機場逛街、購物、吃飯","h":"🛍️ 有 UNIQLO(第1航廈4F·8:00–21:00)·名駅沒買到可這裡補｜退稅端末記得在託運前辦完"},{"t":"17:40","n":"🛂 出境 → ✈️ JX839 名古屋 → 桃園","h":"退稅記得在託運前辦完·回程約2h40m(台灣-1h)"},{"t":"","n":"🚈 回程機捷 A12機場 → A1 台北車站（直達約36分）","h":"全票160元·末班「直達車」約22:58(每約15分一班)·之後普通車到約23:37末班｜入境後依落地時間搭"}],"11/17#爸媽":[{"t":"08:30","n":"集合 MiniStop（名駅椿町店）","h":"Klook 犬山城・馬籠宿一日遊·18:20回名古屋"},{"t":"09:30","n":"犬山城（含門票）","h":"9:00–17:00·日本最古天守·國寶·含門票（時間為估計）"},{"t":"10:00","n":"三光稻荷神社","h":"犬山城旁·紅色鳥居·錢洗社"},{"t":"11:30","n":"惠那峽展望臺","h":"巨岩峽谷·停留約30分·免費"},{"t":"13:00","n":"馬籠宿","h":"米其林綠色指南一星·江戶石疊老街·約1.5h（可午餐）"},{"t":"15:00","n":"妻籠宿","h":"重要傳統建築保存區·約1h·較寧靜"},{"t":"18:20","n":"回程 名古屋"}],"11/17#姊妹":[{"t":"08:30","n":"名駅 送爸媽上車（MiniStop 椿町口）","h":"爸媽 Klook 犬山城・馬籠宿一日遊集合"},{"t":"08:35","n":"🚃 名駅 → 尼ヶ坂／名古屋城","h":"地鐵約 18 分"},{"t":"08:55","n":"🍴 早餐：つばめパン & Milk 尼ヶ坂本店","h":"Google4.0·天然酵母吐司·小倉紅豆奶油·8:00開"},{"t":"09:45","n":"名古屋城（可入城·天守¥500）","h":"天守・本丸御殿 9:00–16:30·門票¥500·就在早餐旁·當天決定入不入城"},{"t":"11:15","n":"🚃 → 大須（上前津／大須観音）","h":"約 15 分"},{"t":"11:30","n":"三輪神社","h":"大須旁·小而可愛·兔子/招財"},{"t":"11:55","n":"🍴 午餐：大須商店街 邊走邊吃","h":"各店約10:00–20:00·雞排/糰子/甜點"},{"t":"13:00","n":"大須觀音","h":"境內自由參拜"},{"t":"13:15","n":"🛍️ 大創 DAISO 大須店","h":"4 層大創·9:30–20:00·就在大須商店街內"},{"t":"13:30","n":"🎰 扭蛋 ガチャ（大須 #C-pla 等）","h":"大須=扭蛋天堂·#C-pla兩層+多間專門店·10:00–21:00｜栄也有gashacoco(全名最大)/オアシス21"},{"t":"14:00","n":"🚃 大須 → 栄","h":"上前津→栄 1 站 / 步行約 10 分"},{"t":"14:15","n":"🛍️ 栄逛街：On＋Mont-bell＋香水","h":"On→Alpen名古屋1F跑鞋區/La SESSIONS(PARCO)·Mont-bell→中日ビル·香水→松坂屋/三越·都~20:00關"},{"t":"15:30","n":"🚃 栄 → 名古屋站","h":"約 7 分"},{"t":"15:45","n":"🛍️ 名駅 GATEMALL＋3COINS","h":"UNIQLO・GU(11F)·@cosme(5F)·香氛 LE LABO/SHIRO/Aesop(2・6F)·3COINS(ゲートウォーク地下街)·~20:00｜退稅在高島屋11F·抽1.55%·領95折券｜沒逛完回來補"},{"t":"16:45","n":"🚃 名古屋站 → JR 清洲站","h":"JR約10分 + 步行約10分"},{"t":"17:00","n":"🏯 清洲城・きよすイルミ 點燈","h":"點燈17:00–21:00·看到約18:00·天守外觀·光雕每時00/20/40分"},{"t":"18:00","n":"🚃 清洲 → 名古屋站","h":"JR約10分·回名駅會合"},{"t":"18:20","n":"🍴 晚餐：全家會合（名駅·當天選一間）","h":"爸媽團18:20回名駅·全家一起吃"},{"t":"","n":"🍴 選項：矢場とん（名駅·味噌豬排）","h":"名古屋名物味噌カツ·Google4.1"},{"t":"","n":"🍴 選項：うな富士（名駅太閤通口·鰻魚三吃）","h":"青鰻·Google4.4·近飯店·11:00–22:00"},{"t":"","n":"🍴 選項：世界の山ちゃん（名駅·手羽先）","h":"名物手羽先·居酒屋·適合全家"},{"t":"","n":"📌 備選：熱田神宮（時間夠再去）","h":"原排這天·已移除讓位給逛街·離名駅約15分"}]},"budget":[{"cat":"機票","name":"星宇 JX838/839 來回 ×4（NT$15,153×4）","amt":60612,"who":"錡"},{"cat":"住宿","name":"名古屋 4 晚","amt":16815,"who":"霈"},{"cat":"住宿","name":"三重 2 晚（¥109,464）","amt":23535,"who":"霈"},{"cat":"行程","name":"高山・白川鄉一日遊（VIP LINER 巴士）","amt":7248,"who":"爸"},{"cat":"行程","name":"爸媽自己行動（犬山城・馬籠宿）","amt":3672,"who":"爸"},{"cat":"行程","name":"香嵐溪・永保寺・四季櫻（賞楓一日）","amt":7888,"who":"爸"},{"cat":"門票","name":"鳥羽水族館","amt":0,"who":""},{"cat":"餐飲","name":"海女小屋海鮮體驗","amt":0,"who":""},{"cat":"餐飲","name":"餐費（每日）","amt":0,"who":""},{"cat":"交通","name":"近鐵 5日Plus 周遊券 ×4（XWW873557）","amt":3964,"who":""},{"cat":"購物","name":"伴手禮・購物","amt":0,"who":""},{"cat":"其他","name":"保險（4100×3＋950）","amt":13250,"who":"爸"},{"cat":"交通","name":"近鐵特急券 來回 ×4（¥5,360×2・A53928/A37039）","amt":2304,"who":"爸"},{"cat":"其他","name":"eSIM 網路（3張）","amt":977,"who":"霈"}],"rate":0.215,"seeded":true,"day3split":true,"budgetSeeded":true,"budgetSeeded2":true,"foods":[{"g":"nagoya","t":"居酒屋","n":"名古屋地雞 金鯱酒場 名古屋站西口店","rt":3.28,"done":false,"tb":"https://tabelog.com/tw/aichi/A2301/A230101/23086434/","lt":35.1692,"lg":136.8812},{"g":"nagoya","t":"燒肉","n":"炭火燒肉 Horumon Minokichi（みの吉）","rt":3.45,"done":false,"tb":"https://tabelog.com/tw/aichi/A2301/A230101/23095337/","lt":35.1715,"lg":136.8891},{"g":"nagoya","t":"炸豬排","n":"Katsuretsu MATUMURA bis CHUNICHI BUILDING","rt":3.53,"done":false,"tb":"https://tabelog.com/tw/aichi/A2301/A230103/23087936/","lt":35.1686,"lg":136.9095},{"g":"nagoya","t":"居酒屋","n":"Kaburaya 總本家","rt":3.49,"done":false,"tb":"https://tabelog.com/tw/aichi/A2301/A230101/23051657/","lt":35.1688,"lg":136.8815},{"g":"nagoya","t":"鰻魚飯","n":"鰻魚家 Shibafukuya","rt":3.75,"done":false,"tb":"https://tabelog.com/tw/aichi/A2301/A230101/23067466/","lt":35.1751,"lg":136.8915},{"g":"nagoya","t":"鰻魚飯","n":"熱田蓬萊軒 松坂屋店","rt":3.68,"done":false,"tb":"https://tabelog.com/tw/aichi/A2301/A230103/23000108/","lt":35.1645,"lg":136.9079},{"g":"nagoya","t":"喫茶","n":"KONPARU Sun Road店","rt":3.46,"done":false,"tb":"https://tabelog.com/tw/aichi/A2301/A230101/23073737/","lt":35.1697,"lg":136.8845},{"g":"nagoya","t":"咖啡","n":"KAKO 柳橋店","rt":3.69,"done":false,"tb":"https://tabelog.com/tw/aichi/A2301/A230101/23032087/","lt":35.1691,"lg":136.8901},{"g":"nagoya","t":"咖啡","n":"BUCYO COFFEE","rt":3.69,"done":false,"tb":"https://tabelog.com/tw/aichi/A2301/A230101/23007465/","lt":35.166,"lg":136.8906},{"g":"nagoya","t":"甜點","n":"Tsubameya 大名古屋Building店","rt":3.76,"done":false,"tb":"https://tabelog.com/tw/aichi/A2301/A230101/23059315/","lt":35.1719,"lg":136.8845},{"g":"nagoya","t":"麵包","n":"IEN Bake house","rt":3.54,"done":false,"tb":"https://tabelog.com/tw/aichi/A2301/A230103/23091017/","lt":35.1706,"lg":136.9071},{"g":"nagoya","t":"咖啡","n":"coffee house KAKO 花車本店","rt":3.73,"done":false,"tb":"https://tabelog.com/tw/aichi/A2301/A230101/23005509/","lt":35.1702,"lg":136.8903},{"g":"nagoya","t":"炸豬排","n":"カツレツMATUMURA 名駅本店","rt":3.69,"done":false,"tb":"https://tabelog.com/tw/aichi/A2301/A230101/23073675/","lt":35.1721,"lg":136.8845},{"g":"nagoya","t":"烤豬舌","n":"塚ちゃん餃子（とんちゃん専門店）","rt":3.47,"done":false,"lt":35.1722,"lg":136.9328},{"g":"toba","t":"海鮮","n":"船元直送居酒屋 滿船屋（伊勢）","rt":3.46,"done":false,"tb":"https://tabelog.com/tw/mie/A2403/A240301/24013643/","lt":34.4912,"lg":136.7082},{"g":"toba","t":"海女小屋","n":"海女小屋 Chisato（鳥羽）","rt":3.53,"done":false,"tb":"https://tabelog.com/tw/mie/A2403/A240302/24006770/","lt":34.4861,"lg":136.8438},{"g":"toba","t":"燒貝","n":"燒貝 Iroha（鳥羽）","rt":3.5,"done":false,"tb":"https://tabelog.com/tw/mie/A2403/A240302/24010352/","lt":34.4862,"lg":136.8436},{"g":"toba","t":"松阪牛","n":"牛清 伊勢店","rt":3.39,"done":false,"tb":"https://tabelog.com/tw/mie/A2403/A240301/24020230/","lt":34.4927,"lg":136.7133},{"g":"toba","t":"巧克力","n":"DANDELION CHOCOLATE 伊勢外宮店","rt":3.59,"done":false,"tb":"https://tabelog.com/tw/mie/A2403/A240301/24014443/","lt":34.488,"lg":136.7076},{"g":"toba","t":"甜點","n":"COQUELICOT ROUGE（伊勢）","rt":3.56,"done":false,"tb":"https://tabelog.com/tw/mie/A2403/A240301/24016786/","lt":34.5079,"lg":136.7178},{"g":"toba","t":"洋食","n":"KITCHEN.TAKAMA（鳥羽）","rt":3.48,"done":false,"tb":"https://tabelog.com/tw/mie/A2403/A240302/24006357/","lt":34.4843,"lg":136.8447},{"g":"takayama","t":"飛驒牛壽司","n":"こって牛 飛驒牛握壽司","gr":4.4,"done":false,"lt":36.142201,"lg":137.2593308},{"g":"takayama","t":"飛驒牛壽司","n":"MEAT BOX 炙燒飛驒牛壽司（宮川朝市）","gr":4.6,"done":false,"lt":36.1442484,"lg":137.2582524},{"g":"takayama","t":"飛驒牛燒肉","n":"味蔵天国 飛驒牛燒肉（建議4:30前排隊）","gr":4.4,"done":false,"lt":36.1393917,"lg":137.2518472},{"g":"takayama","t":"飯糰","n":"日々是好日 飯糰（宮川河畔）","gr":4.2,"done":false,"lt":36.1456523,"lg":137.257918},{"g":"takayama","t":"章魚燒","n":"たこ焼きさごう（也有飛驒牛包子）","gr":4.8,"done":false,"lt":36.1439703,"lg":137.2580844},{"g":"takayama","t":"五平餅","n":"さん陣 みたらし団子・五平餅（評論態度差）","gr":2.5,"done":false,"lt":36.1417198,"lg":137.2595187},{"g":"takayama","t":"清酒","n":"船坂酒造店（投幣試飲清酒）","gr":4.4,"done":false,"lt":36.140741,"lg":137.2597061},{"g":"takayama","t":"味噌醬油","n":"大のや醸造 味噌・醬油（有試飲必買）","gr":4.6,"done":false,"lt":36.1410575,"lg":137.2595826},{"g":"takayama","t":"煎餅","n":"橋本煎餅堂（梅子口味超推）","gr":4.2,"done":false,"lt":36.142009,"lg":137.259434},{"g":"takayama","t":"純素拉麵","n":"Vegan 美菜ラーメン 純素拉麵","gr":4.9,"done":false,"lt":36.1410463,"lg":137.2525566},{"g":"nagoya","t":"蝦三明治","n":"コンパル 大須本店 炸蝦三明治（大須商店街）","gr":4.2,"done":false,"lt":35.1593993,"lg":136.9047181},{"g":"nagoya","t":"拉麵","n":"麺屋 燈（栄・沾麵／拉麵）","gr":4.4,"done":false,"lt":35.1663569,"lg":136.9045833},{"g":"nagoya","t":"雞白湯拉麵","n":"麺家 獅子丸 雞白湯拉麵（名駅・名古屋必吃）","gr":4.3,"done":false,"lt":35.1744608,"lg":136.8793602},{"g":"nagoya","t":"雞白湯拉麵","n":"池音 雞白湯拉麵（網友推薦）","done":false},{"g":"nagoya","t":"雞白湯拉麵","n":"鶏そば啜る 伏見はなれ 雞白湯拉麵","gr":4.1,"done":false,"lt":35.1678538,"lg":136.8985886},{"g":"nagoya","t":"喫茶早餐","n":"喫茶七番 紅豆吐司早餐（錦）","gr":4.4,"done":false,"lt":35.1715111,"lg":136.8991046},{"g":"nagoya","t":"喫茶","n":"コメダ珈琲 矢場町店 小倉吐司","gr":3.1,"done":false,"lt":35.163826,"lg":136.9082641},{"g":"nagoya","t":"咖啡","n":"groove coffee 紅豆吐司","gr":4.5,"done":false,"lt":35.1655247,"lg":136.8955713},{"g":"nagoya","t":"喫茶早餐","n":"Royal ろーやる 玉子三明治（名駅）","gr":4.3,"done":false,"lt":35.170917,"lg":136.8902972},{"g":"nagoya","t":"燒鳥","n":"始祖鳥 伏見 燒鳥（¥5-6k高單價）","gr":4.4,"done":false,"lt":35.1695653,"lg":136.8982332},{"g":"nagoya","t":"咖啡","n":"西原珈琲店 分店 厚片吐司・布丁","gr":4,"done":false,"lt":35.1710173,"lg":136.9063454},{"g":"nagoya","t":"味噌豬排","n":"矢場とん 矢場町本店 味噌豬排","gr":4.1,"done":false,"lt":35.1616781,"lg":136.9062361},{"g":"nagoya","t":"喫茶早餐","n":"サンド50 味噌豬排三明治（金山・昭和喫茶）","gr":4.2,"done":false,"lt":35.146993,"lg":136.903888},{"g":"toba","t":"咖啡","n":"なかむら珈琲 Nakamura Coffee（伊勢・自家烘焙）","gr":4.5,"done":false,"lt":34.4994703,"lg":136.719425},{"g":"toba","t":"可樂餅牛丼","n":"豚捨 おかげ横丁（伊勢內宮前・炸牛肉可樂餅）","gr":4.1,"done":false,"lt":34.4620693,"lg":136.7229009},{"g":"nagoya","t":"鰻魚三吃","n":"うな富士 名駅太閤通口店（鰻魚三吃·近飯店）","gr":4.4,"done":false,"lt":35.1685422,"lg":136.8817188}],"dataVersion":30};
+var DEFAULT_DATA = {"activities":{"11/15":[{"t":"11:00","n":"🚈 機捷 直達車 → 桃園機場（約36分）","h":"建議搭 11:00→11:36 或 11:15→11:51·趕上11:55報到｜直達車班次:10:45→11:21｜11:00→11:36｜11:15→11:51｜11:30→12:06"},{"t":"11:55","n":"🛄 抵達桃園機場（起飛前 3 小時）","h":"報到、託運行李、出境"},{"t":"14:55","n":"✈️ JX838 桃園 → 名古屋","h":"直飛 2h35m・18:30 抵達 NGO"},{"t":"18:30","n":"抵達 中部國際機場（NGO）","h":"國際線入境・提領行李約 40–60 分"},{"t":"19:37","n":"🚃 名鐵 μ-SKY → 名古屋站（20:06 到）","h":"μ-SKY 19:37→20:06 ¥1,430；一般 19:47→20:25 ¥980"},{"t":"20:15","n":"🏨 Check-in ibis Styles Nagoya（名駅）"},{"t":"","n":"🍴 晚餐：金鯱酒場（居酒屋·名駅西口）","h":"居酒屋·名駅西口·步行1分·食べログ3.28·天天開","opt":true},{"t":"","n":"🍴 つけ麺 燈 tou（栄·沾麵）","h":"Google4.4·つけ麺·約00:30打烊·東山線名駅約5分","opt":true},{"t":"","n":"🍴 一蘭 名古屋站（24h）","h":"Google4.1·24小時·名駅內·最保險","opt":true},{"t":"","n":"🍴 横浜家系 ぎん家（名駅西口）","h":"Google3.7·到凌晨1:00·離 ibis 西口最近","opt":true},{"t":"","n":"🍴 隼 本店（海老拉麵）","h":"Google4.1·名駅西步行~10分·週六到深夜","opt":true},{"t":"","n":"🍴 塚ちゃん餃子（車道·內臟燒肉）","h":"Google4.6·17:00開·要訂位·在車道(東)稍遠","opt":true}],"11/16":[{"t":"07:50","n":"名古屋站 VIP LINER 集合（08:00出發）","h":"VIP Lounge/Taikotori南口·找持藍色遊鯉導遊"},{"t":"10:30","n":"高山：朝市・老街・陣屋","h":"自由活動約1.5h·江戶老街"},{"t":"12:30","n":"🍴 午餐：飛驒牛套餐（民宿 古志山）","h":"含關東煮·飛驒牛燒肉·五箇山豆腐（方案已含）"},{"t":"14:30","n":"白川鄉 合掌村","h":"自由活動約1.5h·城跡展望台看全景"},{"t":"18:00","n":"回程 名古屋站 VIP LINER"},{"t":"19:00","n":"🍴 晚餐：みの吉 燒肉（國際中心站）","h":"食べログ3.45·A5牛¥699·今天(一)有開","post":true},{"t":"","n":"🍴 備案：鰻魚家 Shibafukuya（需訂位）","h":"食べログ3.75·週二三休","post":true},{"t":"","n":"🍴 黑豚屋 らむちぃ（栄·味噌豬排）","h":"Google4.3·味噌カツ·栄HP栄ビルB1·夜17:30–21:30·現金·栄離名駅約5分","post":true}],"11/18":[{"t":"09:50","n":"集合 MiniStop（名駅椿町店）","h":"Klook 一日遊·20:00同地點下車"},{"t":"10:45","n":"虎溪山 永保寺（可選）","h":"秋季限定·可選·約1h·入山7:00–17:00·免費（時間為估計）"},{"t":"12:30","n":"蒲郡橙園（採水果·可選）","h":"採水果·可選·約1.5h·含門票（可午餐）"},{"t":"15:00","n":"小原 四季櫻公園","h":"四季櫻11月見頃·約30分·免費"},{"t":"16:00","n":"香嵐溪","h":"停留120–210分·紅葉點燈 日落–21:00·傍晚最美"},{"t":"20:00","n":"回程 MiniStop（名駅椿町店）"}],"11/19":[{"t":"08:00","n":"🍴 早餐：KAKO 花車本店（全家）","h":"四種果醬紅豆奶油吐司·只收現金·早上會排隊·近名駅(柳橋店週四休,改同系列本店)"},{"t":"11:10","n":"🚃 近鐵名古屋→鳥羽 特急（A53928）","h":"伊勢志摩Liner Salon・11:10發 12:49到・用5日Plus周遊券乘車"},{"t":"","n":"🍴 海女小屋 Chisato（水族館旁）","h":"食べログ3.53·需預約·今天(四)有開·現烤龍蝦鮑魚"},{"t":"","n":"鳥羽水族館","h":"9:30–17:00（最終入館16:00,年中無休）"},{"t":"","n":"鳥羽港散策","h":"自由散策"},{"t":"","n":"🍴 備案：燒貝 Iroha（水族館旁）","h":"食べログ3.50·10:00–18:30"},{"t":"","n":"🍴 KITCHEN.TAKAMA（鳥羽站·洋食）","h":"食べログ3.48·8:00–15:00·大份量"}],"11/20":[{"t":"","n":"🚃 鳥羽→伊勢（近鐵·周遊券含）","h":"約20分到宇治山田·轉三重交通巴士到內宮"},{"t":"","n":"二見興玉神社","h":"境內自由參拜·順路先拜"},{"t":"","n":"夫婦岩","h":"自由參觀"},{"t":"","n":"伊勢神宮（內宮）","h":"11月 5:00–17:00·趁關門前"},{"t":"","n":"托福橫丁","h":"11月 9:30–17:00（各店略異）"},{"t":"","n":"🍴 DANDELION 巧克力（外宮）","h":"食べログ3.59·10:00–17:00·順遊外宮"},{"t":"","n":"🍴 晚餐：滿船屋（伊勢市站前·海鮮燒）","h":"食べログ3.46·炭烤海鮮·てこね寿司"}],"11/21":[{"t":"10:00","n":"三重 → 中部國際機場"},{"t":"13:00","n":"機場逛街、購物、吃飯","h":"🛍️ 有 UNIQLO(第1航廈4F·8:00–21:00)·名駅沒買到可這裡補｜退稅端末記得在託運前辦完"},{"t":"17:40","n":"🛂 出境 → ✈️ JX839 名古屋 → 桃園","h":"退稅記得在託運前辦完·回程約2h40m(台灣-1h)"},{"t":"","n":"🚈 回程機捷 A12機場 → A1 台北車站（直達約36分）","h":"直達車:22:13→22:49｜22:28→23:04｜22:43→23:22｜22:58→23:37(末班直達)｜之後普通車到約23:37末班·全票160元·入境後依落地時間搭"}],"11/17#爸媽":[{"t":"08:30","n":"集合 MiniStop（名駅椿町店）","h":"Klook 犬山城・馬籠宿一日遊·18:20回名古屋"},{"t":"09:30","n":"犬山城（含門票）","h":"9:00–17:00·日本最古天守·國寶·含門票（時間為估計）"},{"t":"10:00","n":"三光稻荷神社","h":"犬山城旁·紅色鳥居·錢洗社"},{"t":"11:30","n":"惠那峽展望臺","h":"巨岩峽谷·停留約30分·免費"},{"t":"13:00","n":"馬籠宿","h":"米其林綠色指南一星·江戶石疊老街·約1.5h（可午餐）"},{"t":"15:00","n":"妻籠宿","h":"重要傳統建築保存區·約1h·較寧靜"},{"t":"18:20","n":"回程 名古屋"}],"11/17#姊妹":[{"t":"08:30","n":"名駅 送爸媽上車（MiniStop 椿町口）","h":"爸媽 Klook 犬山城・馬籠宿一日遊集合"},{"t":"08:35","n":"🚃 名駅 → 尼ヶ坂／名古屋城","h":"地鐵約 18 分"},{"t":"08:55","n":"🍴 早餐：つばめパン & Milk 尼ヶ坂本店","h":"Google4.0·天然酵母吐司·小倉紅豆奶油·8:00開"},{"t":"09:45","n":"名古屋城（可入城·天守¥500）","h":"天守・本丸御殿 9:00–16:30·門票¥500·就在早餐旁·當天決定入不入城"},{"t":"11:15","n":"🚃 → 大須（上前津／大須観音）","h":"約 15 分"},{"t":"11:30","n":"三輪神社","h":"大須旁·小而可愛·兔子/招財"},{"t":"11:55","n":"🍴 午餐：大須商店街 邊走邊吃","h":"各店約10:00–20:00·雞排/糰子/甜點"},{"t":"13:00","n":"大須觀音","h":"境內自由參拜"},{"t":"13:15","n":"🛍️ 大創 DAISO 大須店","h":"4 層大創·9:30–20:00·就在大須商店街內"},{"t":"13:30","n":"🎰 扭蛋 ガチャ（大須 #C-pla 等）","h":"大須=扭蛋天堂·#C-pla兩層+多間專門店·10:00–21:00｜栄也有gashacoco(全名最大)/オアシス21"},{"t":"14:00","n":"🚃 大須 → 栄","h":"上前津→栄 1 站 / 步行約 10 分"},{"t":"14:15","n":"🛍️ 栄逛街：On＋Mont-bell＋香水","h":"On→Alpen名古屋1F跑鞋區/La SESSIONS(PARCO)·Mont-bell→中日ビル·香水→松坂屋/三越·都~20:00關"},{"t":"15:30","n":"🚃 栄 → 名古屋站","h":"約 7 分"},{"t":"15:45","n":"🛍️ 名駅 GATEMALL＋3COINS","h":"UNIQLO・GU(11F)·@cosme(5F)·香氛 LE LABO/SHIRO/Aesop(2・6F)·3COINS(ゲートウォーク地下街)·~20:00｜退稅在高島屋11F·抽1.55%·領95折券｜沒逛完回來補"},{"t":"16:45","n":"🚃 名古屋站 → JR 清洲站","h":"JR約10分 + 步行約10分"},{"t":"17:00","n":"🏯 清洲城・きよすイルミ 點燈","h":"點燈17:00–21:00·看到約18:00·天守外觀·光雕每時00/20/40分"},{"t":"18:00","n":"🚃 清洲 → 名古屋站","h":"JR約10分·回名駅會合"},{"t":"18:20","n":"🍴 晚餐：全家會合（名駅·當天選一間）","h":"爸媽團18:20回名駅·全家一起吃"},{"t":"","n":"🍴 選項：矢場とん（名駅·味噌豬排）","h":"名古屋名物味噌カツ·Google4.1"},{"t":"","n":"🍴 選項：うな富士（名駅太閤通口·鰻魚三吃）","h":"青鰻·Google4.4·近飯店·11:00–22:00"},{"t":"","n":"🍴 選項：世界の山ちゃん（名駅·手羽先）","h":"名物手羽先·居酒屋·適合全家"},{"t":"","n":"📌 備選：熱田神宮（時間夠再去）","h":"原排這天·已移除讓位給逛街·離名駅約15分"}]},"budget":[{"cat":"機票","name":"星宇 JX838/839 來回 ×4（NT$15,153×4）","amt":60612,"who":"錡"},{"cat":"住宿","name":"名古屋 4 晚","amt":16815,"who":"霈"},{"cat":"住宿","name":"三重 2 晚（¥109,464）","amt":23535,"who":"霈"},{"cat":"行程","name":"高山・白川鄉一日遊（VIP LINER 巴士）","amt":7248,"who":"爸"},{"cat":"行程","name":"爸媽自己行動（犬山城・馬籠宿）","amt":3672,"who":"爸"},{"cat":"行程","name":"香嵐溪・永保寺・四季櫻（賞楓一日）","amt":7888,"who":"爸"},{"cat":"門票","name":"鳥羽水族館","amt":0,"who":""},{"cat":"餐飲","name":"海女小屋海鮮體驗","amt":0,"who":""},{"cat":"餐飲","name":"餐費（每日）","amt":0,"who":""},{"cat":"交通","name":"近鐵 5日Plus 周遊券 ×4（XWW873557）","amt":3964,"who":""},{"cat":"購物","name":"伴手禮・購物","amt":0,"who":""},{"cat":"其他","name":"保險（4100×3＋950）","amt":13250,"who":"爸"},{"cat":"交通","name":"近鐵特急券 來回 ×4（¥5,360×2・A53928/A37039）","amt":2304,"who":"爸"},{"cat":"其他","name":"eSIM 網路（3張）","amt":977,"who":"霈"}],"rate":0.215,"seeded":true,"day3split":true,"budgetSeeded":true,"budgetSeeded2":true,"foods":[{"g":"nagoya","t":"居酒屋","n":"名古屋地雞 金鯱酒場 名古屋站西口店","rt":3.28,"done":false,"tb":"https://tabelog.com/tw/aichi/A2301/A230101/23086434/","lt":35.1692,"lg":136.8812},{"g":"nagoya","t":"燒肉","n":"炭火燒肉 Horumon Minokichi（みの吉）","rt":3.45,"done":false,"tb":"https://tabelog.com/tw/aichi/A2301/A230101/23095337/","lt":35.1715,"lg":136.8891},{"g":"nagoya","t":"炸豬排","n":"Katsuretsu MATUMURA bis CHUNICHI BUILDING","rt":3.53,"done":false,"tb":"https://tabelog.com/tw/aichi/A2301/A230103/23087936/","lt":35.1686,"lg":136.9095},{"g":"nagoya","t":"居酒屋","n":"Kaburaya 總本家","rt":3.49,"done":false,"tb":"https://tabelog.com/tw/aichi/A2301/A230101/23051657/","lt":35.1688,"lg":136.8815},{"g":"nagoya","t":"鰻魚飯","n":"鰻魚家 Shibafukuya","rt":3.75,"done":false,"tb":"https://tabelog.com/tw/aichi/A2301/A230101/23067466/","lt":35.1751,"lg":136.8915},{"g":"nagoya","t":"鰻魚飯","n":"熱田蓬萊軒 松坂屋店","rt":3.68,"done":false,"tb":"https://tabelog.com/tw/aichi/A2301/A230103/23000108/","lt":35.1645,"lg":136.9079},{"g":"nagoya","t":"喫茶","n":"KONPARU Sun Road店","rt":3.46,"done":false,"tb":"https://tabelog.com/tw/aichi/A2301/A230101/23073737/","lt":35.1697,"lg":136.8845},{"g":"nagoya","t":"咖啡","n":"KAKO 柳橋店","rt":3.69,"done":false,"tb":"https://tabelog.com/tw/aichi/A2301/A230101/23032087/","lt":35.1691,"lg":136.8901},{"g":"nagoya","t":"咖啡","n":"BUCYO COFFEE","rt":3.69,"done":false,"tb":"https://tabelog.com/tw/aichi/A2301/A230101/23007465/","lt":35.166,"lg":136.8906},{"g":"nagoya","t":"甜點","n":"Tsubameya 大名古屋Building店","rt":3.76,"done":false,"tb":"https://tabelog.com/tw/aichi/A2301/A230101/23059315/","lt":35.1719,"lg":136.8845},{"g":"nagoya","t":"麵包","n":"IEN Bake house","rt":3.54,"done":false,"tb":"https://tabelog.com/tw/aichi/A2301/A230103/23091017/","lt":35.1706,"lg":136.9071},{"g":"nagoya","t":"咖啡","n":"coffee house KAKO 花車本店","rt":3.73,"done":false,"tb":"https://tabelog.com/tw/aichi/A2301/A230101/23005509/","lt":35.1702,"lg":136.8903},{"g":"nagoya","t":"炸豬排","n":"カツレツMATUMURA 名駅本店","rt":3.69,"done":false,"tb":"https://tabelog.com/tw/aichi/A2301/A230101/23073675/","lt":35.1721,"lg":136.8845},{"g":"nagoya","t":"烤豬舌","n":"塚ちゃん餃子（とんちゃん専門店）","rt":3.47,"done":false,"lt":35.1722,"lg":136.9328},{"g":"toba","t":"海鮮","n":"船元直送居酒屋 滿船屋（伊勢）","rt":3.46,"done":false,"tb":"https://tabelog.com/tw/mie/A2403/A240301/24013643/","lt":34.4912,"lg":136.7082},{"g":"toba","t":"海女小屋","n":"海女小屋 Chisato（鳥羽）","rt":3.53,"done":false,"tb":"https://tabelog.com/tw/mie/A2403/A240302/24006770/","lt":34.4861,"lg":136.8438},{"g":"toba","t":"燒貝","n":"燒貝 Iroha（鳥羽）","rt":3.5,"done":false,"tb":"https://tabelog.com/tw/mie/A2403/A240302/24010352/","lt":34.4862,"lg":136.8436},{"g":"toba","t":"松阪牛","n":"牛清 伊勢店","rt":3.39,"done":false,"tb":"https://tabelog.com/tw/mie/A2403/A240301/24020230/","lt":34.4927,"lg":136.7133},{"g":"toba","t":"巧克力","n":"DANDELION CHOCOLATE 伊勢外宮店","rt":3.59,"done":false,"tb":"https://tabelog.com/tw/mie/A2403/A240301/24014443/","lt":34.488,"lg":136.7076},{"g":"toba","t":"甜點","n":"COQUELICOT ROUGE（伊勢）","rt":3.56,"done":false,"tb":"https://tabelog.com/tw/mie/A2403/A240301/24016786/","lt":34.5079,"lg":136.7178},{"g":"toba","t":"洋食","n":"KITCHEN.TAKAMA（鳥羽）","rt":3.48,"done":false,"tb":"https://tabelog.com/tw/mie/A2403/A240302/24006357/","lt":34.4843,"lg":136.8447},{"g":"takayama","t":"飛驒牛壽司","n":"こって牛 飛驒牛握壽司","gr":4.4,"done":false,"lt":36.142201,"lg":137.2593308},{"g":"takayama","t":"飛驒牛壽司","n":"MEAT BOX 炙燒飛驒牛壽司（宮川朝市）","gr":4.6,"done":false,"lt":36.1442484,"lg":137.2582524},{"g":"takayama","t":"飛驒牛燒肉","n":"味蔵天国 飛驒牛燒肉（建議4:30前排隊）","gr":4.4,"done":false,"lt":36.1393917,"lg":137.2518472},{"g":"takayama","t":"飯糰","n":"日々是好日 飯糰（宮川河畔）","gr":4.2,"done":false,"lt":36.1456523,"lg":137.257918},{"g":"takayama","t":"章魚燒","n":"たこ焼きさごう（也有飛驒牛包子）","gr":4.8,"done":false,"lt":36.1439703,"lg":137.2580844},{"g":"takayama","t":"五平餅","n":"さん陣 みたらし団子・五平餅（評論態度差）","gr":2.5,"done":false,"lt":36.1417198,"lg":137.2595187},{"g":"takayama","t":"清酒","n":"船坂酒造店（投幣試飲清酒）","gr":4.4,"done":false,"lt":36.140741,"lg":137.2597061},{"g":"takayama","t":"味噌醬油","n":"大のや醸造 味噌・醬油（有試飲必買）","gr":4.6,"done":false,"lt":36.1410575,"lg":137.2595826},{"g":"takayama","t":"煎餅","n":"橋本煎餅堂（梅子口味超推）","gr":4.2,"done":false,"lt":36.142009,"lg":137.259434},{"g":"takayama","t":"純素拉麵","n":"Vegan 美菜ラーメン 純素拉麵","gr":4.9,"done":false,"lt":36.1410463,"lg":137.2525566},{"g":"nagoya","t":"蝦三明治","n":"コンパル 大須本店 炸蝦三明治（大須商店街）","gr":4.2,"done":false,"lt":35.1593993,"lg":136.9047181},{"g":"nagoya","t":"拉麵","n":"麺屋 燈（栄・沾麵／拉麵）","gr":4.4,"done":false,"lt":35.1663569,"lg":136.9045833},{"g":"nagoya","t":"雞白湯拉麵","n":"麺家 獅子丸 雞白湯拉麵（名駅・名古屋必吃）","gr":4.3,"done":false,"lt":35.1744608,"lg":136.8793602},{"g":"nagoya","t":"雞白湯拉麵","n":"池音 雞白湯拉麵（網友推薦）","done":false},{"g":"nagoya","t":"雞白湯拉麵","n":"鶏そば啜る 伏見はなれ 雞白湯拉麵","gr":4.1,"done":false,"lt":35.1678538,"lg":136.8985886},{"g":"nagoya","t":"喫茶早餐","n":"喫茶七番 紅豆吐司早餐（錦）","gr":4.4,"done":false,"lt":35.1715111,"lg":136.8991046},{"g":"nagoya","t":"喫茶","n":"コメダ珈琲 矢場町店 小倉吐司","gr":3.1,"done":false,"lt":35.163826,"lg":136.9082641},{"g":"nagoya","t":"咖啡","n":"groove coffee 紅豆吐司","gr":4.5,"done":false,"lt":35.1655247,"lg":136.8955713},{"g":"nagoya","t":"喫茶早餐","n":"Royal ろーやる 玉子三明治（名駅）","gr":4.3,"done":false,"lt":35.170917,"lg":136.8902972},{"g":"nagoya","t":"燒鳥","n":"始祖鳥 伏見 燒鳥（¥5-6k高單價）","gr":4.4,"done":false,"lt":35.1695653,"lg":136.8982332},{"g":"nagoya","t":"咖啡","n":"西原珈琲店 分店 厚片吐司・布丁","gr":4,"done":false,"lt":35.1710173,"lg":136.9063454},{"g":"nagoya","t":"味噌豬排","n":"矢場とん 矢場町本店 味噌豬排","gr":4.1,"done":false,"lt":35.1616781,"lg":136.9062361},{"g":"nagoya","t":"喫茶早餐","n":"サンド50 味噌豬排三明治（金山・昭和喫茶）","gr":4.2,"done":false,"lt":35.146993,"lg":136.903888},{"g":"toba","t":"咖啡","n":"なかむら珈琲 Nakamura Coffee（伊勢・自家烘焙）","gr":4.5,"done":false,"lt":34.4994703,"lg":136.719425},{"g":"toba","t":"可樂餅牛丼","n":"豚捨 おかげ横丁（伊勢內宮前・炸牛肉可樂餅）","gr":4.1,"done":false,"lt":34.4620693,"lg":136.7229009},{"g":"nagoya","t":"鰻魚三吃","n":"うな富士 名駅太閤通口店（鰻魚三吃·近飯店）","gr":4.4,"done":false,"lt":35.1685422,"lg":136.8817188}],"dataVersion":31};
 
 var DAYCOLORS={1:"#1a9aa0",2:"#d64545",3:"#e08a1e",4:"#7e9438",5:"#c2602f",6:"#2f7fd6",7:"#7a5ea8"};
 var CN=["","一","二","三","四","五","六","七"];
@@ -414,20 +513,20 @@ var WHO=["","爸","媽","霈","錡"];
 var WHOCOLOR={"爸":"#2f7fd6","媽":"#d2627f","霈":"#5a9e4f","錡":"#e08a1e"};
 
 var DAYS=[
- {date:"11/15",dow:"日",area:"nagoya",theme:"✈️ 抵達名古屋",illo:"plane",temp:{hi:16,lo:8},
+ {date:"11/15",dow:"日",area:"nagoya",theme:"✈️ 抵達名古屋",illo:"plane",temp:{hi:17,lo:10},
   fixed:[{i:"✈️",fx:"<b>JX838</b> 14:55 桃園 → 18:30 名古屋"},{i:"🏨",fx:"入住 <b>ibis Styles Nagoya</b>（名駅）"}]},
- {date:"11/16",dow:"一",area:"nagoya",theme:"⛰️ 高山・白川鄉",illo:"mtn",temp:{hi:11,lo:2},
+ {date:"11/16",dow:"一",area:"nagoya",theme:"⛰️ 高山・白川鄉",illo:"mtn",temp:{hi:12,lo:2},
   tour:"VIP LINER 高山・白川鄉一日遊",
   fixed:[{i:"🚌",fx:"VIP LINER 巴士一日・名古屋站集合"}]},
- {date:"11/17",dow:"二",area:"nagoya",theme:"👨‍👩‍👧‍👧 兵分兩路",illo:"split",temp:{hi:16,lo:8},
+ {date:"11/17",dow:"二",area:"nagoya",theme:"👨‍👩‍👧‍👧 兵分兩路",illo:"split",temp:{hi:17,lo:10},
   groups:[{key:"11/17#爸媽",label:"👱‍♂️👩 爸媽組",sub:"犬山城・馬籠宿 文化之旅",tour:"Klook 犬山城・馬籠宿一日遊"},
           {key:"11/17#姊妹",label:"👯 姊妹組",sub:"名古屋城・大須・熱田・清洲城點燈"}]},
- {date:"11/18",dow:"三",area:"nagoya",theme:"🍁 香嵐溪 賞楓",illo:"maple",temp:{hi:14,lo:6},
+ {date:"11/18",dow:"三",area:"nagoya",theme:"🍁 香嵐溪 賞楓",illo:"maple",temp:{hi:15,lo:7},
   tour:"Klook 香嵐溪・永保寺・四季櫻 賞楓一日遊"},
- {date:"11/19",dow:"四",area:"toba",theme:"🐬 抵達・鳥羽",illo:"dolphin",transition:true,temp:{hi:17,lo:10},
+ {date:"11/19",dow:"四",area:"toba",theme:"🐬 抵達・鳥羽",illo:"dolphin",transition:true,temp:{hi:18,lo:11},
   fixed:[{i:"🏨",fx:"退房 ibis → 入住 <b>行燈 鳥羽</b>（全室海景）"}]},
- {date:"11/20",dow:"五",area:"toba",theme:"⛩️ 伊勢神宮",illo:"torii",temp:{hi:17,lo:10}},
- {date:"11/21",dow:"六",area:"toba",theme:"✈️ 返程",illo:"plane",transition:true,temp:{hi:16,lo:8},
+ {date:"11/20",dow:"五",area:"toba",theme:"⛩️ 伊勢神宮",illo:"torii",temp:{hi:18,lo:11}},
+ {date:"11/21",dow:"六",area:"toba",theme:"✈️ 返程",illo:"plane",transition:true,temp:{hi:17,lo:10},
   fixed:[{i:"✈️",fx:"<b>JX839</b> 19:40 名古屋 → 22:15 桃園"}]}
 ];
 
@@ -523,14 +622,46 @@ function actsFor(k){if(!mem.activities[k])mem.activities[k]=[];return mem.activi
 function nf(n){return (n||0).toLocaleString();}
 
 /* ============ countdown ============ */
+var TODAYIDX=-1;
 function countdown(){
   var dep=new Date(2026,10,15,14,55,0), now=new Date();
-  var d=Math.ceil((dep-now)/86400000);
+  var start=new Date(2026,10,15,0,0,0), end=new Date(2026,10,21,23,59,59);
   var el=document.getElementById("cdnum"), lb=document.getElementById("cdlbl");
+  var box=document.querySelector(".countdown");
   if(!el)return;
-  if(d>0){el.textContent=d;lb.innerHTML='天後<br><b>出發</b>';}
-  else if(d===0){el.textContent="0";lb.innerHTML='<b>今天出發!</b>';}
-  else{el.textContent="旅途中";el.style.fontSize="18px";lb.innerHTML='<b>玩得開心 🍁</b>';}
+  TODAYIDX=-1;
+  if(box){box.classList.remove("live","done");}
+  if(now<dep){
+    var d=Math.ceil((dep-now)/86400000);
+    el.textContent=d;lb.innerHTML='天後<br><b>出發</b>';
+  }else if(now<=end){
+    var di=Math.floor((now-start)/86400000); if(di<0)di=0; if(di>6)di=6;
+    TODAYIDX=di;
+    el.textContent="Day "+(di+1);
+    var th=(DAYS[di]&&DAYS[di].theme)?DAYS[di].theme:"";
+    lb.innerHTML='旅程進行中<br><b>'+th+'</b>';
+    if(box)box.classList.add("live");
+  }else{
+    el.textContent="已完成";lb.innerHTML='<b>辛苦了・回味中 🍁</b>';
+    if(box)box.classList.add("done");
+  }
+}
+/* 封面飄落楓葉 */
+function spawnLeaves(){
+  var host=document.querySelector("header.top"); if(!host)return;
+  if(host.querySelector(".leaffall"))return;
+  if(window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches)return;
+  var glyphs=["🍁","🍂","🍁","🍂"];
+  for(var i=0;i<7;i++){
+    var s=document.createElement("span"); s.className="leaffall";
+    s.textContent=glyphs[i%glyphs.length];
+    s.style.left=(6+i*13)+"%";
+    s.style.fontSize=(12+(i%3)*4)+"px";
+    s.style.animationDuration=(7+(i%4)*1.6)+"s";
+    s.style.animationDelay=(-i*1.3)+"s";
+    s.style.opacity=".85";
+    host.appendChild(s);
+  }
 }
 
 /* ============ HOME / overview ============ */
@@ -558,7 +689,8 @@ function renderHome(){
   DAYS.forEach(function(d,i){
     var c=DAYCOLORS[i+1];
     var tp=d.temp?('<span class="dtemp"><span class="hi">'+d.temp.hi+'°</span><span class="lo">'+d.temp.lo+'°</span></span>'):'';
-    grid+='<div class="dayrow" data-goday="'+i+'">'
+    grid+='<div class="dayrow'+(i===TODAYIDX?' today':'')+'" data-goday="'+i+'">'
+      +'<span class="todaytag">今天</span>'
       +'<div class="dc-badge" style="background:'+c+'">'+CN[i+1]+'</div>'
       +'<div class="drmid">'
         +'<div class="drtop"><span class="dc-date">'+d.date+'</span><span class="dc-dow">'+d.dow+'</span>'+tp+'</div>'
@@ -570,24 +702,8 @@ function renderHome(){
   grid+='</div><div class="wxrow" id="goweather"><span class="wxi">🌤️</span>'
     +'<span class="wxt">天氣・穿搭</span><span class="drchev">›</span></div>';
 
-  // per-person
-  var ppl={"爸":0,"媽":0,"霈":0,"錡":0}, total=0;
-  mem.budget.forEach(function(e){var a=e.amt||0;total+=a;if(ppl[e.who]!=null)ppl[e.who]+=a;});
-  var psum='<div class="psum">'+["爸","媽","霈","錡"].map(function(p){
-    return '<span class="pc"><b style="color:'+WHOCOLOR[p]+'">'+p+'</b> <span class="pv">'+nf(Math.round(ppl[p]))+'</span></span>';
-  }).join("")+'</div>';
-
-  var info='<div class="infostrip">'
-   +'<div class="infochip"><b>✈️ 星宇直飛</b>去11/15·回11/21<br><span class="fs">EOUF6G</span></div>'
-   +'<div class="infochip"><b>🏨 換宿一次</b>名古屋4晚→鳥羽2晚</div>'
-   +'<div class="infochip"><b>🚃 近鐵周遊券</b>5日Plus·特急Salon<br><span class="fs">A53928/A37039</span></div>'
-   +'</div>';
-
   host.innerHTML=
     '<div class="sec-h"><span class="bar"></span>七天總覽</div>'+grid
-   +'<div class="sec-h"><span class="bar"></span>重點</div>'+info
-   +'<div class="sec-h"><span class="bar"></span>預算</div>'
-   +'<div class="budgetbar"><span class="bt">NT$'+nf(total)+' <small>合計</small></span>'+psum+'</div>'
    +prepHTML();
 
   host.querySelectorAll("[data-goday]").forEach(function(b){
@@ -619,6 +735,7 @@ function renderTrip(){
     return '<div class="fixed"><span class="fi">'+f.i+'</span><span class="fx">'+f.fx+'</span></div>';
   }).join("");
 
+  function tl(html){return '<div class="tlwrap"><div class="rail"></div><div class="ball"></div>'+html+'</div>';}
   var inner, ag=0;
   if(d.groups){
     ag=(typeof mem.activeGroup==="number"&&mem.activeGroup>=0&&mem.activeGroup<d.groups.length)?mem.activeGroup:0;
@@ -626,9 +743,9 @@ function renderTrip(){
       +d.groups.map(function(g,gi){return '<button class="grptab'+(gi===ag?" on":"")+'" data-grp="'+gi+'">'+g.label+'</button>';}).join("")
       +'</div>';
     var ga=d.groups[ag];
-    inner+='<div class="grp"><div class="grphead"><span class="gs">'+ga.sub+'</span></div>'+actsBlock(ga.key,ga.tour)+'</div>';
+    inner+='<div class="grp"><div class="grphead"><span class="gs">'+ga.sub+'</span></div>'+tl(actsBlock(ga.key,ga.tour))+'</div>';
   }else{
-    inner=fixedHTML+actsBlock(d.date,d.tour);
+    inner=fixedHTML+tl(actsBlock(d.date,d.tour));
   }
 
   day.innerHTML=
@@ -647,6 +764,16 @@ function renderTrip(){
     });
   }
   else renderActs(d.date);
+
+  buildTimeline(day);
+
+  // 當天地圖
+  if(PLACES.some(function(p){return p.d===di+1;})){
+    var mapWrap=document.createElement("div");
+    mapWrap.innerHTML='<div class="daymaph"><span class="bar"></span>🗺️ 今日地點地圖</div><div class="daymap" id="daymap"></div>';
+    host.appendChild(mapWrap);
+    renderDayMap(di+1,c);
+  }
 
   // night-view reference table (Nagoya days only)
   if(d.area==="nagoya"){
@@ -693,6 +820,36 @@ function attachSwipe(host){
     x0=null;
   },{passive:true});
 }
+/* 時間軸：球球跟著捲動停在最接近畫面中央的卡片 */
+var _tlHandler=null;
+function buildTimeline(day){
+  if(_tlHandler){window.removeEventListener("scroll",_tlHandler);window.removeEventListener("resize",_tlHandler);_tlHandler=null;}
+  var wrap=day.querySelector(".tlwrap"); if(!wrap)return;
+  var cards=[].slice.call(wrap.querySelectorAll(".actcard,.tactrow"));
+  var ball=wrap.querySelector(".ball");
+  if(!cards.length){if(ball)ball.style.display="none";var r0=wrap.querySelector(".rail");if(r0)r0.style.display="none";return;}
+  cards.forEach(function(c){
+    var dot=document.createElement("span"); dot.className="tldot";
+    wrap.appendChild(dot); c._dot=dot;
+  });
+  function layout(){cards.forEach(function(c){c._dot.style.top=(c.offsetTop+15)+"px";});}
+  function update(){
+    var mid=window.innerHeight*0.4, best=null, bd=1e9;
+    cards.forEach(function(c){
+      var r=c.getBoundingClientRect(); var cy=r.top+r.height/2;
+      var dist=Math.abs(cy-mid);
+      if(dist<bd){bd=dist;best=c;}
+      c.classList.remove("tlon");
+    });
+    if(best){best.classList.add("tlon"); if(ball)ball.style.top=(best.offsetTop+15-8)+"px"; best._dot.style.opacity="0";}
+    cards.forEach(function(c){if(c!==best)c._dot.style.opacity="";});
+  }
+  function onScroll(){layout();update();}
+  _tlHandler=onScroll;
+  window.addEventListener("scroll",_tlHandler,{passive:true});
+  window.addEventListener("resize",_tlHandler);
+  setTimeout(onScroll,30); setTimeout(onScroll,260);
+}
 function actsBlock(key,tour){
   if(!tour) return '<div class="acts" data-acts="'+key+'"></div>';
   return '<div class="acts preacts" data-acts-pre="'+key+'"></div>'
@@ -703,12 +860,17 @@ function actsBlock(key,tour){
 }
 function actCardEl(a,inTour){
   var q=(a.n||"").trim();
-  var tHTML=a.t?'<span class="actime">'+esc(a.t)+'</span>':'<span class="actime none">·</span>';
-  var inner='<div class="acrow">'+tHTML
-    +'<span class="acname">'+esc(a.n||"")+'</span>'
-    +(q?'<a class="acg" href="'+gmap(q+" 日本")+'" target="_blank" rel="noopener">📍</a>':'')
-    +'</div>'
-    +(a.h?'<div class="achours">🕐 '+esc(a.h)+'</div>':'');
+  var tHTML=a.t?'<span class="ac-time">'+esc(a.t)+'</span>':'<span class="ac-time none">·</span>';
+  var note="";
+  if(a.h){
+    note='<div class="ac-note">'+esc(a.h).split("｜").map(function(s){
+      return '<div class="achline">'+s+'</div>';
+    }).join("")+'</div>';
+  }
+  var inner='<div class="ac-top">'+tHTML
+    +'<span class="ac-name">'+esc(a.n||"")+'</span>'
+    +(q?'<a class="ac-g" href="'+gmap(q+" 日本")+'" target="_blank" rel="noopener">📍</a>':'')
+    +'</div>'+note;
   var row=document.createElement("div");
   row.className=inTour?"tactrow":("actcard"+(/^🍴/.test(q)?" food":"")+(/^🌃/.test(q)?" night":""));
   row.innerHTML=inner; return row;
@@ -769,15 +931,16 @@ function renderBooked(){
   }
 
   host.innerHTML=
-   '<div class="sec-h"><span class="bar"></span>✈️ 機票</div><div class="bksec">'
+   '<div class="bkjump"><button data-j="bk-air">✈️ 機票</button><button data-j="bk-stay">🏨 住宿</button><button data-j="bk-train">🚃 交通</button></div>'
+   +'<div class="sec-h" id="bk-air"><span class="bar"></span>✈️ 機票</div><div class="bksec">'
      +flight("JX838","11/15（日）","TPE 桃園","NGO 名古屋","14:55","18:30","直飛 2h35m")
      +flight("JX839","11/21（六）","NGO 名古屋","TPE 桃園","19:40","22:15","直飛 3h35m")
      +'<div class="bkmeta" style="padding:0 2px">星宇航空 · 訂位代號 <b>EOUF6G</b> · 4 人'+(air?' · '+money(air):'')+'</div></div>'
-   +'<div class="sec-h"><span class="bar"></span>🏨 住宿</div><div class="bksec">'
+   +'<div class="sec-h" id="bk-stay"><span class="bar"></span>🏨 住宿</div><div class="bksec">'
      +hotel("ibis Styles Nagoya","11/15 → 11/19","4 晚","名駅・名古屋站旁",hN,"〒450-0002","愛知県名古屋市中村区名駅4-22-24","")
      +hotel("お宿 行燈 鳥羽","11/19 → 11/21","2 晚","全室海景・伊勢海老",hM,"〒517-0015","三重県鳥羽市小浜町272-46","0599-37-7822")
      +'</div>'
-   +'<div class="sec-h"><span class="bar"></span>🚃 交通</div><div class="bksec">'
+   +'<div class="sec-h" id="bk-train"><span class="bar"></span>🚃 交通</div><div class="bksec">'
      +'<div class="bkcard"><div class="bkhotel" style="font-size:15px">近鐵特急券 ①去程 🛋️Salon</div>'
        +'<div class="bktix" style="margin-top:7px"><span class="k">乘車</span> 11/19（四）<b>11:10 發 → 12:49 到</b> · 近鐵名古屋 → 鳥羽<br>'
        +'<span class="k">列車</span> 伊勢志摩Liner 7115 · 2號車 · <b>4A·4B·4C·4D（Salon）</b><br>'
@@ -802,6 +965,12 @@ function renderBooked(){
       function ok(){b.textContent="已複製 ✓";b.classList.add("done");setTimeout(function(){b.textContent="複製地址";b.classList.remove("done");},1600);}
       if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(ok,function(){ok();});}
       else{try{var ta=document.createElement("textarea");ta.value=t;document.body.appendChild(ta);ta.select();document.execCommand("copy");document.body.removeChild(ta);ok();}catch(e){}}
+    });
+  });
+  host.querySelectorAll(".bkjump [data-j]").forEach(function(b){
+    b.addEventListener("click",function(){
+      var el=document.getElementById(b.getAttribute("data-j"));
+      if(el)el.scrollIntoView({behavior:"smooth",block:"start"});
     });
   });
 }
@@ -934,70 +1103,103 @@ function renderFood(){
   if(document.getElementById("view-food").classList.contains("on")) initFoodMap();
 }
 
-/* ============ MAP ============ */
-var map=null,markers=[],curDay=null;
-function pin(p){var c=DAYCOLORS[p.d]||"#888";return L.divIcon({className:"",iconSize:[26,34],iconAnchor:[13,34],html:'<div style="width:24px;height:24px;background:'+c+';border:2.5px solid #fff;border-radius:50% 50% 50% 0;transform:rotate(-45deg);box-shadow:0 2px 5px rgba(0,0,0,.3)"></div>'});}
-function initMap(){
-  if(map){setTimeout(function(){map.invalidateSize();},60);return;}
-  var pills=document.getElementById("daypills");
-  pills.innerHTML='<button class="dp on" data-d="0">全部</button>'+[1,2,3,4,5,6,7].map(function(i){return '<button class="dp" data-d="'+i+'">Day'+i+'</button>';}).join("");
-  map=L.map("map",{scrollWheelZoom:false}).setView([35.3,136.9],8);
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{attribution:"&copy; OpenStreetMap",subdomains:"abc",maxZoom:19}).addTo(map);
-  drawMarkers(0);
-  pills.querySelectorAll(".dp").forEach(function(b){b.addEventListener("click",function(){pills.querySelectorAll(".dp").forEach(function(x){x.classList.remove("on");});b.classList.add("on");drawMarkers(parseInt(b.getAttribute("data-d"),10));});});
-  setTimeout(function(){map.invalidateSize();},120);
-}
-function drawMarkers(day){
-  markers.forEach(function(m){map.removeLayer(m);});markers=[];
-  var pts=PLACES.filter(function(p){return day===0||p.d===day;});
+/* ============ 每日地圖 ============ */
+var tripMap=null;
+function pin(p,dc){var c=dc||DAYCOLORS[p.d]||"#888";return L.divIcon({className:"",iconSize:[26,34],iconAnchor:[13,34],html:'<div style="width:24px;height:24px;background:'+c+';border:2.5px solid #fff;border-radius:50% 50% 50% 0;transform:rotate(-45deg);box-shadow:0 2px 5px rgba(0,0,0,.3)"></div>'});}
+function renderDayMap(dnum,dc){
+  if(tripMap){try{tripMap.remove();}catch(e){}tripMap=null;}
+  var el=document.getElementById("daymap"); if(!el||typeof L==="undefined")return;
+  var pts=PLACES.filter(function(p){return p.d===dnum;});
+  if(!pts.length){el.style.display="none";return;}
+  tripMap=L.map("daymap",{scrollWheelZoom:false,zoomControl:true});
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{attribution:"&copy; OSM",subdomains:"abc",maxZoom:19}).addTo(tripMap);
   var grp=[];
   pts.forEach(function(p){
-    var m=L.marker([p.lat,p.lng],{icon:pin(p)}).addTo(map);
+    var m=L.marker([p.lat,p.lng],{icon:pin(p,dc)}).addTo(tripMap);
     m.bindPopup('<b>'+p.n+'</b><br><a href="'+gmap(p.n+" 日本")+'" target="_blank">在 Google 地圖開啟</a>');
-    markers.push(m);grp.push([p.lat,p.lng]);
+    grp.push([p.lat,p.lng]);
   });
-  if(grp.length){map.fitBounds(grp,{padding:[40,40],maxZoom:12});}
-}
-
-/* ============ backup/restore ============ */
-function setupBackup(){
-  var btn=document.getElementById("bkbtn"),panel=document.getElementById("bkpanel"),ta=document.getElementById("bktext"),msg=document.getElementById("bkmsg");
-  if(!btn)return;
-  btn.addEventListener("click",function(){if(panel.style.display==="none"){ta.value=JSON.stringify(mem);panel.style.display="block";msg.textContent="";}else panel.style.display="none";});
-  document.getElementById("bkcopy").addEventListener("click",function(){
-    ta.value=JSON.stringify(mem);ta.focus();ta.select();
-    function ok(){msg.textContent="已複製 ✓ 貼到新版本就能還原";}
-    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(ta.value).then(ok,function(){try{document.execCommand("copy");ok();}catch(e){msg.textContent="請長按文字手動複製";}});}
-    else{try{document.execCommand("copy");ok();}catch(e){msg.textContent="請長按文字手動複製";}}
-  });
-  document.getElementById("bkrestore").addEventListener("click",function(){
-    var v=ta.value.trim();if(!v){msg.textContent="請先貼上備份內容";return;}
-    try{var d=JSON.parse(v);if(d&&typeof d==="object"&&(d.activities||d.budget||d.foods)){
-      mem=d;if(!mem.activities)mem.activities={};if(!mem.budget)mem.budget=[];if(!mem.foods)mem.foods=[];if(typeof mem.rate!=="number")mem.rate=0.215;if(typeof mem.activeDay!=="number")mem.activeDay=0;
-      save();renderAll();msg.textContent="已還原 ✓ 資料更新完成";
-    }else msg.textContent="格式不對,請確認內容";}catch(e){msg.textContent="無法解析,請確認是完整備份內容";}
-  });
+  if(grp.length>1)tripMap.fitBounds(grp,{padding:[36,36],maxZoom:13});
+  else tripMap.setView(grp[0],13);
+  setTimeout(function(){if(tripMap)tripMap.invalidateSize();},160);
 }
 
 /* ============ WEATHER / outfit ============ */
+function wireCopy(host){
+  host.querySelectorAll("[data-copy]").forEach(function(b){
+    b.addEventListener("click",function(){
+      var t=b.getAttribute("data-copy");
+      function ok(){var o=b.textContent;b.textContent="已複製 ✓";b.classList.add("done");setTimeout(function(){b.textContent=o;b.classList.remove("done");},1500);}
+      if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(ok,function(){ok();});}
+      else{try{var ta=document.createElement("textarea");ta.value=t;document.body.appendChild(ta);ta.select();document.execCommand("copy");document.body.removeChild(ta);ok();}catch(e){}}
+    });
+  });
+}
 function renderWeather(){
   var host=document.getElementById("view-weather"); if(!host)return;
-  var areas=[
-   {n:"名古屋市區",days:"Day1·3",hi:16,lo:8,tag:"🍁 賞楓中後期",tc:"#d2622f",desc:"多晴偶雨·早晚涼。洋蔥式即可,白天薄外套。"},
-   {n:"高山・白川鄉",days:"Day2",hi:11,lo:2,tag:"❄️ 全程最冷",tc:"#2f7fd6",desc:"高地·早晚近冰點,可能初雪或結霜。厚外套+毛帽手套+發熱衣,一定要保暖!"},
-   {n:"香嵐溪（山區）",days:"Day4",hi:14,lo:6,tag:"🍁 紅葉最盛",tc:"#7e9438",desc:"山谷較涼有風。防風保暖外套+好走的鞋(步道)。"},
-   {n:"伊勢・鳥羽（沿海）",days:"Day5·6",hi:17,lo:10,tag:"🌊 海風較涼",tc:"#3f7d6e",desc:"白天略暖,海邊風大體感偏涼。防風外套·神社石階多穿好走鞋。"}
+  // 每日時段溫度（早 / 午 / 晚）
+  var days=[
+   {n:"名古屋市區",days:"Day1·3·7",wc:"#d2622f",am:10,noon:17,pm:11,
+    tag:"🍁 市區楓葉 中後期",desc:"多晴偶陣雨，早晚涼、白天舒適。洋蔥式穿搭、白天一件薄外套即可。"},
+   {n:"高山・白川鄉",days:"Day2",wc:"#2f7fd6",am:2,noon:12,pm:4,
+    tag:"❄️ 全程最冷・可能初雪",desc:"高地清晨近冰點、可能結霜或飄雪。羽絨＋毛帽手套圍巾＋發熱衣，務必保暖！"},
+   {n:"香嵐溪（山區）",days:"Day4",wc:"#7e9438",am:7,noon:15,pm:8,
+    tag:"🍁 紅葉見頃・點燈",desc:"山谷有風、傍晚點燈後更涼。防風保暖外套＋好走的鞋走步道。"},
+   {n:"伊勢・鳥羽（沿海）",days:"Day5·6",wc:"#3f7d6e",am:11,noon:18,pm:12,
+    tag:"🌊 全程最暖・海風涼",desc:"白天最舒適，海邊與神社風大、體感偏涼。防風外套＋好走的鞋踏石階。"}
   ];
-  var cards=areas.map(function(a){
-    return '<div class="wcard"><div class="wtop"><span class="wname">'+a.n+'</span>'
-      +'<span class="wtemp"><span class="hi">'+a.hi+'°</span> / <span class="lo">'+a.lo+'°</span></span></div>'
-      +'<div style="font-size:11px;color:var(--muted);margin-bottom:4px">'+a.days+' · 11月下旬平均</div>'
-      +'<div class="wdesc">'+a.desc+'</div>'
-      +'<span class="wtag" style="background:'+a.tc+'">'+a.tag+'</span></div>';
+  var cards=days.map(function(a){
+    return '<div class="wday" style="--wc:'+a.wc+'">'
+      +'<div class="wd-top"><span class="wd-name">'+a.n+'</span><span class="wd-days">'+a.days+'</span></div>'
+      +'<div class="wslots">'
+        +'<div class="wslot am"><div class="ws-l">🌅 早</div><div class="ws-t">'+a.am+'°</div></div>'
+        +'<div class="wslot noon"><div class="ws-l">☀️ 午</div><div class="ws-t">'+a.noon+'°</div></div>'
+        +'<div class="wslot pm"><div class="ws-l">🌙 晚</div><div class="ws-t">'+a.pm+'°</div></div>'
+      +'</div>'
+      +'<div class="wd-desc">'+a.desc+'</div>'
+      +'<span class="wtag2">'+a.tag+'</span></div>';
   }).join("");
 
+  // 紅葉（楓葉）機會
+  var maple='<div class="olist">'
+   +'<div class="maple"><span class="mp-ic">🍁</span><div><b>香嵐溪（Day4 · 11/18）</b> — <span class="mp-hi">機會很高 ★</span>　往年此時正值見頃，傍晚點燈最美，是這趟最穩的賞楓點。</div></div>'
+   +'<div class="maple"><span class="mp-ic">🍁</span><div><b>名古屋市區（Day1·3·7）</b> — <span class="mp-mid">有機會</span>　市區轉紅偏晚，<b>德川園、鶴舞公園、平和公園、名城公園</b>約此時進入中後期，順路可見。</div></div>'
+   +'<div class="maple"><span class="mp-ic">🍂</span><div><b>高山・白川鄉（Day2）</b> — <span class="mp-lo">偏尾聲</span>　山區紅葉多半已掉葉，但運氣好能遇到殘楓＋初雪的畫面。</div></div>'
+   +'<div class="maple"><span class="mp-ic">⛩️</span><div><b>伊勢・鳥羽（Day5·6）</b> — <span class="mp-lo">非重點</span>　以海景與神社森林為主，紅葉零星，不必特地追。</div></div>'
+   +'</div>';
+
+  // 可複製：查氣象用的地點關鍵字
+  var spots=[
+   {n:"名古屋市",q:"名古屋市 天気 10日間"},
+   {n:"高山市（飛驒）",q:"岐阜県 高山市 天気"},
+   {n:"白川村（白川鄉）",q:"岐阜県 白川村 天気"},
+   {n:"豊田市（香嵐溪）",q:"愛知県 豊田市 足助 天気"},
+   {n:"鳥羽市",q:"三重県 鳥羽市 天気"},
+   {n:"伊勢市",q:"三重県 伊勢市 天気"}
+  ];
+  var copyblocks=spots.map(function(s){
+    return '<div class="wcopy"><div class="wct"><div class="wcn">'+s.n+'</div><div class="wcq">'+s.q+'</div></div>'
+      +'<button class="copybtn" data-copy="'+esc(s.q)+'">複製</button></div>';
+  }).join("");
+
+  // 每日穿搭顏色（參考當天風景）
+  var outfits=[
+   {d:1,c:"#1a9aa0",t:"抵達・名古屋夜景",cols:["#8a5a3c","#d8c7a8","#3f5d4a"],txt:"俐落休閒：<b>焦糖棕</b>＋<b>奶茶米</b>＋一點<b>墨綠</b>，配城市與夜景好拍。"},
+   {d:2,c:"#d64545",t:"高山・白川鄉雪景",cols:["#c0392b","#e0b033","#2f5fa0"],txt:"白牆雪景跳色最顯眼：<b>正紅</b>／<b>芥末黃</b>／<b>寶藍</b>毛帽圍巾；保暖第一。"},
+   {d:3,c:"#e08a1e",t:"名古屋城・大須",cols:["#d2622f","#9e3b2e","#efe3c8"],txt:"復古甜：<b>南瓜橘</b>＋<b>磚紅</b>＋<b>米白</b>，配古城與扭蛋街活潑好看。"},
+   {d:4,c:"#7e9438",t:"香嵐溪賞楓",cols:["#efe3c8","#b7a06a","#7a2e2a"],txt:"大地色襯紅葉不搶色：<b>米白／卡其</b>為主，點一抹<b>酒紅</b>呼應楓紅。"},
+   {d:5,c:"#c2602f",t:"鳥羽海景旅館",cols:["#ffffff","#3d6a9e","#c9d2d8"],txt:"海洋感：<b>白</b>＋<b>丹寧藍</b>＋<b>淺灰</b>，海景露台拍起來乾淨。"},
+   {d:6,c:"#2f7fd6",t:"伊勢神宮森林",cols:["#3f5d4a","#8a6a4a","#f2ece0"],txt:"沉靜自然：<b>墨綠</b>＋<b>原木棕</b>＋<b>白</b>，呼應神宮杉木與鳥居。"},
+   {d:7,c:"#7a5ea8",t:"返程・機場",cols:["#2b2b2b","#555","#30405c"],txt:"舒適好穿脫：深色耐髒（<b>黑／灰／藏青</b>），機場活動一整天最實用。"}
+  ];
+  var sw=function(c){return '<span class="swatch" style="background:'+c+'"></span>';};
+  var outfitDays='<div class="olist">'+outfits.map(function(o){
+    return '<div class="ofit"><span class="of-d" style="background:'+o.c+'">'+CN[o.d]+'</span>'
+      +'<div><b>Day'+o.d+'　'+o.t+'</b>　'+o.cols.map(sw).join("")+'<br>'+o.txt+'</div></div>';
+  }).join("")+'</div>';
+
   var outfit='<div class="olist">'
-   +'<div class="orow"><span class="oi">🧅</span><div><b>洋蔥式穿搭</b>：發熱衣(底層)＋針織/刷毛(中層)＋防風保暖外套(可脫)。早晚溫差約10°C、室內暖氣很熱,方便穿脫最重要。</div></div>'
+   +'<div class="orow"><span class="oi">🧅</span><div><b>洋蔥式穿搭</b>：發熱衣(底層)＋針織/刷毛(中層)＋防風保暖外套(可脫)。早晚溫差約8–10°C、室內暖氣很熱,方便穿脫最重要。</div></div>'
    +'<div class="orow"><span class="oi">🧣</span><div><b>高山那天(Day2)加厚</b>：羽絨外套＋毛帽＋手套＋圍巾＋發熱衣。近冰點、可能飄雪。</div></div>'
    +'<div class="orow"><span class="oi">👟</span><div><b>好走的鞋</b>：神社石階、香嵐溪步道、老街石板,防滑運動鞋最實用。</div></div>'
    +'<div class="orow"><span class="oi">☂️</span><div><b>折疊傘＋薄圍巾</b>：秋天偶陣雨;海邊、山區風大可擋風。</div></div>'
@@ -1006,61 +1208,57 @@ function renderWeather(){
 
   var g=function(q){return "https://www.google.com/search?q="+encodeURIComponent(q);};
   var links='<div class="wlinks">'
-   +'<a class="wlink" target="_blank" rel="noopener" href="'+g("名古屋 天氣 週間")+'">名古屋 預報</a>'
-   +'<a class="wlink" target="_blank" rel="noopener" href="'+g("高山市 天氣 週間")+'">高山 預報</a>'
-   +'<a class="wlink" target="_blank" rel="noopener" href="'+g("伊勢市 天氣 週間")+'">伊勢 預報</a>'
+   +'<a class="wlink" target="_blank" rel="noopener" href="'+g("名古屋 天気 週間")+'">名古屋 預報</a>'
+   +'<a class="wlink" target="_blank" rel="noopener" href="'+g("高山市 天気 週間")+'">高山 預報</a>'
+   +'<a class="wlink" target="_blank" rel="noopener" href="'+g("鳥羽市 天気 週間")+'">鳥羽 預報</a>'
+   +'<a class="wlink" target="_blank" rel="noopener" href="'+g("伊勢市 天気 週間")+'">伊勢 預報</a>'
    +'</div>';
 
   host.innerHTML=
-    '<div class="wnote">⚠️ 下面是 <b>11月下旬的平均氣候</b>(參考用)。精準預報要<b>出發前3–5天</b>才準,記得按下面的即時預報連結再確認一次。</div>'
-   +'<div class="wsec"><span class="bar"></span>各區氣候</div>'+cards
-   +'<div class="wsec"><span class="bar"></span>穿搭建議</div>'+outfit
+    '<div class="wnote">🌡️ 下面是 <b>11月下旬的平均氣候</b>(參考用)，分早/午/晚大概溫度。精準預報要<b>出發前3–5天</b>才準，記得用下面「可複製關鍵字」或即時預報連結再確認一次。</div>'
+   +'<div class="wsec"><span class="bar"></span>每日氣溫（早・午・晚）</div>'+cards
+   +'<div class="wsec"><span class="bar"></span>🍁 楓葉（紅葉）看得到嗎？</div>'+maple
+   +'<div class="wsec"><span class="bar"></span>查氣象・一鍵複製關鍵字</div>'
+   +'<div class="wnote" style="margin-bottom:10px">貼到 Google 或日本氣象網（tenki.jp／Yahoo!天気）就能查該地點預報。</div>'+copyblocks
+   +'<div class="wsec"><span class="bar"></span>👗 每日穿搭顏色（配當天風景）</div>'+outfitDays
+   +'<div class="wsec"><span class="bar"></span>穿搭重點</div>'+outfit
    +'<div class="wsec"><span class="bar"></span>即時預報</div>'+links;
+
+  wireCopy(host);
 }
 
 function prepHTML(){
-  var entry='<div class="olist">'
-   +'<div class="orow"><span class="oi">🌐</span><div><b>註冊 Visit Japan Web（VJW）</b>：Google 搜「Visit Japan Web」進<b>官網</b>註冊帳號。<b>只有網頁版、沒有官方 App</b>,別下載假 App。</div></div>'
-   +'<div class="orow"><span class="oi">📷</span><div><b>填本人資料</b>：可用手機掃護照自動帶入,核對無誤即可。</div></div>'
-   +'<div class="orow"><span class="oi">👨‍👩‍👧‍👧</span><div><b>同行家人</b>：可把爸媽/小孩加為同行家人(最多10人,嬰幼兒・直系親屬適用),或四個大人<b>各自註冊各自的帳號</b>。</div></div>'
-   +'<div class="orow"><span class="oi">✈️</span><div><b>新增入境預定</b>：填航班(JX838)、在日住宿地址(名古屋 ibis Styles／鳥羽 行燈)。</div></div>'
-   +'<div class="orow"><span class="oi">📝</span><div><b>填「入境審查及海關申報」</b>：填入境目的、停留天數、職業、現居地等;欄位變「<b>已登錄</b>」才會出現 QR。</div></div>'
-   +'<div class="orow"><span class="oi">🔳</span><div><b>取得藍框「二合一 QR Code」</b>：入境審查＋海關申報合併成<b>一個 QR</b>,<b>每人各自截圖</b>存手機。</div></div>'
+  var done='<div class="donestrip">'
+   +'<div class="donechip"><b>✅ 入境卡</b>已填好</div>'
+   +'<div class="donechip"><b>✅ eSIM</b>已買好</div>'
+   +'<div class="donechip"><b>✅ 保險</b>已買好</div>'
    +'</div>';
   var entryTips='<div class="olist">'
-   +'<div class="orow"><span class="oi">⏰</span><div><b>抵達前至少 6 小時</b>完成(建議出發前 1–2 天就填好)。</div></div>'
-   +'<div class="orow"><span class="oi">📸</span><div><b>QR 一定要先截圖</b>：機場網路會塞,截圖最保險。</div></div>'
-   +'<div class="orow"><span class="oi">🛂</span><div><b>NGO 中部機場</b>可用「<b>共同自助通關機</b>」掃 QR＋臉部辨識,快速通關。</div></div>'
-   +'<div class="orow"><span class="oi">🪪</span><div>VJW <b>不是簽證</b>:台灣護照觀光 90 天免簽,VJW 只是加速通關。</div></div>'
+   +'<div class="orow"><span class="oi">📸</span><div><b>QR 每人先截圖存手機</b>：二合一 QR（入境審查＋海關申報）機場網路會塞,截圖最保險。</div></div>'
+   +'<div class="orow"><span class="oi">⏰</span><div>若有資料要改,<b>抵達前至少 6 小時</b>更新完成就好。</div></div>'
+   +'<div class="orow"><span class="oi">🛂</span><div><b>NGO 中部機場</b>用「共同自助通關機」掃 QR＋臉部辨識,快速通關。</div></div>'
    +'</div>';
   var esim='<div class="olist">'
-   +'<div class="orow"><span class="oi">📶</span><div><b>建議買 eSIM</b>(免換實體卡、落地即用):Klook／KKday／Airalo 都有日本方案。</div></div>'
-   +'<div class="orow"><span class="oi">📅</span><div><b>選 7–8 天方案</b> cover 11/15–21。四人可各買一張,或買一張「<b>可分享熱點</b>」的大流量方案給全家共用。</div></div>'
-   +'<div class="orow"><span class="oi">🗾</span><div>名古屋・高山・伊勢鳥羽都在本州,<b>買日本全國方案</b>都通(高山山區訊號偶爾弱屬正常)。</div></div>'
-   +'<div class="orow"><span class="oi">📲</span><div><b>出發前先裝好</b> eSIM 並設定;落地後開「數據漫遊」即可(依購買說明設定)。</div></div>'
-   +'<div class="orow"><span class="oi">⚠️</span><div>先確認手機<b>支援 eSIM</b>(iPhone XS 以後大多可);舊機或要保號,改買實體卡或 WiFi 分享器。</div></div>'
+   +'<div class="orow"><span class="oi">📲</span><div><b>出發前先裝好、設定好</b> eSIM；落地後開「數據漫遊」即可(依購買說明)。</div></div>'
+   +'<div class="orow"><span class="oi">📶</span><div>3 張 eSIM（霈付）；<b>沒裝到的人連同行的人熱點</b>即可。高山山區訊號偶爾弱屬正常。</div></div>'
    +'</div>';
   var ins='<div class="olist">'
-   +'<div class="orow"><span class="oi">🛡️</span><div><b>建議保「旅遊綜合險」</b>:旅遊不便(班機延誤・行李延誤/遺失)＋海外突發疾病醫療＋意外。</div></div>'
-   +'<div class="orow"><span class="oi">🏥</span><div><b>日本醫療貴</b>:海外醫療／實支實付額度拉高一點較安心。</div></div>'
-   +'<div class="orow"><span class="oi">👨‍👩‍👧‍👧</span><div>四人可保<b>同一張家庭/團體保單</b>,較省事。</div></div>'
-   +'<div class="orow"><span class="oi">💳</span><div><b>先查刷機票的信用卡</b>有無附旅平險/不便險,確認<b>額度與理賠範圍夠不夠</b>再決定加保。</div></div>'
-   +'<div class="orow"><span class="oi">📄</span><div>出發前投保,<b>保單號碼＋24h 緊急聯絡電話存手機</b>;就醫單據記得留著回台理賠。</div></div>'
+   +'<div class="orow"><span class="oi">📄</span><div><b>保單號碼＋24h 緊急聯絡電話存手機</b>；就醫單據留著回台理賠。</div></div>'
+   +'<div class="orow"><span class="oi">💴</span><div>日本醫療貴,真的需要就醫別猶豫,記得<b>索取診斷證明與收據</b>。</div></div>'
    +'</div>';
   return '<div class="sec-h" style="margin-top:24px"><span class="bar"></span>🧳 行前準備</div>'
+   +done
    +'<div class="todo"><div class="todo-h">📌 出發前要預約・訂位</div>'
      +'<div class="olist">'
        +'<div class="orow"><span class="oi">🦞</span><div><b>海女小屋 Chisato（11/19）— 一定要先預約!</b> 現烤龍蝦鮑魚·人氣高,<b>越早訂越好</b>。</div></div>'
        +'<div class="orow"><span class="oi">🍴</span><div>其他建議訂位:鰻魚家 Shibafukuya（需訂位）、カツレツMATUMURA（位少）、滿船屋。</div></div>'
      +'</div></div>'
-   +'<div class="wnote">🧳 出發前三件事先搞定!<b>入境卡(Visit Japan Web)、eSIM、保險</b>。入境卡建議出發前 1–2 天填完並截圖。</div>'
-   +'<div class="wsec"><span class="bar"></span>① 入境卡 · Visit Japan Web</div>'
-   +'<div class="wdesc" style="padding:0 2px 4px">2026 新制:<b>不用再填紙本入境卡/海關申報單</b>。先在 VJW 線上填好,入境審查＋海關申報<b>二合一 QR Code</b>,到機場掃碼就過。</div>'
-   +entry
-   +'<div class="wsec"><span class="bar"></span>入境卡提醒</div>'+entryTips
-   +'<div class="wsec"><span class="bar"></span>② 買 eSIM</div>'+esim
-   +'<div class="wsec"><span class="bar"></span>③ 旅遊保險</div>'+ins
-   +'<div class="wnote" style="margin-top:16px">💡 保險相關僅為一般資訊整理,實際投保內容/理賠以保單與保險公司為準。</div>';
+   +'<div class="wsec"><span class="bar"></span>① 入境卡 · Visit Japan Web<span class="badge-done">已填</span></div>'
+   +'<div class="wdesc" style="padding:0 2px 4px">都填好了，到機場掃<b>二合一 QR</b>即可。剩下只要記得:</div>'
+   +entryTips
+   +'<div class="wsec"><span class="bar"></span>② eSIM 網路<span class="badge-done">已買</span></div>'+esim
+   +'<div class="wsec"><span class="bar"></span>③ 旅遊保險<span class="badge-done">已買</span></div>'+ins
+   +'<div class="wnote" style="margin-top:16px">💡 保險相關僅為一般資訊整理,實際理賠以保單與保險公司為準。</div>';
 }
 function renderTax(){
   var host=document.getElementById("view-tax"); if(!host)return;
@@ -1111,7 +1309,6 @@ function switchTab(t){
   if(t==="home")renderHome();
   if(t==="trip")renderTrip();
   if(t==="booked")renderBooked();
-  if(t==="map")initMap();
   if(t==="budget")document.querySelectorAll("#explist .en").forEach(function(ta){ta.style.height="auto";ta.style.height=ta.scrollHeight+"px";});
   if(t==="food")renderFood();
   if(t==="weather")renderWeather();
@@ -1134,7 +1331,7 @@ function renderAll(){renderHome();renderTrip();renderBudget();renderFood();rende
   renderFood();
   renderBooked();
   setupTabs();
-  setupBackup();
+  spawnLeaves();
 })();
 </script>
 </body>
