@@ -545,6 +545,9 @@ nav.tabs{z-index:600}
 .wrain a{color:#2f7fd6;font-weight:700;text-decoration:none;white-space:nowrap}
 .wfit{font-size:12px;color:var(--ink-soft);line-height:1.55;margin:9px 0 0}
 .wfit b{color:#3a2a20}
+.wfit{line-height:1.7}
+.wsw{font-weight:800;color:#3a2a20;margin-bottom:5px;display:flex;align-items:center;gap:5px}
+.wsw .swatch{width:24px;height:24px;border-radius:7px;margin:0}
 .wday .wd-top .of-d{flex-shrink:0}
 
 /* ============ 購物清單 ============ */
@@ -635,10 +638,10 @@ var WHOCOLOR={"爸":"#2f7fd6","媽":"#d2627f","霈":"#5a9e4f","錡":"#e08a1e"};
 var IBIS={n:"ibis Styles Nagoya",lat:35.16905,lng:136.88928,url:"https://maps.app.goo.gl/pZSrwwY7AKvRdzXR7"};
 var ANDON={n:"お宿 行燈 鳥羽",lat:34.4793,lng:136.8498};
 var DAYS=[
- {date:"11/15",dow:"日",area:"nagoya",theme:"✈️ 抵達名古屋",illo:"plane",temp:{hi:16,lo:13},
+ {date:"11/15",dow:"日",area:"nagoya",theme:"✈️ 抵達名古屋",illo:"plane",temp:{hi:15,lo:13},
   leave:"09:45",leaveNote:"🚕 計程車到景美(約20分)→景美搭捷運(松山新店線)到北門→轉機捷A1·搭 11:00 直達車",stayPM:IBIS,
   fixed:[{i:"✈️",fx:"<b>JX838</b> 14:55 桃園 → 18:30 名古屋"},{i:"🏨",fx:"入住 <b>ibis Styles Nagoya</b>（名駅）"}]},
- {date:"11/16",dow:"一",area:"nagoya",theme:"⛰️ 高山・白川鄉",illo:"mtn",temp:{hi:13,lo:9},
+ {date:"11/16",dow:"一",area:"nagoya",theme:"⛰️ 高山・白川鄉",illo:"mtn",temp:{hi:13,lo:8},
   leave:"07:30",leaveNote:"🚶 ibis → 集合點(名駅 VIP Lounge/太閤通口) 走路約 14 分 · 07:50 集合、08:00 出發",stayAM:IBIS,stayPM:IBIS,
   tour:"VIP LINER 高山・白川鄉一日遊",
   fixed:[{i:"🚌",fx:"VIP LINER 巴士一日・名古屋站集合"}]},
@@ -647,15 +650,15 @@ var DAYS=[
   groups:[{key:"11/17#爸媽",label:"👱‍♂️👩 爸媽組",sub:"犬山城・馬籠宿",tour:"Klook 犬山城・馬籠宿一日遊"},
           {key:"11/17#姊妹",label:"👯 姊妹組",sub:"名古屋城→步行逛街"}],
   shared:{key:"11/17#一起",label:"👨‍👩‍👧‍👧 會合後・全家一起",sub:"晚餐 → 清洲城點燈"}},
- {date:"11/18",dow:"三",area:"nagoya",theme:"🍁 香嵐溪 賞楓",illo:"maple",temp:{hi:18,lo:13},
+ {date:"11/18",dow:"三",area:"nagoya",theme:"🍁 香嵐溪 賞楓",illo:"maple",temp:{hi:17,lo:13},
   leave:"09:28",leaveNote:"🚶 ibis → MiniStop 椿町店(集合) 走路約 17 分 · 09:50 集合",stayAM:IBIS,stayPM:IBIS,
   tour:"Klook 香嵐溪・永保寺・四季櫻 賞楓一日遊"},
- {date:"11/19",dow:"四",area:"toba",theme:"🐬 抵達・鳥羽",illo:"dolphin",transition:true,temp:{hi:18,lo:11},
+ {date:"11/19",dow:"四",area:"toba",theme:"🐬 抵達・鳥羽",illo:"dolphin",transition:true,temp:{hi:15,lo:11},
   leave:"08:20",stayAM:IBIS,stayPM:ANDON,
   fixed:[{i:"🏨",fx:"退房 ibis → 入住 <b>行燈 鳥羽</b>（全室海景）"}]},
- {date:"11/20",dow:"五",area:"toba",theme:"⛩️ 伊勢神宮",illo:"torii",temp:{hi:18,lo:11},
+ {date:"11/20",dow:"五",area:"toba",theme:"⛩️ 伊勢神宮",illo:"torii",temp:{hi:14,lo:7},
   leave:"10:30",stayAM:ANDON,stayPM:ANDON},
- {date:"11/21",dow:"六",area:"toba",theme:"✈️ 返程",illo:"plane",transition:true,temp:{hi:17,lo:10},
+ {date:"11/21",dow:"六",area:"toba",theme:"✈️ 返程",illo:"plane",transition:true,temp:{hi:13,lo:6},
   leave:"10:15",stayAM:ANDON,
   fixed:[{i:"🚃",fx:"近鐵特急 <b>12:02</b> 鳥羽 → 13:38 近鐵名古屋（2號車 2A–2D·A37039）"},{i:"✈️",fx:"<b>JX839</b> 19:40 名古屋 → 22:15 桃園"}]}
 ];
@@ -1456,30 +1459,30 @@ function renderWeather(){
   var TK_TOBA="https://tenki.jp/leisure/5/27/178/3830/";
   var TK_TOYOTA="https://tenki.jp/lite/leisure/5/26/173/3368/10days.html";
   var WD=[
-   {d:1,date:"11/15",dow:"日",area:"名古屋市區",wc:"#1a9aa0",am:13,noon:14,pm:16,
-    when:"18:30–22:00（抵達後）",rain:"約 80% ☔",tenki:TK_NGO,kw:"名古屋市 天気 10日間",tag:"☔ 抵達日偏雨·晚上約16°",
-    cols:["#8a5a3c","#d8c7a8","#3f5d4a"],fit:"抵達日有雨：<b>防水外套/折傘</b>必帶；配色焦糖棕＋奶茶米好搭。"},
-   {d:2,date:"11/16",dow:"一",area:"高山・白川鄉",wc:"#d64545",am:10,noon:13,pm:9,
-    when:"10:30–16:00（高山+白川鄉）",rain:"約 40%",tenki:TK_TAK,kw:"岐阜県 高山市 天気",tag:"🧥 山區·全程較冷（目前預報無雪）",
-    cols:["#c0392b","#e0b033","#2f5fa0"],fit:"山區早晚涼、偏陰：外套＋發熱衣＋薄毛帽圍巾；想跳色可用<b>正紅</b>／<b>芥末黃</b>。保暖帶夠,天氣會變、出發前看即時。"},
-   {d:3,date:"11/17",dow:"二",area:"名古屋市區（姊妹組）",wc:"#e08a1e",am:11,noon:16,pm:12,
-    when:"08:30–21:00（整天在外）",rain:"約 40%",tenki:TK_NGO,kw:"名古屋市 天気 10日間",tag:"🍁 市區楓葉中後期",
-    cols:["#d2622f","#9e3b2e","#efe3c8"],fit:"復古甜：<b>南瓜橘</b>＋<b>磚紅</b>＋<b>米白</b>，配古城與扭蛋街活潑。"},
-   {d:3,date:"11/17",dow:"二",area:"犬山・馬籠・妻籠（爸媽組·山區）",wc:"#9e6b3a",am:7,noon:14,pm:8,
-    when:"08:30–18:20（犬山城・馬籠宿）",rain:"約 30%",tenki:TK_TAK,kw:"岐阜県 中津川市 馬籠 天気",tag:"⛰️ 山區·比市區略冷",
-    cols:["#6b4a2e","#b7a06a","#7a2e2a"],fit:"山區老街：<b>大地棕</b>＋<b>卡其</b>＋保暖，石疊路穿好走的鞋；比名古屋市區再多一件。"},
-   {d:4,date:"11/18",dow:"三",area:"香嵐溪（豊田·足助）",wc:"#7e9438",am:15,noon:17,pm:16,
-    when:"10:00–21:00（傍晚香嵐溪點燈）",rain:"白天 80–90% ☔ → 18時後 40%",tenki:TK_TOYOTA,kw:"香嵐渓 天気",tag:"☔ 白天雨·傍晚轉晴",
-    cols:["#efe3c8","#b7a06a","#7a2e2a"],fit:"tenki.jp 香嵐溪預報（11/13 發表）：<b>白天下雨(80–90%)、18時後轉陰晴(40%)</b>，點燈時段有機會雨停。<b>防水外套＋折傘＋好走防滑鞋</b>；氣溫 13–18°C 不算冷。"},
-   {d:5,date:"11/19",dow:"四",area:"鳥羽（沿海）",wc:"#c2602f",am:11,noon:18,pm:12,
-    when:"13:00–18:30（鳥羽）",rain:"約 30%",tenki:TK_TOBA,kw:"三重県 鳥羽市 天気",tag:"🌊 全程最暖·海風涼",
-    cols:["#ffffff","#3d6a9e","#c9d2d8"],fit:"海洋感：<b>白</b>＋<b>丹寧藍</b>＋<b>淺灰</b>，海景露台拍起來乾淨。"},
-   {d:6,date:"11/20",dow:"五",area:"伊勢（神宮）",wc:"#2f7fd6",am:11,noon:18,pm:12,
-    when:"09:30–19:00（伊勢）",rain:"約 30%",tenki:TK_TOBA,kw:"三重県 伊勢市 天気",tag:"⛩️ 森林參道·偏涼",
-    cols:["#3f5d4a","#8a6a4a","#f2ece0"],fit:"沉靜自然：<b>墨綠</b>＋<b>原木棕</b>＋<b>白</b>，呼應神宮杉木與鳥居。"},
-   {d:7,date:"11/21",dow:"六",area:"名古屋／機場",wc:"#7a5ea8",am:10,noon:17,pm:11,
-    when:"10:30–12:00 鳥羽·14:45 後機場",rain:"約 30%",tenki:TK_NGO,kw:"名古屋市 天気 10日間",tag:"✈️ 返程日",
-    cols:["#2b2b2b","#555555","#30405c"],fit:"舒適好穿脫：深色耐髒（<b>黑／灰／藏青</b>），機場活動一整天最實用。"}
+   {d:1,date:"11/15",dow:"日",area:"名古屋市區",wc:"#1a9aa0",am:13,noon:14,pm:15,
+    when:"18:30–22:00（抵達後）",rain:"白天 90% ☔ → 18時後 20%",tenki:TK_NGO,kw:"名古屋市 天気 10日間",tag:"☔→🌙 白天雨·抵達時轉晴",
+    cols:["#8a5a3c","#d8c7a8","#2c3e5a"],fit:"<b>天氣</b>：雨のち晴，白天下雨、18:30 抵達後降到 20%，晚上約 15°C，折傘放隨身包。<br><b>主色</b>：<b>焦糖棕</b>＋<b>奶茶米</b>，搭機一整天耐看。<br><b>下身</b>：<b>藏青/深色</b>，坐飛機、拖行李不怕髒。<br><b>避開</b>：淺色褲和麂皮鞋，地面還是濕的。"},
+   {d:2,date:"11/16",dow:"一",area:"高山・白川鄉",wc:"#d64545",am:9,noon:12,pm:8,
+    when:"10:30–16:00（高山+白川鄉）",rain:"20–40%",tenki:TK_TAK,kw:"岐阜県 高山市 天気",tag:"🧥 全程最冷·8–13°C（無雪）",
+    cols:["#efe6d2","#c9a36b","#c0392b"],fit:"<b>天氣</b>：曇時々晴、8–13°C，全程最冷。發熱衣＋毛衣/刷毛＋防風外套三層，圍巾手套、防滑鞋。<br><b>主色</b>：<b>米白</b>或<b>駝色</b>外套，合掌村的茅草和枯草色前最顯眼。<br><b>點綴</b>：<b>正紅</b>或<b>芥末黃</b>的圍巾、毛帽。<br><b>避開</b>：全黑，會跟屋頂和山影糊在一起。"},
+   {d:3,date:"11/17",dow:"二",area:"名古屋市區（姊妹組）",wc:"#e08a1e",am:11,noon:15,pm:14,
+    when:"08:30–21:00（整天在外）",rain:"白天 40% → 18時後 70% ☔",tenki:TK_NGO,kw:"名古屋市 天気 10日間",tag:"☁️ 陰·晚上可能下雨",
+    cols:["#c8b189","#efe3c8","#9e3b2e"],fit:"<b>天氣</b>：曇一時雨、11–16°C；白天陰，<b>晚上清洲城時段降雨 70%</b>（雨量小），折傘必帶。薄長袖＋風衣、最好走的鞋。<br><b>主色</b>：<b>卡其</b>或<b>米白</b>外套，名古屋城白牆綠瓦前最搭；夜景也是淺色最清楚。<br><b>點綴</b>：<b>磚紅</b>／酒紅的毛衣或包。<br><b>下身</b>：深藍丹寧或黑。<br><b>避開</b>：全身綠、大花圖案（大須街景已經很花）。"},
+   {d:3,date:"11/17",dow:"二",area:"犬山・馬籠・妻籠（爸媽組·山區）",wc:"#9e6b3a",am:5,noon:12,pm:12,
+    when:"08:30–18:20（犬山城・馬籠宿）",rain:"30–40%",tenki:TK_TAK,kw:"岐阜県 中津川市 馬籠 天気",tag:"⛰️ 山區·早上只有 5°C",
+    cols:["#6b4a2e","#b7a06a","#b5472f"],fit:"<b>天氣</b>：參考高山市預報，曇、4–15°C，早上只有 5°C。比照 D2 三層穿法＋防滑鞋；晚上清洲城可能下雨，帶折傘。<br><b>主色</b>：<b>大地棕</b>＋<b>卡其</b>，融入木造老街和石板路。<br><b>點綴</b>：<b>暗紅/橘</b>的圍巾或帽子，深色背景裡找得到人。<br><b>避開</b>：全黑、深灰，在老街照片裡會消失。"},
+   {d:4,date:"11/18",dow:"三",area:"香嵐溪（豊田·足助）",wc:"#7e9438",am:15,noon:16,pm:16,
+    when:"10:00–21:00（傍晚香嵐溪點燈）",rain:"白天 70–80% ☔ → 18時後 40%",tenki:TK_TOYOTA,kw:"香嵐渓 天気",tag:"☔ 白天雨·點燈時轉陰",
+    cols:["#efe3c8","#d9c3a0","#2f4a6b"],fit:"<b>天氣</b>：香嵐溪預報（11/14 發表）雨時々曇、13–17°C；白天 70–80%、18時後轉陰 40%。有帽防水外套＋折傘＋防滑鞋，褲子選快乾的。<br><b>主色</b>：<b>米白</b>、<b>淺駝</b>，最能襯出滿山紅葉。<br><b>對比色</b>：<b>深藍</b>或墨綠，跟紅葉互補、有層次。<br><b>雨具</b>：透明或淺色的傘/雨衣，照片乾淨。<br><b>避開</b>：紅、橘、酒紅，會跟楓葉融在一起。"},
+   {d:5,date:"11/19",dow:"四",area:"鳥羽（沿海）",wc:"#c2602f",am:11,noon:15,pm:12,
+    when:"13:00–18:30（鳥羽）",rain:"10–20% ☀️",tenki:TK_TOBA,kw:"三重県 鳥羽市 天気",tag:"☀️ 晴·海風強 4–7m/s",
+    cols:["#ffffff","#3d6a9e","#e6b422"],fit:"<b>天氣</b>：鳥羽預報晴、11–15°C，但下午風速約 7m/s，體感偏冷。防風外套必帶、帽子戴牢。<br><b>主色</b>：<b>白</b>＋<b>丹寧藍</b>（或淺灰），海景前最清爽。<br><b>點綴</b>：<b>黃色</b>或珊瑚色小配件，藍色背景裡很跳；紅圍巾今天可以拿出來。<br><b>注意</b>：海女小屋有炭烤煙味，別穿難洗的毛衣和大衣。"},
+   {d:6,date:"11/20",dow:"五",area:"伊勢（神宮）",wc:"#2f7fd6",am:7,noon:13,pm:9,
+    when:"10:30–21:00（伊勢·晚餐 19:15）",rain:"10% ☀️",tenki:TK_TOBA,kw:"三重県 伊勢市 天気",tag:"☀️ 晴但冷·早上 7°C",
+    cols:["#f2ece0","#d9c3a0","#2c3e5a"],fit:"<b>天氣</b>：參考鳥羽預報，晴、7–14°C，不用雨具但早晚冷，在外待到晚上 9 點。毛衣＋保暖外套＋圍巾，碎石參道穿厚底好走鞋。<br><b>主色</b>：<b>米白</b>、<b>淺駝</b>，從神宮的深綠森林裡跳出來。<br><b>穩重色</b>：<b>藏青</b>，莊重又耐髒，參拜很得體。<br><b>點綴</b>：到托福橫丁再圍上亮色圍巾（紅/芥末黃）。<br><b>避開</b>：全身深綠、深棕，會跟樹和木造建築混在一起。"},
+   {d:7,date:"11/21",dow:"六",area:"鳥羽 → 名古屋／機場",wc:"#7a5ea8",am:6,noon:12,pm:9,
+    when:"10:30–12:00 鳥羽·14:45 後機場",rain:"10–20% ☀️",tenki:TK_NGO,kw:"名古屋市 天気 10日間",tag:"✈️ 返程日·晴冷",
+    cols:["#2b2b2b","#6a6a6a","#30405c"],fit:"<b>天氣</b>：名古屋預報晴、6–13°C，早上只有 6°C；Sky Deck 看飛機在戶外風大，外套別收進託運。<br><b>主色</b>：<b>黑</b>／<b>灰</b>／<b>藏青</b>，搭車搭機一整天耐髒。<br><b>款式</b>：好穿脫、有彈性的褲子，鞋子選好脫的（安檢方便）。<br><b>點綴</b>：想拍機場照，加一條亮色圍巾就夠。"}
   ];
   var sw=function(c){return '<span class="swatch" style="background:'+c+'"></span>';};
   var cards=WD.map(function(a){
@@ -1489,14 +1492,14 @@ function renderWeather(){
         +'<div class="wd-days">Day'+a.d+' · '+a.date+'（'+a.dow+'）</div></div>'
         +'<span class="wtag2">'+a.tag+'</span></div>'
       +'<div class="wwhen">🕒 我們在當地 <b>'+a.when+'</b></div>'
-      +'<div class="wrain">☔ 降雨機率 <b>'+a.rain+'</b> <span>(11月下旬平均)</span>'
+      +'<div class="wrain">☔ 降雨機率 <b>'+a.rain+'</b> <span>(tenki.jp 11/14 發表)</span>'
         +' · <a href="'+a.tenki+'" target="_blank" rel="noopener">tenki.jp 即時 →</a></div>'
       +'<div class="wslots">'
         +'<div class="wslot am"><div class="ws-l">🌅 早</div><div class="ws-h">6–9時</div><div class="ws-t">'+a.am+'°</div></div>'
         +'<div class="wslot noon"><div class="ws-l">☀️ 午</div><div class="ws-h">12–15時</div><div class="ws-t">'+a.noon+'°</div></div>'
         +'<div class="wslot pm"><div class="ws-l">🌙 晚</div><div class="ws-h">18–21時</div><div class="ws-t">'+a.pm+'°</div></div>'
       +'</div>'
-      +'<div class="wfit">👗 '+a.cols.map(sw).join("")+' '+a.fit+'</div>'
+      +'<div class="wfit"><div class="wsw">👗 建議色 '+a.cols.map(sw).join("")+'</div>'+a.fit+'</div>'
       +'<div class="wcopy"><div class="wct"><div class="wcn">查氣象關鍵字</div><div class="wcq">'+a.kw+'</div></div>'
         +'<button class="copybtn" data-copy="'+esc(a.kw)+'">複製</button></div>'
       +'</div>';
@@ -1527,7 +1530,7 @@ function renderWeather(){
    +'</div>';
 
   host.innerHTML=
-    '<div class="wnote">🌡️ 下面是 <b>11月下旬的平均氣候</b>(參考用)，每天一張卡：早/午/晚溫度、我們在當地的時段、<b>降雨機率</b>、查氣象關鍵字、當天穿搭色。<b>降雨機率每天會變</b>，出發前 3–5 天點卡片的 <b>tenki.jp 即時</b> 看最準。Day3 爸媽組上山比市區冷，另外拆一張。</div>'
+    '<div class="wnote">🌡️ 下面是 <b>tenki.jp 11/14 16:00 發表的預報</b>，每天一張卡：早/午/晚溫度、我們在當地的時段、<b>降雨機率</b>、查氣象關鍵字、當天穿搭色。<b>預報每天會變</b>，當天早上點卡片的 <b>tenki.jp 即時</b> 再看一次。D3 爸媽組、D6 伊勢用鄰近地點的預報代替。Day3 爸媽組上山比市區冷，另外拆一張。</div>'
    +'<div class="wsec"><span class="bar"></span>每日天氣・穿搭</div>'+cards
    +'<div class="wsec"><span class="bar"></span>🍁 楓葉（紅葉）看得到嗎？</div>'+maple
    +'<div class="wsec"><span class="bar"></span>穿搭重點</div>'+outfit
